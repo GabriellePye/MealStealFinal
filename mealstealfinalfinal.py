@@ -36,7 +36,7 @@ def generate_meal_plan():
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500  # Set an appropriate token limit
         )
-        return response['choices'][0]['message']['content']  # Return the generated meal plan
+        return completion.choices[0].message.content  # Return the generated meal plan
  
     except openai.error.AuthenticationError:
         st.error("API Key is invalid or has been disabled.")
@@ -66,4 +66,3 @@ if st.sidebar.button("Cook Up My Plan!"):
         if meal_plan_output:
             st.write("### Your Generated Meal Plan:")
             st.write(meal_plan_output)  # Display the generated meal plan in Streamlit
-
