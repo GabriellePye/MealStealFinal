@@ -5,7 +5,7 @@ from dotenv import load_dotenv
  
 # Load environment variables for API key
 load_dotenv()
-openai_key = os.getenv("OPENAI_API_KEY")
+openai_key = os.getenv("openai_key")
 client = openai.OpenAI(api_key=openai_key)  # Initialize the OpenAI client with the API key
  
 # Streamlit app setup with styling
