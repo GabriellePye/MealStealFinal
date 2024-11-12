@@ -36,33 +36,8 @@ def generate_meal_plan():
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500  # Set an appropriate token limit
         )
-        return completion.choices[0].message.content  # Return the generated meal plan
+        # Extracting content correctly from the completion object
+        return response['choices'][0]['message']['content']
  
-    except openai.error.AuthenticationError:
-        st.error("API Key is invalid or has been disabled.")
     except Exception as e:
         st.error(f"An error occurred: {e}")
- 
-# Sidebar input for user preferences
-st.sidebar.header('Preferences Hub')
-st.sidebar.subheader("Basic Information")
-age = st.sidebar.number_input('Age', min_value=10, max_value=90)
-gender = st.sidebar.selectbox('Gender Identity', ['Male', 'Female', 'Trans'])
-weight = st.sidebar.number_input('Weight (kg)', min_value=30, max_value=200)
-height = st.sidebar.number_input('Height (cm)', min_value=120, max_value=300)
-goal = st.sidebar.selectbox('Health Goal', ['Weight Loss', 'Maintain Weight', 'Muscle Gain', 'Eat Healthier', 'Create Meal Routine'])
-dietary_pref = st.sidebar.multiselect('Dietary Preferences', ['Vegetarian', 'Vegan', 'Halal', 'Gluten-Free', 'Dairy-Free', 'Pescetarian', 'None'])
-allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
-exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Active', 'Very Active'])
-body_fat = st.sidebar.number_input('Body Fat Percentage (%)', min_value=5, max_value=60, value=20)
-meal_frequency = st.sidebar.selectbox('Meals Per Day', ['2 meals', '3 meals', '4 meals', '5+ meals'])
-meal_prep_time = st.sidebar.selectbox('Meal Prep Time', ['Minimal (quick recipes)', 'Moderate (30-60 mins)', 'Detailed (complex recipes)'])
-days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
- 
-# Trigger the generation of the meal plan when the button is clicked
-if st.sidebar.button("Cook Up My Plan!"):
-    with st.spinner("Your personalized meal plan is being generated..."):
-        meal_plan_output = generate_meal_plan()
-        if meal_plan_output:
-            st.write("### Your Generated Meal Plan:")
-            st.write(meal_plan_output)  # Display the generated meal plan in Streamlit
