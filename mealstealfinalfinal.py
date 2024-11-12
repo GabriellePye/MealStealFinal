@@ -77,4 +77,3 @@ with tab1:
     st.markdown('<h2 style="text-align: center;">Your Personalized Meal Plan</h2>', unsafe_allow_html=True)
     # Display the meal plan in a more organized format (if further processed)
 
-has context menu
