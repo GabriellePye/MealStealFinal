@@ -1,12 +1,20 @@
-## original code 
+# app.py
+import openai
 import streamlit as st
 import pandas as pd
 import numpy as np
+import os
+from dotenv import load_dotenv
+
+#comment
+
+# Load environment variables
+load_dotenv()
+openai.api_key = os.getenv("openai_key")
 
 # -------------------------
 # 1. Background, containers, styling
 # -------------------------
-
 # CSS styles
 
 st.markdown("""
@@ -152,6 +160,7 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
+
 # -------------------------
 # 2. Logo, subheader
 # -------------------------
@@ -169,136 +178,92 @@ st.markdown("""
 # 3. User input form/sidebar
 # -------------------------
 
-# Sidebar Main Header and Introductory Statement
 st.sidebar.header('Preferences Hub')
-st.sidebar.markdown("Fill out as many or as few details as you’d like. All options are optional, so feel free to tailor it to your preferences!")
+st.sidebar.markdown("Fill out your preferences to tailor your meal plan!")
 
-# Basic Demographic Information
-st.sidebar.subheader("Basic Information")
+# Collect user preferences
 age = st.sidebar.number_input('Age', min_value=10, max_value=90)
 gender = st.sidebar.selectbox('Gender Identity', ['Male', 'Female', 'Trans'])
 weight = st.sidebar.number_input('Weight (kg)', min_value=30, max_value=200)
 height = st.sidebar.number_input('Height (cm)', min_value=120, max_value=300)
-
-# Health Goals and Dietary Preferences
-st.sidebar.subheader("Health Goals & Dietary Preferences")
 goal = st.sidebar.selectbox('Health Goal', ['Weight Loss', 'Maintain Weight', 'Muscle Gain', 'Eat Healthier', 'Create Meal Routine'])
 dietary_pref = st.sidebar.multiselect('Dietary Preferences', ['Vegetarian', 'Vegan', 'Halal', 'Gluten-Free', 'Dairy-Free', 'Pescetarian', 'None'])
 allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
-
-# Physical Activity and Exercise Details
-st.sidebar.subheader("Physical Activity")
 exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Active', 'Very Active'])
 activity_type = st.sidebar.multiselect('Types of Physical Activity', ['Cardio', 'Strength Training', 'Yoga/Pilates', 'Sports', 'Other'])
-
-# Body Composition and Water Intake
-st.sidebar.subheader("Body Composition & Hydration")
-body_fat = st.sidebar.number_input('Body Fat Percentage (%)', min_value=5, max_value=60, value=20)
-water_intake = st.sidebar.number_input('Daily Water Intake (Liters)', min_value=0.5, max_value=5.0, step=0.1)
-
-# Health and Lifestyle Factors
-st.sidebar.subheader("Health & Lifestyle")
-sleep_quality = st.sidebar.selectbox('Sleep Quality', ['Poor', 'Average', 'Good', 'Very Good'])
-stress_level = st.sidebar.selectbox('Stress Level', ['Low', 'Moderate', 'High'])
-medical_conditions = st.sidebar.text_input('Medical Conditions (e.g., diabetes, hypertension)')
-
-# Food Preferences
-st.sidebar.subheader("Food Preferences")
-food_likes = st.sidebar.text_input('Foods You Like (comma-separated)')
-food_dislikes = st.sidebar.text_input('Foods You Dislike (comma-separated)')
-supplements = st.sidebar.text_input('Supplements (comma-separated)')
-
-# Meal Plan Customization
-st.sidebar.subheader("Meal Plan Customization")
 meal_frequency = st.sidebar.selectbox('Meals Per Day', ['2 meals', '3 meals', '4 meals', '5+ meals'])
 meal_prep = st.sidebar.selectbox('Meal Prep Time', ['Minimal (quick recipes)', 'Moderate (30-60 mins)', 'Detailed (complex recipes)'])
-
-st.sidebar.markdown('### Set Meal Plan Duration')
 days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
 
-# Submit Button with a Friendly Name
+# Construct API prompt based on user input
+user_data_prompt = f"""
+Generate a personalized meal plan based on the following user preferences:
+- Age: {age}
+- Gender: {gender}
+- Weight: {weight} kg
+- Height: {height} cm
+- Health Goal: {goal}
+- Dietary Preferences: {', '.join(dietary_pref) if dietary_pref else 'None'}
+- Allergies: {allergies if allergies else 'None'}
+- Exercise Level: {exercise_level}
+- Types of Physical Activity: {', '.join(activity_type) if activity_type else 'None'}
+- Meal Frequency: {meal_frequency}
+- Meal Prep Time: {meal_prep}
+- Plan Duration: {days} days
+"""
+
+# Use session state to manage meal plan generation
+if "meal_plan_text" not in st.session_state:
+    st.session_state.meal_plan_text = ""
+
+# Submit Button for generating meal plan
 if st.sidebar.button("Cook Up My Plan!"):
-    st.write("Your personalized meal plan is being generated based on your preferences!") ##remove 
-    # Add any additional code here to handle the generation of the meal plan
+    st.write("Generating your personalized meal plan...")
+
+    # Call OpenAI API
+try:
+    with st.spinner("Fetching your personalized meal plan..."):
+        response = openai.Completion.create(
+            engine="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Use your fine-tuned model here
+            prompt=user_data_prompt,
+            max_tokens=500
+        )
+    st.session_state.meal_plan_text = response.choices[0].text.strip()
+
+except Exception as e:
+    st.error("Error fetching meal plan. Please try again.")
+    st.session_state.meal_plan_text = ""
+
 
 # -------------------------
-# 4. Tabs
+# 4. Tabs for additional content
 # -------------------------
-
-st.markdown('<div class="content-section">', unsafe_allow_html=True)  # Container for the tabs
 
 tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes', 'Nutritional Info'])
 
-# -------------------------
-# 5. Meal Plan Tab & Page
-# -------------------------
-
+# Display meal plan in "Your Meal Plan" tab
 with tab1:
     st.markdown('<h2 style="text-align: center;">Your Personalized Meal Plan</h2>', unsafe_allow_html=True)
+    if st.session_state.meal_plan_text:
+        st.write(st.session_state.meal_plan_text)
+    else:
+        st.write("No meal plan generated yet. Fill out your preferences and submit to get started.")
 
-    # Sample meal plan with mock data
-    meal_plan = {
-        'Day 1': ['Oatmeal with fruit', 'Grilled chicken salad', 'Apple', 'Quinoa with veggies'],
-        'Day 2': ['Greek yogurt with honey', 'Turkey sandwich', 'Carrot sticks', 'Salmon with rice'],
-        'Day 3': ['Smoothie', 'Pasta with tomato sauce', 'Nuts', 'Stir-fried tofu with broccoli'],
-        'Day 4': ['Eggs and toast', 'Chickpea salad', 'Granola bar', 'Beef stir-fry'],
-        'Day 5': ['Pancakes', 'Veggie wrap', 'Yogurt', 'Baked chicken with potatoes'],
-        'Day 6': ['Cereal with milk', 'Quinoa salad', 'Fruit', 'Fish tacos'],
-        'Day 7': ['Toast with avocado', 'Rice and beans', 'Dark chocolate', 'Grilled shrimp with veggies'],
-    }
-
-    # Render cards based on slider selection
-    day_count = min(days, len(meal_plan))
-    cols = st.columns(3)  # Create three columns
-
-    # Placeholder for displaying selected meal
-    selected_meal = st.empty() 
-
-    for idx, (day, meals) in enumerate(meal_plan.items()):
-        if idx < day_count:  # Only show the selected number of days
-            with cols[idx % 3]:  # Distribute the days across columns
-                # Render the card using HTML
-                st.markdown(f"""
-                <div class="card" style="cursor: pointer;">
-                    <div class="card-content">
-                        <h3 style="font-size: 15px;">{day}</h3>
-                        <p style="font-size: 15px;">Click to see meals</p>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-# -------------------------
-# 6. Adjust Your Meal Plan - placeholder
-# -------------------------
-
+# Placeholder content for remaining tabs
 with tab2:
     st.subheader('Adjust Your Meal Plan')
-    st.write('Fill in later. Be sure to include *if possible click and drop options')
-
-# -------------------------
-# 7. Recipes - placeholder
-# -------------------------
+    st.write('Adjust your meal plan here.')
 
 with tab3:
     st.subheader('Recipes')
-    st.write('Fill in later - maybe have meal plan for the days on side with drop down options (or above) and then you can choose recipes to view?')
-
-# -------------------------
-# 8. Nutritional Info - placeholder 
-# -------------------------
+    st.write('Find recipes here.')
 
 with tab4:
     st.subheader('Nutritional Info')
-    st.write('Fill in later. Collate information for the whole meal plan or for certain meals/days?')
+    st.write('View nutritional info here.')
 
 # ----
-# 9. Close container
-# ----
-
-st.markdown('</div>', unsafe_allow_html=True)  # Close the frosted container
-
-# ----
-# 10.Footer
+# Footer
 # ----
 
 st.markdown("""
