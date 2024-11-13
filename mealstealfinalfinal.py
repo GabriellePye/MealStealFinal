@@ -47,7 +47,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.postimg.cc/Rhd5MXHk/sincerely-media-4d-SXc-NTy-Xa-I-unsplash.jpg') #-- changed bg for ease / will change back to gif in future 
+    background: url('https://i.ibb.co/MpbbQDx/meal-steal-bg.gif') 
     background-size: cover; 
     background-position: top;
 }
@@ -322,21 +322,9 @@ tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes
 with tab1:
     st.markdown('<h2 style="text-align: center;">Your Personalised Meal Plan</h2>', unsafe_allow_html=True)
 
-    # Ensure `recipes_text` is available before attempting to access it
-    if 'recipes_text' in locals():
-        day_count = min(days, 7)
-
-        for day in range(1, day_count + 1):
-            st.markdown(f"#### Day {day}")
-            st.write(f"Meals for Day {day} (click for more details in the Full Meal Plan tab)")
-    else:
-        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
-
 # -------------------------
 # 6. Adjust Your Meal Plan 
 # -------------------------
-
 
 with tab2:
     st.markdown("### Adjust Your Meal Plan")
