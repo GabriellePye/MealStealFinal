@@ -468,6 +468,9 @@ with tab2:
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
+         # Parse nutrition info from recipes text
+        nutrition_df = parse_nutrition_info(recipes_text)
+        
         # Multiselect to filter recipes
         selected_recipes = st.multiselect(
             "Select Recipes to View Nutrient Distribution",
