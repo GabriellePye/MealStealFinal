@@ -155,11 +155,11 @@ if st.sidebar.button("Cook Up My Plan!"):
             default=nutrition_df["Recipe"].unique()  # All recipes selected by default
         )
 
-        # Filter the data for the selected recipes
-        selected_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)]
-
         # Define nutrients to include in the pie chart (excluding Calories)
         nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+
+        # Filter the data for the selected recipes, or handle empty selection gracefully
+        selected_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)] if selected_recipes else nutrition_df
 
         # Calculate the total values for the selected recipes' nutrients
         nutrient_totals = selected_data[nutrients_for_pie].sum()
@@ -169,7 +169,7 @@ if st.sidebar.button("Cook Up My Plan!"):
             values=nutrient_totals,
             names=nutrients_for_pie,
             title="Nutrient Distribution for Selected Recipes",
-            hole=0.5  # Creates a donut chart
+            hole=0.4  # Creates a donut chart
         )
 
         # Update the text to display nutrient amounts in grams
