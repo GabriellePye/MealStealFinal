@@ -3,7 +3,8 @@ import streamlit as st
 import openai
 import pandas as pd
 import numpy as np #-- added numpy
-import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
 from openai import OpenAI
 import re
 from fpdf import FPDF #-- added pdf 
@@ -47,68 +48,9 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/b7gK80R/sincerely-media-4d-SXc-NTy-Xa-I-unsplash.jpg') #-- changed bg for ease / will change back to gif in future 
+    background: url('https://i.postimg.cc/Rhd5MXHk/sincerely-media-4d-SXc-NTy-Xa-I-unsplash.jpg') #-- changed bg for ease / will change back to gif in future 
     background-size: cover; 
     background-position: top;
-}
-
-/* hamster spinner CSS */ #-- added loading gimmick
-.wheel-and-hamster {
-    --dur: 1s;
-    position: relative;
-    width: 12em;
-    height: 12em;
-    font-size: 14px;
-}
-
-.wheel,
-.hamster,
-.hamster div,
-.spoke {
-    position: absolute;
-}
-
-.wheel,
-.spoke {
-    border-radius: 50%;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.wheel {
-    background: radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);
-    z-index: 2;
-}
-
-.hamster {
-    animation: hamster var(--dur) ease-in-out infinite;
-    top: 50%;
-    left: calc(50% - 3.5em);
-    width: 7em;
-    height: 3.75em;
-    transform: rotate(4deg) translate(-0.8em,1.85em);
-    transform-origin: 50% 0;
-    z-index: 1;
-}
-
-@keyframes hamster {
-    from, to {
-        transform: rotate(4deg) translate(-0.8em,1.85em);
-    }
-    50% {
-        transform: rotate(0) translate(-0.8em,1.85em);
-    }
-}
-
-@keyframes spoke {
-    from {
-        transform: rotate(0);
-    }
-    to {
-        transform: rotate(-1turn);
-    }
 }
  
 /* styling for subheader + other text elements */
@@ -360,7 +302,7 @@ def parse_nutrition_info(recipes_text):
 
     return pd.DataFrame(data)
 
-# Trigger recipe generation
+# Trigger recipe generation #-- need to put this within the box
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalised plan...'):
         recipes_text = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
@@ -388,38 +330,6 @@ with tab1:
         for day in range(1, day_count + 1):
             st.markdown(f"#### Day {day}")
             st.write(f"Meals for Day {day} (click for more details in the Full Meal Plan tab)")
-
-            # Adjust to check that recipes_text has the expected structure, e.g., if a dictionary
-            meals_for_day = recipes_text.get(day, []) if isinstance(recipes_text, dict) else []
-
-            cols = st.columns(3)
-
-            for idx, meal in enumerate(meals_for_day):
-                with cols[idx % 3]:
-                    st.markdown(f"""
-                    <div class="card" style="cursor: pointer;">
-                        <div class="card-content">
-                            <h3 style="font-size: 15px; font-weight: bold;">{meal}</h3>
-                            <div class="menu" style="display: none;">
-                                <ul style="list-style-type: none; padding-left: 0;">
-                                    <li>Recipe Instructions</li>
-                                    <li>Calories: 200 kcal</li>
-                                    <li>Protein: 10g</li>
-                                    <li>Carbs: 30g</li>
-                                    <li>Fats: 5g</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <style>
-                        .card:hover .menu {{
-                            display: block;
-                        }}
-                        .card:hover .card-content h3 {{
-                            font-weight: bold;
-                        }}
-                    </style>
-                    """, unsafe_allow_html=True)
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
@@ -464,60 +374,42 @@ with tab2:
 # 8. Nutritional Dashboard
 # -------------------------
 
-    # Tab 4: Nutrition Dashboard
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
         # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
 
-        # Display the entire DataFrame
-        st.write("**Nutrition Data for All Recipes**")
-        st.dataframe(nutrition_df)
-        
-        # Define color scheme based on provided colors
-        color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
+        # Multiselect to select recipes to filter the pie chart
+        selected_recipes = st.multiselect(
+            "Select Recipes to View Nutrient Distribution",
+            options=nutrition_df["Recipe"].unique(),
+            default=nutrition_df["Recipe"].unique()  # All recipes selected by default
+        )
+
+        # Define nutrients to include in the pie chart (excluding Calories)
         nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-        # Dropdown to filter recipes
-        selected_recipe = st.selectbox(
-            "Select Recipe to View Nutrient Distribution",
-            options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
-            index=0  # Default to "Total" for all recipes
+        # Filter the data for the selected recipes, or handle empty selection gracefully
+        selected_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)] if selected_recipes else nutrition_df
+
+        # Calculate the total values for the selected recipes' nutrients
+        nutrient_totals = selected_data[nutrients_for_pie].sum()
+
+        # Create the donut chart with labels showing the grams for each nutrient
+        pie_fig = px.pie(
+            values=nutrient_totals,
+            names=nutrients_for_pie,
+            title="Nutrient Distribution for Selected Recipes",
+            hole=0.4  # Creates a donut chart
         )
 
-        # Filter data based on selected recipe
-        filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        # Update the text to display nutrient amounts in grams
+        pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
 
-        # Sum the selected nutrients
-        nutrient_totals = filtered_data[nutrients_for_pie].sum()
-
-        # Matplotlib Donut Chart with Custom Colors
-        fig, ax = plt.subplots()
-        wedges, texts, autotexts = ax.pie(
-            nutrient_totals,
-            labels=[f"{nutrient} ({value}g)" for nutrient, value in nutrient_totals.items()],  # Show grams only
-            startangle=90,
-            colors=color_scheme,
-            wedgeprops=dict(width=0.3)  # Creates a donut effect by setting width
-        )
-
-        # Adding the legend for each nutrient
-        ax.legend(
-            labels=nutrients_for_pie,
-            loc="center left",
-            bbox_to_anchor=(1, 0, 0.5, 1),
-            facecolor='white'
-        )
-
-        # Adding the donut hole
-        centre_circle = plt.Circle((0, 0), 0.40, fc='white')
-        fig.gca().add_artist(centre_circle)
-        ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
-
-        # Display the chart in Streamlit
-        st.pyplot(fig)
-
+        # Display the pie chart in Streamlit
+        st.plotly_chart(pie_fig)
+        
 # ----
 # 9. Close container
 # ----
