@@ -70,16 +70,14 @@ def parse_nutrition_info(recipes_text):
         "Fats (g)": []
     }
 
-    # Split each recipe by "Recipe [number]:" to isolate individual recipes
-    recipe_sections = re.split(r'Recipe \d+:\s*(.*?)\n', recipes_text)[1:]
+    # Find all recipes in the text by locating "Recipe X: Title" pattern
+    recipe_sections = re.findall(r'Recipe \d+: (.*?)\n(.*?)\n(?:Cuisine:|Nutrition Information)', recipes_text, re.DOTALL)
 
-    for i in range(0, len(recipe_sections), 2):
-        title = recipe_sections[i].strip()  # Recipe title
-        details = recipe_sections[i + 1]
+    for title, details in recipe_sections:
+        # Add the recipe title
+        data["Recipe"].append(title.strip())
 
-        data["Recipe"].append(title)
-
-        # Simplified regex to find nutrient values within each recipe
+        # Use regex to find nutrient values within each recipe
         calories = re.search(r'Calories:\s*([\d.]+)', details)
         protein = re.search(r'Protein:\s*([\d.]+)', details)
         carbs = re.search(r'Carbohydrates:\s*([\d.]+)', details)
