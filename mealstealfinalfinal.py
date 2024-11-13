@@ -6,7 +6,7 @@ import time
 # Initialize OpenAI client
 openai.api_key = st.secrets["openai_key"]
 client = OpenAI(api_key=st.secrets["openai_key"])
-
+ 
 # -------------------------
 # 3. User input form/sidebar
 # -------------------------
