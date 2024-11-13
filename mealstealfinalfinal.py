@@ -436,16 +436,18 @@ with tab1:
 # -------------------------
 
 with tab2:
-        st.markdown("### Adjust Your Meal Plan")
+    st.markdown("### Adjust Your Meal Plan")
+    
+    if recipes_text:  # Check if recipes_text is available
         st.write(recipes_text)  # Display full meal plan text as a large block
 
-    # Button to download the PDF #-- button to download the recipes as pdf
-    if st.button("Download Full Recipes as PDF"):
-        # Generate PDF
-        pdf_output = generate_pdf(recipes_text)
+        # Button to download the PDF
+        if st.button("Download Full Recipes as PDF"):
+            # Generate PDF
+            pdf_output = generate_pdf(recipes_text)
 
-        # Provide the download link
-        st.download_button(
+            # Provide the download link
+            st.download_button(
                 label="Download PDF",
                 data=pdf_output,
                 file_name="meal_plan.pdf",
