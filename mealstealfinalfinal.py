@@ -378,8 +378,8 @@ with tab2:
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
-         # Parse nutrition info from recipes text
-         nutrition_df = parse_nutrition_info(recipes_text)
+        # Parse nutrition info from recipes text
+        nutrition_df = parse_nutrition_info(recipes_text)
 
         # Display the entire DataFrame
         st.write("**Nutrition Data for All Recipes**")
