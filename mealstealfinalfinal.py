@@ -3,6 +3,7 @@ import openai
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from openai import OpenAI
 
 # Initialize OpenAI client
 openai.api_key = st.secrets["openai_key"]
