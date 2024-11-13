@@ -48,7 +48,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://e1.pxfuel.com/desktop-wallpaper/811/930/desktop-wallpaper-light-green-gradient-green-gradient.png') #-- changed bg for ease / will change back to gif in future 
+    background: url('https://i.ibb.co/b7gK80R/sincerely-media-4d-SXc-NTy-Xa-I-unsplash.jpg') #-- changed bg for ease / will change back to gif in future 
     background-size: cover; 
     background-position: top;
 }
@@ -379,8 +379,6 @@ tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes
 # 5. Meal Plan Tab & Page
 # -------------------------
 
-# Assuming that 'meal_plan' contains the generated meal plan from the OpenAI API
-
 # Inside tab1, you want to display the meal cards based on the generated meal plan
 
 with tab1:
@@ -396,7 +394,7 @@ with tab1:
         st.write(f"Meals for Day {day} (click for more details in the Full Meal Plan tab)")
 
         # Assuming 'meal_plan' is a dictionary where keys are days and values are lists of meals
-        meals_for_day = meal_plan.get(day, [])  # Get meals for the current day, default to an empty list if not found
+        meals_for_day = recipes_text.get(day, [])  # Get meals for the current day, default to an empty list if not found
 
         # Render cards based on the selected days
         cols = st.columns(3)  # Create three columns for card display
