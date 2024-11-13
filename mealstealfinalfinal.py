@@ -148,24 +148,28 @@ if st.sidebar.button("Cook Up My Plan!"):
         # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
 
-        # Dropdown to select a recipe to filter the pie chart
-        selected_recipe = st.selectbox("Select a Recipe to View Nutrient Distribution", options=nutrition_df["Recipe"].unique())
+        # Multiselect to select recipes to filter the pie chart
+        selected_recipes = st.multiselect(
+            "Select Recipes to View Nutrient Distribution",
+            options=nutrition_df["Recipe"].unique(),
+            default=nutrition_df["Recipe"].unique()  # All recipes selected by default
+        )
 
-        # Filter the data for the selected recipe
-        selected_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        # Filter the data for the selected recipes
+        selected_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)]
 
         # Define nutrients to include in the pie chart (excluding Calories)
         nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-        # Extract values for the selected recipe's nutrients
-        nutrient_totals = selected_data[nutrients_for_pie].values[0]
+        # Calculate the total values for the selected recipes' nutrients
+        nutrient_totals = selected_data[nutrients_for_pie].sum()
 
         # Create the donut chart with labels showing the grams for each nutrient
         pie_fig = px.pie(
             values=nutrient_totals,
             names=nutrients_for_pie,
-            title=f"Nutrient Distribution for {selected_recipe}",
-            hole=0.4  # Creates a donut chart
+            title="Nutrient Distribution for Selected Recipes",
+            hole=0.5  # Creates a donut chart
         )
 
         # Update the text to display nutrient amounts in grams
@@ -173,7 +177,6 @@ if st.sidebar.button("Cook Up My Plan!"):
 
         # Display the pie chart in Streamlit
         st.plotly_chart(pie_fig)
-
 
 # -------------------------
 # CSS Styling for the Page
