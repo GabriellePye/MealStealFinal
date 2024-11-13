@@ -70,7 +70,7 @@ def parse_nutrition_info(recipes_text):
         "Fats (g)": []
     }
 
-    # Split each recipe by "Recipe" keyword to isolate individual recipes
+    # Split each recipe by "Recipe [number]:" to isolate individual recipes
     recipe_sections = re.split(r'\bRecipe \d+:\s*(.*?)\n', recipes_text)[1:]
 
     for i in range(0, len(recipe_sections), 2):
@@ -80,13 +80,13 @@ def parse_nutrition_info(recipes_text):
         data["Recipe"].append(title)
 
         # Use regex to find nutrient values within each recipe
-        calories = re.search(r'Calories:\s*(\d+)\s*kcal', details)
+        calories = re.search(r'Calories:\s*(\d+(\.\d+)?)\s*kcal', details)
         protein = re.search(r'Protein:\s*(\d+(\.\d+)?)\s*g', details)
         carbs = re.search(r'Carbohydrates:\s*(\d+(\.\d+)?)\s*g', details)
         fats = re.search(r'Fat:\s*(\d+(\.\d+)?)\s*g', details)
 
         # Append parsed nutrient values to the data structure, defaulting to 0 if not found
-        data["Calories"].append(int(calories.group(1)) if calories else 0)
+        data["Calories"].append(float(calories.group(1)) if calories else 0.0)
         data["Protein (g)"].append(float(protein.group(1)) if protein else 0.0)
         data["Carbs (g)"].append(float(carbs.group(1)) if carbs else 0.0)
         data["Fats (g)"].append(float(fats.group(1)) if fats else 0.0)
