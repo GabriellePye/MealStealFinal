@@ -362,7 +362,7 @@ def parse_nutrition_info(recipes_text):
 
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
-    with st.wheel-and-hamster('Creating your personalised plan...'):
+    with st.spinner('Creating your personalised plan...'):
         recipes_text = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
     st.success("Your personalised meal plan is ready!")
 
