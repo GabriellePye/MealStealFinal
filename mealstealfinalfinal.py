@@ -65,29 +65,31 @@ def parse_nutrition_info(recipes_text):
     data = {
         "Recipe": [],
         "Calories": [],
-        "Protein (g)": [],
-        "Carbs (g)": [],
-        "Fats (g)": []
+        "Carbohydrates": [],
+        "Fat": [],
+        "Protein": []
     }
 
-    # Find all recipes in the text by locating "Recipe X: Title" pattern
-    recipe_sections = re.findall(r'Recipe \d+: (.*?)\n(.*?)\n(?:Cuisine:|Nutrition Information)', recipes_text, re.DOTALL)
+    # Split recipes based on "Recipe" occurrences
+    recipe_sections = re.split(r"### Recipe \d+", recipes_text)[1:]
 
-    for title, details in recipe_sections:
-        # Add the recipe title
-        data["Recipe"].append(title.strip())
+    for section in recipe_sections:
+        # Extract title
+        title_match = re.search(r"\*\*([^*]+)\*\*", section)
+        title = title_match.group(1).strip() if title_match else "Unknown Recipe"
+        data["Recipe"].append(title)
 
-        # Use regex to find nutrient values within each recipe
-        calories = re.search(r'Calories:\s*([\d.]+)', details)
-        protein = re.search(r'Protein:\s*([\d.]+)', details)
-        carbs = re.search(r'Carbohydrates:\s*([\d.]+)', details)
-        fats = re.search(r'Fat:\s*([\d.]+)', details)
+        # Use regex to capture specific nutrition values
+        calories = re.search(r"Calories:\s*([\d.]+)", section)
+        carbohydrates = re.search(r"Carbohydrates:\s*([\d.]+)", section)
+        fat = re.search(r"Fat:\s*([\d.]+)", section)
+        protein = re.search(r"Protein:\s*([\d.]+)", section)
 
-        # Append parsed nutrient values to the data structure, defaulting to 0 if not found
+        # Append parsed values, defaulting to 0 if not found
         data["Calories"].append(float(calories.group(1)) if calories else 0.0)
-        data["Protein (g)"].append(float(protein.group(1)) if protein else 0.0)
-        data["Carbs (g)"].append(float(carbs.group(1)) if carbs else 0.0)
-        data["Fats (g)"].append(float(fats.group(1)) if fats else 0.0)
+        data["Carbohydrates"].append(float(carbohydrates.group(1)) if carbohydrates else 0.0)
+        data["Fat"].append(float(fat.group(1)) if fat else 0.0)
+        data["Protein"].append(float(protein.group(1)) if protein else 0.0)
 
     return pd.DataFrame(data)
 
@@ -130,9 +132,9 @@ if st.sidebar.button("Cook Up My Plan!"):
 
         # Calculate total values for debugging
         total_calories = nutrition_df["Calories"].sum()
-        total_protein = nutrition_df["Protein (g)"].sum()
-        total_carbs = nutrition_df["Carbs (g)"].sum()
-        total_fats = nutrition_df["Fats (g)"].sum()
+        total_protein = nutrition_df["Protein"].sum()
+        total_carbs = nutrition_df["Carbohydrates"].sum()
+        total_fats = nutrition_df["Fat"].sum()
 
         # Display totals to verify parsing
         st.write("**Total Nutrition Values Across All Recipes**")
@@ -143,11 +145,11 @@ if st.sidebar.button("Cook Up My Plan!"):
 
         # Radar Chart Visualization
         fig = go.Figure()
-        nutrients = ["Calories", "Protein (g)", "Carbs (g)", "Fats (g)"]
+        nutrients = ["Calories", "Protein", "Carbohydrates", "Fat"]
 
         for index, row in nutrition_df.iterrows():
             fig.add_trace(go.Scatterpolar(
-                r=[row["Calories"], row["Protein (g)"], row["Carbs (g)"], row["Fats (g)"]],
+                r=[row["Calories"], row["Protein"], row["Carbohydrates"], row["Fat"]],
                 theta=nutrients,
                 fill='toself',
                 name=row["Recipe"]
@@ -166,7 +168,6 @@ if st.sidebar.button("Cook Up My Plan!"):
         nutrient_totals = nutrition_df[nutrients].sum()
         pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution Across Recipes")
         st.plotly_chart(pie_fig)
-
 
 # -------------------------
 # CSS Styling for the Page
