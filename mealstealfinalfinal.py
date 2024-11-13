@@ -233,6 +233,7 @@ servings = st.sidebar.number_input('Number of Servings per Recipe', min_value=1,
 days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
 
 # Function to Generate Recipes with OpenAI
+@st.cache_data
 def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meals_per_day, days, meal_prep, servings):
     total_meals = int(meals_per_day.split()[0]) * days
     dietary_preferences = ', '.join(dietary_pref)
@@ -269,6 +270,7 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
     return completion.choices[0].message.content
 
 # Parse nutrition info from generated recipes
+@st.cache_data
 def parse_nutrition_info(recipes_text):
     data = {
         "Recipe": [],
