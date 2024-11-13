@@ -78,7 +78,7 @@ def parse_nutrition_info(recipes_text):
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalized plan...'):
-        recipes = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, body_fat, meal_frequency, days, meal_prep, servings)
+        recipes = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
     st.success("Your personalized meal plan is ready!")
     
     # Display the generated recipes in a large text block
