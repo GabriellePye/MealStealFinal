@@ -365,54 +365,54 @@ with tab2:
 # 8. Nutritional Dashboard
 # -------------------------
 
-    # Tab 4: Nutrition Dashboard
+   # Tab 4: Nutrition Dashboard
     with tab4:
         if "recipes_text" in st.session_state:
-        recipes_text = st.session_state["recipes_text"]
-        nutrition_df = parse_nutrition_info(recipes_text)
+            recipes_text = st.session_state["recipes_text"]
+            nutrition_df = parse_nutrition_info(recipes_text)
 
-        # Display the entire DataFrame
-        st.write("**Nutrition Data for All Recipes**")
-        st.dataframe(nutrition_df)
+            # Display the entire DataFrame
+            st.write("**Nutrition Data for All Recipes**")
+            st.dataframe(nutrition_df)
 
-        # Color scheme and nutrients for pie chart
-        color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
-        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+            # Color scheme and nutrients for pie chart
+            color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
+            nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-        # Only update the plot if the selected recipe changes
-        selected_recipe = st.session_state["selected_recipe"]
-        filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+            # Only update the plot if the selected recipe changes
+            selected_recipe = st.session_state["selected_recipe"]
+            filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
-        # Sum the selected nutrients
-        nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
+            # Sum the selected nutrients
+            nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
-        # Ensure there are values to plot
-        if nutrient_totals.sum() > 0:
-            fig, ax = plt.subplots()
-            wedges, texts = ax.pie(
-                nutrient_totals,
-                labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                startangle=90,
-                colors=color_scheme,
-                wedgeprops=dict(width=0.3)
-            )
+            # Ensure there are values to plot
+            if nutrient_totals.sum() > 0:
+                fig, ax = plt.subplots()
+                wedges, texts = ax.pie(
+                    nutrient_totals,
+                    labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                    startangle=90,
+                    colors=color_scheme,
+                    wedgeprops=dict(width=0.3)
+                )
 
-            ax.legend(
-                labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                loc="center left",
-                bbox_to_anchor=(1, 0, 0.5, 1),
-                facecolor='white'
-            )
+                ax.legend(
+                    labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                    loc="center left",
+                    bbox_to_anchor=(1, 0, 0.5, 1),
+                    facecolor='white'
+                )
 
-            centre_circle = plt.Circle((0, 0), 0.40, fc='white')
-            fig.gca().add_artist(centre_circle)
-            ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
+                centre_circle = plt.Circle((0, 0), 0.40, fc='white')
+                fig.gca().add_artist(centre_circle)
+                ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
 
-            st.pyplot(fig)
+                st.pyplot(fig)
+            else:
+                st.write("No nutrient data to display for the selected recipe.")
         else:
-            st.write("No nutrient data to display for the selected recipe.")
-    else:
-        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+            st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
