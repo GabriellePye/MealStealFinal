@@ -143,36 +143,37 @@ if st.sidebar.button("Cook Up My Plan!"):
 
     # Tab 4: Nutrition Dashboard
     with tab4:
-    st.markdown("### Nutrition Breakdown")
+        st.markdown("### Nutrition Breakdown")
 
-    # Parse nutrition info from recipes text
-    nutrition_df = parse_nutrition_info(recipes_text)
+        # Parse nutrition info from recipes text
+        nutrition_df = parse_nutrition_info(recipes_text)
 
-    # Dropdown to select a recipe to filter the pie chart
-    selected_recipe = st.selectbox("Select a Recipe to View Nutrient Distribution", options=nutrition_df["Recipe"].unique())
+        # Dropdown to select a recipe to filter the pie chart
+        selected_recipe = st.selectbox("Select a Recipe to View Nutrient Distribution", options=nutrition_df["Recipe"].unique())
 
-    # Filter the data for the selected recipe
-    selected_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        # Filter the data for the selected recipe
+        selected_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
-    # Define nutrients to include in the pie chart (excluding Calories)
-    nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+        # Define nutrients to include in the pie chart (excluding Calories)
+        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-    # Extract values for the selected recipe's nutrients
-    nutrient_totals = selected_data[nutrients_for_pie].values[0]
+        # Extract values for the selected recipe's nutrients
+        nutrient_totals = selected_data[nutrients_for_pie].values[0]
 
-    # Create the donut chart with labels showing the grams for each nutrient
-    pie_fig = px.pie(
-        values=nutrient_totals,
-        names=nutrients_for_pie,
-        title=f"Nutrient Distribution for {selected_recipe}",
-        hole=0.4  # Creates a donut chart
-    )
+        # Create the donut chart with labels showing the grams for each nutrient
+        pie_fig = px.pie(
+            values=nutrient_totals,
+            names=nutrients_for_pie,
+            title=f"Nutrient Distribution for {selected_recipe}",
+            hole=0.4  # Creates a donut chart
+        )
 
-    # Update the text to display nutrient amounts in grams
-    pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
+        # Update the text to display nutrient amounts in grams
+        pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
 
-    # Display the pie chart in Streamlit
-    st.plotly_chart(pie_fig)
+        # Display the pie chart in Streamlit
+        st.plotly_chart(pie_fig)
+
 
 # -------------------------
 # CSS Styling for the Page
