@@ -303,12 +303,16 @@ def parse_nutrition_info(recipes_text):
 
     return pd.DataFrame(data)
 
-# Trigger recipe generation #-- need to put this within the box
+# Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalised plan...'):
         recipes_text = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
     st.session_state["recipes_text"] = recipes_text  # Store the result in session state
     st.success("Your personalised meal plan is ready!")
+
+# Initialize selected_recipe in session state if it does not exist
+if "selected_recipe" not in st.session_state:
+    st.session_state["selected_recipe"] = "Total"  # Default to "Total"
 
 # -------------------------
 # 4. Tabs
@@ -365,54 +369,61 @@ with tab2:
 # 8. Nutritional Dashboard
 # -------------------------
 
-   # Tab 4: Nutrition Dashboard
-    with tab4:
-        if "recipes_text" in st.session_state:
-            recipes_text = st.session_state["recipes_text"]
-            nutrition_df = parse_nutrition_info(recipes_text)
+# Tab 4: Nutrition Dashboard
+with tab4:
+    if "recipes_text" in st.session_state:
+        recipes_text = st.session_state["recipes_text"]
+        nutrition_df = parse_nutrition_info(recipes_text)
 
-            # Display the entire DataFrame
-            st.write("**Nutrition Data for All Recipes**")
-            st.dataframe(nutrition_df)
+        # Display the entire DataFrame
+        st.write("**Nutrition Data for All Recipes**")
+        st.dataframe(nutrition_df)
 
-            # Color scheme and nutrients for pie chart
-            color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
-            nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+        # Color scheme and nutrients for pie chart
+        color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
+        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-            # Only update the plot if the selected recipe changes
-            selected_recipe = st.session_state["selected_recipe"]
-            filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        # Dropdown to filter recipes, bound to session state
+        selected_recipe = st.selectbox(
+            "Select Recipe to View Nutrient Distribution",
+            options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
+            index=0,  # Default to "Total" for all recipes
+            key="selected_recipe"  # Bind to session_state["selected_recipe"]
+        )
 
-            # Sum the selected nutrients
-            nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
+        # Filter data based on selected recipe
+        filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
-            # Ensure there are values to plot
-            if nutrient_totals.sum() > 0:
-                fig, ax = plt.subplots()
-                wedges, texts = ax.pie(
-                    nutrient_totals,
-                    labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                    startangle=90,
-                    colors=color_scheme,
-                    wedgeprops=dict(width=0.3)
-                )
+        # Sum the selected nutrients
+        nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
-                ax.legend(
-                    labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                    loc="center left",
-                    bbox_to_anchor=(1, 0, 0.5, 1),
-                    facecolor='white'
-                )
+        # Ensure there are values to plot
+        if nutrient_totals.sum() > 0:
+            fig, ax = plt.subplots()
+            wedges, texts = ax.pie(
+                nutrient_totals,
+                labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                startangle=90,
+                colors=color_scheme,
+                wedgeprops=dict(width=0.3)
+            )
 
-                centre_circle = plt.Circle((0, 0), 0.40, fc='white')
-                fig.gca().add_artist(centre_circle)
-                ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
+            ax.legend(
+                labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                loc="center left",
+                bbox_to_anchor=(1, 0, 0.5, 1),
+                facecolor='white'
+            )
 
-                st.pyplot(fig)
-            else:
-                st.write("No nutrient data to display for the selected recipe.")
+            centre_circle = plt.Circle((0, 0), 0.40, fc='white')
+            fig.gca().add_artist(centre_circle)
+            ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
+
+            st.pyplot(fig)
         else:
-            st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+            st.write("No nutrient data to display for the selected recipe.")
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
