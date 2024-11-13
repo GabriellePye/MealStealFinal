@@ -93,7 +93,6 @@ def parse_nutrition_info(recipes_text):
 
     return pd.DataFrame(data)
 
-
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalized plan...'):
@@ -128,8 +127,23 @@ if st.sidebar.button("Cook Up My Plan!"):
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
-        # Radar Chart Visualization
+        # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
+
+        # Calculate total values for debugging
+        total_calories = nutrition_df["Calories"].sum()
+        total_protein = nutrition_df["Protein (g)"].sum()
+        total_carbs = nutrition_df["Carbs (g)"].sum()
+        total_fats = nutrition_df["Fats (g)"].sum()
+
+        # Display totals to verify parsing
+        st.write("**Total Nutrition Values Across All Recipes**")
+        st.write(f"Total Calories: {total_calories} kcal")
+        st.write(f"Total Protein: {total_protein} g")
+        st.write(f"Total Carbs: {total_carbs} g")
+        st.write(f"Total Fats: {total_fats} g")
+
+        # Radar Chart Visualization
         fig = go.Figure()
         nutrients = ["Calories", "Protein (g)", "Carbs (g)", "Fats (g)"]
 
@@ -154,6 +168,7 @@ if st.sidebar.button("Cook Up My Plan!"):
         nutrient_totals = nutrition_df[nutrients].sum()
         pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution Across Recipes")
         st.plotly_chart(pie_fig)
+
 
 # -------------------------
 # CSS Styling for the Page
