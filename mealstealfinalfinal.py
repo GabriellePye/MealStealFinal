@@ -183,8 +183,24 @@ if st.sidebar.button("Cook Up My Plan!"):
         st.plotly_chart(fig)
 
         # Pie Chart for Total Nutrients Across All Recipes
-        nutrient_totals = nutrition_df[nutrients].sum()
-        pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution Across Recipes")
+        # Define nutrients to include in the pie chart (excluding Calories)
+        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+
+        # Calculate the total values for the selected nutrients
+        nutrient_totals = nutrition_df[nutrients_for_pie].sum()
+
+        # Create the pie chart with labels showing the grams for each nutrient
+        pie_fig = px.pie(
+            values=nutrient_totals,
+            names=nutrients_for_pie,
+            title="Total Nutrient Distribution Across Recipes",
+            hole=0.3  # Optional: makes it a donut chart
+        )
+
+        # Update the text to display nutrient amounts in grams
+        pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
+
+        # Display the pie chart in Streamlit
         st.plotly_chart(pie_fig)
 
 # -------------------------
