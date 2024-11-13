@@ -141,67 +141,38 @@ if st.sidebar.button("Cook Up My Plan!"):
             with st.expander(f"Recipe for Day {i+1}"):
                 st.write(f"Recipe details for Day {i+1} (e.g., breakfast, lunch, dinner)")
 
-    # Tab 4: Nutrition Dashboard
-    with tab4:
-        st.markdown("### Nutrition Breakdown")
+# Tab 4: Nutrition Dashboard
+with tab4:
+    st.markdown("### Nutrition Breakdown")
 
-        # Parse nutrition info from recipes text
-        nutrition_df = parse_nutrition_info(recipes_text)
+    # Parse nutrition info from recipes text
+    nutrition_df = parse_nutrition_info(recipes_text)
 
-        # Calculate total values for debugging
-        total_calories = nutrition_df["Calories"].sum()
-        total_protein = nutrition_df["Protein"].sum()
-        total_carbs = nutrition_df["Carbohydrates"].sum()
-        total_fats = nutrition_df["Fat"].sum()
+    # Dropdown to select a recipe to filter the pie chart
+    selected_recipe = st.selectbox("Select a Recipe to View Nutrient Distribution", options=nutrition_df["Recipe"].unique())
 
-        # Display totals to verify parsing
-        st.write("**Total Nutrition Values Across All Recipes**")
-        st.write(f"Total Calories: {total_calories} kcal")
-        st.write(f"Total Protein: {total_protein} g")
-        st.write(f"Total Carbs: {total_carbs} g")
-        st.write(f"Total Fats: {total_fats} g")
+    # Filter the data for the selected recipe
+    selected_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
-        # Radar Chart Visualization
-        fig = go.Figure()
-        nutrients = ["Calories", "Protein", "Carbohydrates", "Fat"]
+    # Define nutrients to include in the pie chart (excluding Calories)
+    nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-        for index, row in nutrition_df.iterrows():
-            fig.add_trace(go.Scatterpolar(
-                r=[row["Calories"], row["Protein"], row["Carbohydrates"], row["Fat"]],
-                theta=nutrients,
-                fill='toself',
-                name=row["Recipe"]
-            ))
+    # Extract values for the selected recipe's nutrients
+    nutrient_totals = selected_data[nutrients_for_pie].values[0]
 
-        fig.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True)
-            ),
-            showlegend=True,
-            title="Nutrient Composition by Recipe"
-        )
-        st.plotly_chart(fig)
+    # Create the donut chart with labels showing the grams for each nutrient
+    pie_fig = px.pie(
+        values=nutrient_totals,
+        names=nutrients_for_pie,
+        title=f"Nutrient Distribution for {selected_recipe}",
+        hole=0.4  # Creates a donut chart
+    )
 
-        # Pie Chart for Total Nutrients Across All Recipes
-        # Define nutrients to include in the pie chart (excluding Calories)
-        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
+    # Update the text to display nutrient amounts in grams
+    pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
 
-        # Calculate the total values for the selected nutrients
-        nutrient_totals = nutrition_df[nutrients_for_pie].sum()
-
-        # Create the pie chart with labels showing the grams for each nutrient
-        pie_fig = px.pie(
-            values=nutrient_totals,
-            names=nutrients_for_pie,
-            title="Total Nutrient Distribution Across Recipes",
-            hole=0.3  # Optional: makes it a donut chart
-        )
-
-        # Update the text to display nutrient amounts in grams
-        pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
-
-        # Display the pie chart in Streamlit
-        st.plotly_chart(pie_fig)
+    # Display the pie chart in Streamlit
+    st.plotly_chart(pie_fig)
 
 # -------------------------
 # CSS Styling for the Page
