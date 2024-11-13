@@ -337,10 +337,11 @@ with tab1:
 # 6. Adjust Your Meal Plan 
 # -------------------------
 
+
 with tab2:
     st.markdown("### Adjust Your Meal Plan")
     
-    if recipes_text:  # Check if recipes_text is available
+    if 'recipes_text' in locals() and recipes_text:  # Check if recipes_text is available
         st.write(recipes_text)  # Display full meal plan text as a large block
 
         # Button to download the PDF
