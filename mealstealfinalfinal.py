@@ -3,8 +3,7 @@ import streamlit as st
 import openai
 import pandas as pd
 import numpy as np #-- added numpy
-import plotly.express as px
-import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 from openai import OpenAI
 import re
 from fpdf import FPDF #-- added pdf 
@@ -469,45 +468,38 @@ with tab2:
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
-        # Parse nutrition info from recipes text
-        nutrition_df = parse_nutrition_info(recipes_text)
-
-        # Define nutrients to include in the pie chart (excluding Calories)
-        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
-
-        # Multiselect to select recipes to filter the pie chart
+        # Multiselect to filter recipes
         selected_recipes = st.multiselect(
             "Select Recipes to View Nutrient Distribution",
             options=nutrition_df["Recipe"].unique(),
-            default=nutrition_df["Recipe"].unique()  # Start with all recipes selected
+            default=nutrition_df["Recipe"].unique()
         )
 
-        # Ensure there's at least one recipe selected to avoid an empty DataFrame
+        # Filter data based on selected recipes
         if selected_recipes:
-            # Filter the data for the selected recipes
-            selected_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)]
-
-            # Calculate the total values for the selected recipes' nutrients
-            nutrient_totals = selected_data[nutrients_for_pie].sum()
-
-            # Create the donut chart with labels showing the grams for each nutrient
-            pie_fig = px.pie(
-                values=nutrient_totals,
-                names=nutrients_for_pie,
-                title="Nutrient Distribution for Selected Recipes",
-                hole=0.4  # Creates a donut chart
-            )
-
-            # Update the text to display nutrient amounts in grams
-            pie_fig.update_traces(text=[f"{val} g" for val in nutrient_totals], textinfo="label+text")
-
-            # Display the pie chart in Streamlit
-            st.plotly_chart(pie_fig)
+            filtered_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)]
         else:
-            # Message if no recipes are selected
-            st.write("Please select at least one recipe to display the nutrient distribution.")
+            filtered_data = nutrition_df  # Show all if none selected
 
-        
+        # Sum the selected nutrients
+        nutrient_totals = filtered_data[["Protein", "Carbohydrates", "Fat"]].sum()
+
+        # Matplotlib Donut Chart
+        fig, ax = plt.subplots()
+        ax.pie(
+            nutrient_totals,
+            labels=[f"{nutrient} ({value}g)" for nutrient, value in nutrient_totals.items()],
+            autopct="%1.1f%%",
+            startangle=90
+        )
+        # Adding the donut hole
+        centre_circle = plt.Circle((0,0),0.70,fc='white')
+        fig.gca().add_artist(centre_circle)
+        ax.set_title("Nutrient Distribution for Selected Recipes")
+
+        # Display chart
+        st.pyplot(fig)
+
 # ----
 # 9. Close container
 # ----
