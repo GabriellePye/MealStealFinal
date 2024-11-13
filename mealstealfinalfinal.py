@@ -49,11 +49,29 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
     meal_prep_time = meal_prep.lower()
     prompt = (
         f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should include a title, ingredients with quantities specifically in grams and milliliters, cooking instructions, cuisine, diet, total cooking time, servings (for {servings} servings), estimated price in GBP (£), "
-        f"and full nutrition information including calories, protein, carbohydrates, and fats. "
+        f"Each recipe should be formatted exactly as shown below, with each field clearly labeled and on a new line. "
+        f"The output should be in the following format for consistency:\n\n"
+        
+        "### Recipe X\n"
+        "**Title**: [Recipe Title]\n"
+        "**Ingredients**: \n- Ingredient 1 (amount)\n- Ingredient 2 (amount)\n...\n"
+        "**Instructions**: \n1. Step 1\n2. Step 2\n...\n"
+        "**Cuisine**: [Cuisine Type]\n"
+        "**Diet**: [Diet Type]\n"
+        "**Total Cooking Time**: [Time in minutes]\n"
+        "**Servings**: [Number of servings]\n"
+        "**Estimated Price**: £[Price]\n"
+        "**Nutrition**:\n"
+        "Calories: [Amount] kcal\n"
+        "Carbohydrates: [Amount] g\n"
+        "Fat: [Amount] g\n"
+        "Protein: [Amount] g\n\n"
+        
         f"Consider the following user details: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
         f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}. "
+        "All fields are mandatory; if information is unavailable, write 'N/A'. Please follow the format exactly without adding or omitting any fields.\n\n"
     )
+    
     completion = client.chat.completions.create(
         model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Replace with your fine-tuned model ID
         messages=[{"role": "user", "content": prompt}]
@@ -70,20 +88,20 @@ def parse_nutrition_info(recipes_text):
         "Protein": []
     }
 
-    # Split recipes based on "Recipe" occurrences
+    # Split recipes based on "### Recipe" occurrences
     recipe_sections = re.split(r"### Recipe \d+", recipes_text)[1:]
 
     for section in recipe_sections:
         # Extract title
-        title_match = re.search(r"\*\*([^*]+)\*\*", section)
+        title_match = re.search(r"\*\*Title\*\*:\s*([^\n]+)", section)
         title = title_match.group(1).strip() if title_match else "Unknown Recipe"
         data["Recipe"].append(title)
 
         # Use regex to capture specific nutrition values
-        calories = re.search(r"Calories:\s*([\d.]+)", section)
-        carbohydrates = re.search(r"Carbohydrates:\s*([\d.]+)", section)
-        fat = re.search(r"Fat:\s*([\d.]+)", section)
-        protein = re.search(r"Protein:\s*([\d.]+)", section)
+        calories = re.search(r"Calories:\s*([\d.]+)\s*kcal", section)
+        carbohydrates = re.search(r"Carbohydrates:\s*([\d.]+)\s*g", section)
+        fat = re.search(r"Fat:\s*([\d.]+)\s*g", section)
+        protein = re.search(r"Protein:\s*([\d.]+)\s*g", section)
 
         # Append parsed values, defaulting to 0 if not found
         data["Calories"].append(float(calories.group(1)) if calories else 0.0)
