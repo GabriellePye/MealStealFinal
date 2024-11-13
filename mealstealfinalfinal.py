@@ -367,27 +367,20 @@ with tab2:
 
     # Tab 4: Nutrition Dashboard
     with tab4:
-        st.markdown("### Nutrition Breakdown")
-
-        # Parse nutrition info from recipes text
+        if "recipes_text" in st.session_state:
+        recipes_text = st.session_state["recipes_text"]
         nutrition_df = parse_nutrition_info(recipes_text)
 
         # Display the entire DataFrame
         st.write("**Nutrition Data for All Recipes**")
         st.dataframe(nutrition_df)
-        
-        # Define color scheme based on your provided colors
+
+        # Color scheme and nutrients for pie chart
         color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
         nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
-        # Dropdown to filter recipes
-        selected_recipe = st.selectbox(
-            "Select Recipe to View Nutrient Distribution",
-            options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
-            index=0  # Default to "Total" for all recipes
-        )
-
-        # Filter data based on selected recipe
+        # Only update the plot if the selected recipe changes
+        selected_recipe = st.session_state["selected_recipe"]
         filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
         # Sum the selected nutrients
@@ -395,17 +388,15 @@ with tab2:
 
         # Ensure there are values to plot
         if nutrient_totals.sum() > 0:
-            # Matplotlib Donut Chart with Custom Colors
             fig, ax = plt.subplots()
             wedges, texts = ax.pie(
                 nutrient_totals,
                 labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 startangle=90,
                 colors=color_scheme,
-                wedgeprops=dict(width=0.3)  # Creates a donut effect by setting width
+                wedgeprops=dict(width=0.3)
             )
 
-            # Adding the legend for each nutrient
             ax.legend(
                 labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 loc="center left",
@@ -413,15 +404,15 @@ with tab2:
                 facecolor='white'
             )
 
-            # Adding the donut hole
             centre_circle = plt.Circle((0, 0), 0.40, fc='white')
             fig.gca().add_artist(centre_circle)
             ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
 
-            # Display the chart in Streamlit
             st.pyplot(fig)
         else:
             st.write("No nutrient data to display for the selected recipe.")
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
