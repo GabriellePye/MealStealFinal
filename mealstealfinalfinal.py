@@ -468,37 +468,46 @@ with tab2:
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
-         # Parse nutrition info from recipes text
+        # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
-        
-        # Multiselect to filter recipes
-        selected_recipes = st.multiselect(
-            "Select Recipes to View Nutrient Distribution",
-            options=nutrition_df["Recipe"].unique(),
-            default=nutrition_df["Recipe"].unique()
+
+        # Define color scheme based on your provided colors
+        color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
+
+        # Dropdown to filter recipes
+        selected_recipe = st.selectbox(
+            "Select Recipe to View Nutrient Distribution",
+            options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
+            index=0  # Default to "Total" for all recipes
         )
 
-        # Filter data based on selected recipes
-        if selected_recipes:
-            filtered_data = nutrition_df[nutrition_df["Recipe"].isin(selected_recipes)]
+        # Filter data based on selected recipe
+        if selected_recipe == "Total":
+            filtered_data = nutrition_df
         else:
-            filtered_data = nutrition_df  # Show all if none selected
+            filtered_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
         # Sum the selected nutrients
         nutrient_totals = filtered_data[["Protein", "Carbohydrates", "Fat"]].sum()
 
-        # Matplotlib Donut Chart
+        # Matplotlib Donut Chart with Custom Colors
         fig, ax = plt.subplots()
-        ax.pie(
+        wedges, texts, autotexts = ax.pie(
             nutrient_totals,
             labels=[f"{nutrient} ({value}g)" for nutrient, value in nutrient_totals.items()],
             autopct="%1.1f%%",
-            startangle=90
+            startangle=90,
+            colors=color_scheme
         )
+
+        # Style the chart text
+        for text in texts + autotexts:
+            text.set_color("white")  # Set text color for better contrast
+
         # Adding the donut hole
-        centre_circle = plt.Circle((0,0),0.70,fc='white')
+        centre_circle = plt.Circle((0,0),0.40,fc='white')
         fig.gca().add_artist(centre_circle)
-        ax.set_title("Nutrient Distribution for Selected Recipes")
+        ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
 
         # Display chart
         st.pyplot(fig)
