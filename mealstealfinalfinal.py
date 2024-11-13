@@ -471,11 +471,13 @@ with tab2:
         # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
 
+        # Display the entire DataFrame
         st.write("**Nutrition Data for All Recipes**")
         st.dataframe(nutrition_df)
         
-        # Define color scheme based on your provided colors
+        # Define color scheme based on provided colors
         color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
+        nutrients_for_pie = ["Protein", "Carbohydrates", "Fat"]
 
         # Dropdown to filter recipes
         selected_recipe = st.selectbox(
@@ -485,34 +487,35 @@ with tab2:
         )
 
         # Filter data based on selected recipe
-        if selected_recipe == "Total":
-            filtered_data = nutrition_df
-        else:
-            filtered_data = nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
 
         # Sum the selected nutrients
-        nutrient_totals = filtered_data[["Protein", "Carbohydrates", "Fat"]].sum()
+        nutrient_totals = filtered_data[nutrients_for_pie].sum()
 
         # Matplotlib Donut Chart with Custom Colors
         fig, ax = plt.subplots()
         wedges, texts, autotexts = ax.pie(
             nutrient_totals,
-            labels=[f"{nutrient} ({value}g)" for nutrient, value in nutrient_totals.items()],
-            autopct="%1.1f%%",
+            labels=[f"{nutrient} ({value}g)" for nutrient, value in nutrient_totals.items()],  # Show grams only
             startangle=90,
-            colors=color_scheme
+            colors=color_scheme,
+            wedgeprops=dict(width=0.3)  # Creates a donut effect by setting width
         )
 
-        # Style the chart text
-        for text in texts + autotexts:
-            text.set_color("white")  # Set text color for better contrast
+        # Adding the legend for each nutrient
+        ax.legend(
+            labels=nutrients_for_pie,
+            loc="center left",
+            bbox_to_anchor=(1, 0, 0.5, 1),
+            facecolor='white'
+        )
 
         # Adding the donut hole
-        centre_circle = plt.Circle((0,0),0.40,fc='white')
+        centre_circle = plt.Circle((0, 0), 0.40, fc='white')
         fig.gca().add_artist(centre_circle)
         ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
 
-        # Display chart
+        # Display the chart in Streamlit
         st.pyplot(fig)
 
 # ----
