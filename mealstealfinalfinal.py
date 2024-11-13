@@ -141,8 +141,8 @@ if st.sidebar.button("Cook Up My Plan!"):
             with st.expander(f"Recipe for Day {i+1}"):
                 st.write(f"Recipe details for Day {i+1} (e.g., breakfast, lunch, dinner)")
 
-# Tab 4: Nutrition Dashboard
-with tab4:
+    # Tab 4: Nutrition Dashboard
+    with tab4:
     st.markdown("### Nutrition Breakdown")
 
     # Parse nutrition info from recipes text
