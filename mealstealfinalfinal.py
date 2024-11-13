@@ -471,6 +471,9 @@ with tab2:
         # Parse nutrition info from recipes text
         nutrition_df = parse_nutrition_info(recipes_text)
 
+        st.write("**Nutrition Data for All Recipes**")
+        st.dataframe(nutrition_df)
+        
         # Define color scheme based on your provided colors
         color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
 
