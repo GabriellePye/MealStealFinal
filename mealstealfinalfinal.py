@@ -2,8 +2,6 @@ import streamlit as st
 import openai
 from openai import OpenAI
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -11,12 +9,9 @@ import plotly.graph_objects as go
 openai.api_key = st.secrets["openai_key"]
 client = OpenAI(api_key=st.secrets["openai_key"])
 
-# -------------------------
-# 3. User input form/sidebar
-# -------------------------
-# Sidebar Main Header and Introductory Statement
+# 1. Sidebar User Input
 st.sidebar.header('Preferences Hub')
-st.sidebar.markdown("Fill out as many or as few details as you’d like. All options are optional, so feel free to tailor it to your preferences!")
+st.sidebar.markdown("Customize your meal plan based on your preferences.")
 
 # Basic Demographic Information
 st.sidebar.subheader("Basic Information")
@@ -31,42 +26,38 @@ goal = st.sidebar.selectbox('Health Goal', ['Weight Loss', 'Maintain Weight', 'M
 dietary_pref = st.sidebar.multiselect('Dietary Preferences', ['Vegetarian', 'Vegan', 'Halal', 'Gluten-Free', 'Dairy-Free', 'Pescetarian', 'None'])
 allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
 
-# Physical Activity and Exercise Details
+# Physical Activity
 st.sidebar.subheader("Physical Activity")
 exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Active', 'Very Active'])
-activity_type = st.sidebar.multiselect('Types of Physical Activity', ['Cardio', 'Strength Training', 'Yoga/Pilates', 'Sports', 'Other'])
 
 # Meal Plan Customization
 st.sidebar.subheader("Meal Plan Customization")
 meal_frequency = st.sidebar.selectbox('Meals Per Day', ['2 meals', '3 meals', '4 meals', '5+ meals'])
-meal_prep = st.sidebar.selectbox('Meal Prep Time', ['Minimal (quick recipes)', 'Moderate (30-60 mins)', 'Detailed (complex recipes)'])
+meal_prep = st.sidebar.selectbox('Meal Prep Time', ['Minimal', 'Moderate', 'Detailed'])
 servings = st.sidebar.number_input('Number of Servings per Recipe', min_value=1, max_value=10, value=2)
 days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
 
-# Function to Generate Recipes with OpenAI
+# 2. Recipe Generation Function
 def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meals_per_day, days, meal_prep, servings):
     total_meals = int(meals_per_day.split()[0]) * days
     dietary_preferences = ', '.join(dietary_pref)
     meal_prep_time = meal_prep.lower()
     prompt = (
         f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should include a title, ingredients with quantities specifically in grams and milliliters, cooking instructions, cuisine, diet, total cooking time, servings (for {servings} servings), estimated price in GBP (£), "
-        f"and full nutrition information including calories, protein, carbohydrates, and fats. "
-        f"Consider the following user details: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
-        f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}. "
+        f"Include a title, ingredients, instructions, and nutrition info including calories, protein, carbs, and fats."
+        f"User details: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Goal - {goal}, "
+        f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}."
     )
-
     completion = client.chat.completions.create(
-        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Replace with your fine-tuned model ID
+        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",
         messages=[{"role": "user", "content": prompt}]
     )
     return completion.choices[0].message.content
 
-# Parse nutrition info from generated recipes
+# Placeholder function to parse nutrition info from generated recipes
 def parse_nutrition_info(recipes_text):
-    # Example parsed data structure
     data = {
-        "Recipe": ["Recipe 1", "Recipe 2", "Recipe 3"],  # Replace with actual titles
+        "Recipe": ["Recipe 1", "Recipe 2", "Recipe 3"],
         "Calories": [450, 380, 520],
         "Protein (g)": [25, 20, 30],
         "Carbs (g)": [60, 50, 80],
@@ -77,47 +68,52 @@ def parse_nutrition_info(recipes_text):
 
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
-    with st.spinner('Creating your personalized plan...'):
-        recipes = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
-    st.success("Your personalized meal plan is ready!")
-    
-    # Display the generated recipes in a large text block
-    st.markdown("### Your Generated Meal Plan")
-    st.write(recipes)
-    
-    # Parse nutrition info
+    recipes = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
     nutrition_df = parse_nutrition_info(recipes)
+else:
+    recipes = "Generate a meal plan using the sidebar options."
+    nutrition_df = pd.DataFrame()
 
-    # Separate tab for Nutrition Visualization
-    st.markdown("### Nutrition Analysis")
-    tab1, tab2 = st.tabs(["Meal Plan", "Nutrition Dashboard"])
+# 3. Main Content Tabs
+st.markdown('<div class="content-section">', unsafe_allow_html=True)
+tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Meal Plan Details', 'Recipes', 'Nutrition Dashboard'])
 
-    with tab2:
-        st.markdown("### Nutrition Breakdown")
-        
-        # Radar Chart Visualization
-        fig = go.Figure()
-        nutrients = ["Calories", "Protein (g)", "Carbs (g)", "Fats (g)"]
-        
-        for index, row in nutrition_df.iterrows():
-            fig.add_trace(go.Scatterpolar(
-                r=[row["Calories"], row["Protein (g)"], row["Carbs (g)"], row["Fats (g)"]],
-                theta=nutrients,
-                fill='toself',
-                name=row["Recipe"]
-            ))
-        
-        fig.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True)
-            ),
-            showlegend=True,
-            title="Nutrient Composition by Recipe"
-        )
-        
-        st.plotly_chart(fig)
+# Tab 1: Meal Plan at a Glance
+with tab1:
+    st.markdown('<h2 style="text-align: center;">Meal Plan at a Glance</h2>', unsafe_allow_html=True)
+    for day in range(1, days + 1):
+        st.markdown(f"### Day {day}")
+        st.write(f"Meals for Day {day}: {recipes}")  # Replace with actual meals if parsed separately
 
-        # Pie Chart for Total Nutrients Across All Recipes
-        nutrient_totals = nutrition_df[nutrients].sum()
-        pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution Across Recipes")
-        st.plotly_chart(pie_fig)
+# Tab 2: Full Meal Plan Details
+with tab2:
+    st.markdown("### Detailed Meal Plan")
+    st.write(recipes)
+
+# Tab 3: Recipes
+with tab3:
+    st.markdown("### Individual Recipes")
+    for recipe in range(1, days + 1):  # Loop over recipe examples
+        with st.expander(f"Recipe {recipe}"):
+            st.write(f"Details for Recipe {recipe}: Ingredients and Instructions")
+
+# Tab 4: Nutrition Dashboard
+with tab4:
+    st.markdown("### Nutrition Breakdown")
+    fig = go.Figure()
+    nutrients = ["Calories", "Protein (g)", "Carbs (g)", "Fats (g)"]
+    for index, row in nutrition_df.iterrows():
+        fig.add_trace(go.Scatterpolar(
+            r=[row["Calories"], row["Protein (g)"], row["Carbs (g)"], row["Fats (g)"]],
+            theta=nutrients,
+            fill='toself',
+            name=row["Recipe"]
+        ))
+    fig.update_layout(polar=dict(radialaxis=dict(visible=True)), showlegend=True, title="Nutrient Composition by Recipe")
+    st.plotly_chart(fig)
+
+    nutrient_totals = nutrition_df[nutrients].sum()
+    pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution")
+    st.plotly_chart(pie_fig)
+
+st.markdown('</div>', unsafe_allow_html=True)
