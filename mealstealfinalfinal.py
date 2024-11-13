@@ -435,24 +435,24 @@ with tab1:
 # 6. Adjust Your Meal Plan 
 # -------------------------
 
-    with tab2:
+with tab2:
         st.markdown("### Adjust Your Meal Plan")
         st.write(recipes_text)  # Display full meal plan text as a large block
 
-        # Button to download the PDF #-- button to download the recipes as pdf
-        if st.button("Download Full Recipes as PDF"):
-            # Generate PDF
-            pdf_output = generate_pdf(recipes_text)
+    # Button to download the PDF #-- button to download the recipes as pdf
+    if st.button("Download Full Recipes as PDF"):
+        # Generate PDF
+        pdf_output = generate_pdf(recipes_text)
 
-            # Provide the download link
-            st.download_button(
+        # Provide the download link
+        st.download_button(
                 label="Download PDF",
                 data=pdf_output,
                 file_name="meal_plan.pdf",
                 mime="application/pdf"
             )
     else:
-        st.warning("Your personalized meal plan is not ready yet. Please generate it first.")
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
         
 # -------------------------
 # 7. Recipes
