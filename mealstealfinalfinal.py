@@ -265,7 +265,7 @@ st.markdown("""
 
 # Sidebar Main Header and Introductory Statement
 st.sidebar.header('User Hub')
-st.sidebar.markdown("Fill out as many or as few details as you’d like. CHoices with * are required, the rest are optional.) #-- changed title and desc
+st.sidebar.markdown("Fill out as many or as few details as you’d like. CHoices with * are required, the rest are optional.") #-- changed title and desc
 
 # Basic Demographic Information
 st.sidebar.subheader("Basic Information")
