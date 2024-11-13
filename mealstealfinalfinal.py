@@ -48,7 +48,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://e1.pxfuel.com/desktop-wallpaper/811/930/desktop-wallpaper-light-green-gradient-green-gradient.jpg') #-- changed bg for ease / will change back to gif in future 
+    background: url('https://e1.pxfuel.com/desktop-wallpaper/811/930/desktop-wallpaper-light-green-gradient-green-gradient.png') #-- changed bg for ease / will change back to gif in future 
     background-size: cover; 
     background-position: top;
 }
@@ -265,7 +265,7 @@ st.markdown("""
 
 # Sidebar Main Header and Introductory Statement
 st.sidebar.header('User Hub')
-st.sidebar.markdown("Fill out as many or as few details as you’d like. CHoices with * are required, the rest are optional.") #-- changed title and desc
+st.sidebar.markdown("Fill out as many or as few details as you’d like. Choices with * are required, the rest are optional.") #-- changed title and desc
 
 # Basic Demographic Information
 st.sidebar.subheader("Basic Information")
