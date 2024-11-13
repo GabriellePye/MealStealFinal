@@ -356,9 +356,6 @@ with tab2:
     # Tab 3: Individual Recipes (Collapsible sections)
     with tab3:
         st.markdown("### Recipes")
-        for i in range(day_count):
-            with st.expander(f"Recipe for Day {i+1}"):
-                st.write(f"Recipe details for Day {i+1} (e.g., breakfast, lunch, dinner)")
 
 # -------------------------
 # 8. Nutritional Dashboard
