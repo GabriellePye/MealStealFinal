@@ -59,23 +59,71 @@ meal_prep = st.sidebar.selectbox('Meal Prep Time', ['Minimal (quick recipes)', '
 st.sidebar.markdown('### Set Meal Plan Duration')
 days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
 
-# Function to Generate Recipes with OpenAI
-def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, body_fat, meals_per_day, days, meal_prep):
-    total_meals = int(meals_per_day.split()[0]) * days  # Extract numeric part from meals_per_day
-    dietary_preferences = ', '.join(dietary_pref)  # Join dietary preferences into a string
-    meal_prep_time = meal_prep.lower()
-    prompt = (
-        f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should include a title, ingredients with quantities specifically in grams and milliliters, cooking instructions, cuisine, diet, total cooking time, servings, estimated price in GBP (£), and full nutrition information including calories, protein, carbohydrates, and fats. "
-        f"Consider the following user details when creating the recipes: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
-        f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}, Body Fat Percentage - {body_fat}%. "
-    )
+# Function to clean and parse JSON-like response
+def clean_and_format_output(output_text):
+    # Remove escape characters (e.g., \u00a0, \u2019)
+    clean_text = re.sub(r'\\u[0-9A-Fa-f]{4}', '', output_text)
+    # Attempt to parse as JSON if structured, or fall back to plain text display
+    try:
+        recipes = json.loads(clean_text)
+    except json.JSONDecodeError:
+        return clean_text  # Return plain text if JSON parsing fails
+ 
+    # Format the parsed JSON as structured text
+    formatted_text = ""
+    for recipe in recipes:
+        formatted_text += f"**Title**: {recipe.get('title', 'N/A')}\n"
+        formatted_text += f"**Cuisine**: {recipe.get('cuisine', 'N/A')}\n"
+        formatted_text += f"**Diet**: {recipe.get('diet', 'N/A')}\n"
+        formatted_text += "**Ingredients**:\n"
+        for ingredient in recipe.get('ingredients', []):
+            formatted_text += f"  - {ingredient}\n"
+        formatted_text += f"**Instructions**: {recipe.get('instructions', 'N/A')}\n"
+        formatted_text += f"**Total Cooking Time**: {recipe.get('total cooking time', 'N/A')}\n"
+        formatted_text += f"**Servings**: {recipe.get('servings', 'N/A')}\n"
+        formatted_text += f"**Estimated Price**: {recipe.get('estimated price', 'N/A')}\n"
+        formatted_text += "**Nutritional Information**:\n"
+        for nutrient, value in recipe.get('nutritional information', {}).items():
+            formatted_text += f"  - {nutrient}: {value}\n"
+        formatted_text += "\n---\n\n"  # Separator between recipes
+ 
+    return formatted_text
 
+# Function to Generate Recipes with OpenAI
+def generate_recipes(age, gender, weight, height, health_goal, dietary_preferences, allergies, exercise_level, body_fat, meals_per_day, meal_plan_duration, meal_prep):
+    total_meals = meals_per_day * meal_plan_duration
+    prompt = (
+        f"Please generate {total_meals} recipes for a meal plan with {meals_per_day} meals per day over {meal_plan_duration} days. "
+        f"Each day should have distinct meals, typically breakfast, lunch, and dinner (or similar meal types), totaling {meals_per_day} meals per day. "
+        f"Each recipe should include the following details in a structured JSON format:\n"
+        f"1. **Title**\n"
+        f"2. **Cuisine**\n"
+        f"3. **Diet** (e.g., Vegetarian, Gluten-Free)\n"
+        f"4. **Ingredients** (specific quantities in grams and milliliters)\n"
+        f"5. **Instructions** (step-by-step)\n"
+        f"6. **Total Cooking Time**\n"
+        f"7. **Servings**\n"
+        f"8. **Estimated Price** in GBP (£)\n"
+        f"9. **Nutritional Information** (calories, protein, carbohydrates, fats)\n\n"
+        f"Consider these user details:\n"
+        f"- Age: {age}\n"
+        f"- Gender: {gender}\n"
+        f"- Weight: {weight} kg\n"
+        f"- Height: {height} cm\n"
+        f"- Health Goal: {health_goal}\n"
+        f"- Dietary Preferences: {dietary_preferences}\n"
+        f"- Allergies: {allergies}\n"
+        f"- Exercise Level: {exercise_level}\n"
+        f"- Body Fat Percentage: {body_fat}%\n\n"
+        f"Please ensure each recipe is unique and that the total number of recipes equals {total_meals}."
+    )
+ 
     completion = client.chat.completions.create(
-        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Replace with your fine-tuned model ID
+        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",
         messages=[{"role": "user", "content": prompt}]
     )
-    return completion.choices[0].message.content  # Return the generated text
+    output_text = completion.choices[0].message.content
+    return clean_and_format_output(output_text)  # Clean and format the output
 
 # Parse nutrition info from generated recipes
 def parse_nutrition_info(recipes_text):
