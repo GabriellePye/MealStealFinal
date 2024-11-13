@@ -307,11 +307,15 @@ def parse_nutrition_info(recipes_text):
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalised plan...'):
         recipes_text = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
+    st.session_state["recipes_text"] = recipes_text  # Store the result in session state
     st.success("Your personalised meal plan is ready!")
 
 # -------------------------
 # 4. Tabs
 # -------------------------
+if "recipes_text" in st.session_state:
+    recipes_text = st.session_state["recipes_text"]
+    nutrition_df = parse_nutrition_info(recipes_text)
 
 st.markdown('<div class="content-section">', unsafe_allow_html=True)  # Container for the tabs
 
