@@ -388,11 +388,11 @@ with tab4:
             "Select Recipe to View Nutrient Distribution",
             options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
             index=0,  # Default to "Total" for all recipes
-            key="selected_recipe"  # Bind to session_state["selected_recipe"]
+            key="selected_recipe"  # Bind to session state
         )
 
         # Filter data based on selected recipe
-        filtered_data = nutrition_df if selected_recipe == "Total" else nutrition_df[nutrition_df["Recipe"] == selected_recipe]
+        filtered_data = nutrition_df if st.session_state["selected_recipe"] == "Total" else nutrition_df[nutrition_df["Recipe"] == st.session_state["selected_recipe"]]
 
         # Sum the selected nutrients
         nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
@@ -417,7 +417,7 @@ with tab4:
 
             centre_circle = plt.Circle((0, 0), 0.40, fc='white')
             fig.gca().add_artist(centre_circle)
-            ax.set_title(f"Nutrient Distribution for {'All Recipes' if selected_recipe == 'Total' else selected_recipe}")
+            ax.set_title(f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}")
 
             st.pyplot(fig)
         else:
