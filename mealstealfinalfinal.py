@@ -50,22 +50,41 @@ st.sidebar.markdown('### Set Meal Plan Duration')
 days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
  
 # Function to Generate Recipes with OpenAI
-def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, body_fat, meals_per_day, days, meal_prep):
-    total_meals = int(meals_per_day.split()[0]) * days  # Extract numeric part from meals_per_day
-    dietary_preferences = ', '.join(dietary_pref)  # Join dietary preferences into a string
-    meal_prep_time = meal_prep.lower()
+def generate_recipes(age, gender, weight, height, health_goal, dietary_preferences, allergies, exercise_level, body_fat, meals_per_day, meal_plan_duration, meal_prep):
+    total_meals = meals_per_day * meal_plan_duration
     prompt = (
-        f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should include a title, ingredients with quantities specifically in grams and milliliters, cooking instructions, cuisine, diet, total cooking time, servings, estimated price in GBP (£), and full nutrition information including calories, protein, carbohydrates, and fats. "
-        f"Consider the following user details when creating the recipes: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
-        f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}, Body Fat Percentage - {body_fat}%. "
+        f"Please generate {total_meals} recipes for a meal plan that includes {meals_per_day} meals per day over {meal_plan_duration} days. "
+        f"Each recipe should be suitable for {meal_prep.lower()} preparation and should be formatted as follows:\n\n"
+        f"1. **Title**: The name of the recipe\n"
+        f"2. **Cuisine**: Type of cuisine (e.g., Italian, Mexican, etc.)\n"
+        f"3. **Diet**: Specify any dietary restrictions (e.g., Vegetarian, Gluten-Free)\n"
+        f"4. **Ingredients**: List ingredients with specific quantities in grams (g) and milliliters (ml), avoiding imperial units\n"
+        f"5. **Instructions**: Step-by-step cooking instructions\n"
+        f"6. **Total Cooking Time**: Estimated time to prepare the meal in minutes\n"
+        f"7. **Servings**: Number of servings (e.g., 1 serving per recipe)\n"
+        f"8. **Estimated Price**: Price in GBP (£)\n"
+        f"9. **Nutritional Information**:\n"
+        f"   - Calories\n"
+        f"   - Protein (g)\n"
+        f"   - Carbohydrates (g)\n"
+        f"   - Fats (g)\n\n"
+        f"Consider these user details when creating the recipes:\n"
+        f"- Age: {age}\n"
+        f"- Gender: {gender}\n"
+        f"- Weight: {weight} kg\n"
+        f"- Height: {height} cm\n"
+        f"- Health Goal: {health_goal}\n"
+        f"- Dietary Preferences: {dietary_preferences}\n"
+        f"- Allergies: {allergies}\n"
+        f"- Exercise Level: {exercise_level}\n"
+        f"- Body Fat Percentage: {body_fat}%\n\n"
+        f"Please keep the format consistent for each recipe to make it easier to read and follow."
     )
- 
     completion = client.chat.completions.create(
-        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Replace with your fine-tuned model ID
+        model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",
         messages=[{"role": "user", "content": prompt}]
     )
-    return completion.choices[0].message.content  # Return the generated text
+    return completion.choices[0].message.content
  
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
