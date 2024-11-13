@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from openai import OpenAI
+import re
 
 # Initialize OpenAI client
 openai.api_key = st.secrets["openai_key"]
@@ -64,21 +65,41 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
 
 # Parse nutrition info from generated recipes
 def parse_nutrition_info(recipes_text):
-    # Example parsed data structure
     data = {
-        "Recipe": ["Recipe 1", "Recipe 2", "Recipe 3"],  # Replace with actual titles
-        "Calories": [450, 380, 520],
-        "Protein (g)": [25, 20, 30],
-        "Carbs (g)": [60, 50, 80],
-        "Fats (g)": [15, 10, 20]
+        "Recipe": [],
+        "Calories": [],
+        "Protein (g)": [],
+        "Carbs (g)": [],
+        "Fats (g)": []
     }
-    df = pd.DataFrame(data)
-    return df
+
+    # Split each recipe by "Recipe [number]:" to isolate individual recipes
+    recipe_sections = re.split(r'\bRecipe \d+:\s*(.*?)\n', recipes_text)[1:]
+
+    for i in range(0, len(recipe_sections), 2):
+        title = recipe_sections[i].strip()  # Recipe title
+        details = recipe_sections[i + 1]
+
+        data["Recipe"].append(title)
+
+        # Use regex to find nutrient values within each recipe
+        calories = re.search(r'Calories:\s*(\d+(\.\d+)?)\s*kcal', details)
+        protein = re.search(r'Protein:\s*(\d+(\.\d+)?)\s*g', details)
+        carbs = re.search(r'Carbohydrates:\s*(\d+(\.\d+)?)\s*g', details)
+        fats = re.search(r'Fat:\s*(\d+(\.\d+)?)\s*g', details)
+
+        # Append parsed nutrient values to the data structure, defaulting to 0 if not found
+        data["Calories"].append(float(calories.group(1)) if calories else 0.0)
+        data["Protein (g)"].append(float(protein.group(1)) if protein else 0.0)
+        data["Carbs (g)"].append(float(carbs.group(1)) if carbs else 0.0)
+        data["Fats (g)"].append(float(fats.group(1)) if fats else 0.0)
+
+    return pd.DataFrame(data)
 
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalized plan...'):
-        recipes = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
+        recipes_text = generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies, exercise_level, meal_frequency, days, meal_prep, servings)
     st.success("Your personalized meal plan is ready!")
 
     # Tabs for displaying meal plan, recipes, and nutrition analysis
@@ -96,7 +117,7 @@ if st.sidebar.button("Cook Up My Plan!"):
     # Tab 2: Full Meal Plan Display
     with tab2:
         st.markdown("### Full Meal Plan")
-        st.write(recipes)  # Display full meal plan text as a large block
+        st.write(recipes_text)  # Display full meal plan text as a large block
 
     # Tab 3: Individual Recipes (Collapsible sections)
     with tab3:
@@ -109,8 +130,23 @@ if st.sidebar.button("Cook Up My Plan!"):
     with tab4:
         st.markdown("### Nutrition Breakdown")
 
+        # Parse nutrition info from recipes text
+        nutrition_df = parse_nutrition_info(recipes_text)
+
+        # Calculate total values for debugging
+        total_calories = nutrition_df["Calories"].sum()
+        total_protein = nutrition_df["Protein (g)"].sum()
+        total_carbs = nutrition_df["Carbs (g)"].sum()
+        total_fats = nutrition_df["Fats (g)"].sum()
+
+        # Display totals to verify parsing
+        st.write("**Total Nutrition Values Across All Recipes**")
+        st.write(f"Total Calories: {total_calories} kcal")
+        st.write(f"Total Protein: {total_protein} g")
+        st.write(f"Total Carbs: {total_carbs} g")
+        st.write(f"Total Fats: {total_fats} g")
+
         # Radar Chart Visualization
-        nutrition_df = parse_nutrition_info(recipes)
         fig = go.Figure()
         nutrients = ["Calories", "Protein (g)", "Carbs (g)", "Fats (g)"]
 
@@ -129,13 +165,13 @@ if st.sidebar.button("Cook Up My Plan!"):
             showlegend=True,
             title="Nutrient Composition by Recipe"
         )
-
         st.plotly_chart(fig)
 
         # Pie Chart for Total Nutrients Across All Recipes
         nutrient_totals = nutrition_df[nutrients].sum()
         pie_fig = px.pie(values=nutrient_totals, names=nutrients, title="Total Nutrient Distribution Across Recipes")
         st.plotly_chart(pie_fig)
+
 
 # -------------------------
 # CSS Styling for the Page
