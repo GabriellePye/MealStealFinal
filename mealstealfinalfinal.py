@@ -379,31 +379,24 @@ tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes
 # 5. Meal Plan Tab & Page
 # -------------------------
 
-# Inside tab1, you want to display the meal cards based on the generated meal plan
-
 with tab1:
-    # Title for the Meal Plan section
     st.markdown('<h2 style="text-align: center;">Your Personalised Meal Plan</h2>', unsafe_allow_html=True)
 
-    # Limit the number of days to display (max 7 days, based on slider input)
-    day_count = min(days, 7)
+    # Ensure `recipes_text` is available before attempting to access it
+    if 'recipes_text' in locals():
+        day_count = min(days, 7)
 
-    # Iterate through the days and render the meal cards
-    for day in range(1, day_count + 1):
-        st.markdown(f"#### Day {day}")
-        st.write(f"Meals for Day {day} (click for more details in the Full Meal Plan tab)")
+        for day in range(1, day_count + 1):
+            st.markdown(f"#### Day {day}")
+            st.write(f"Meals for Day {day} (click for more details in the Full Meal Plan tab)")
 
-        # Assuming 'meal_plan' is a dictionary where keys are days and values are lists of meals
-        meals_for_day = recipes_text.get(day, [])  # Get meals for the current day, default to an empty list if not found
+            # Adjust to check that recipes_text has the expected structure, e.g., if a dictionary
+            meals_for_day = recipes_text.get(day, []) if isinstance(recipes_text, dict) else []
 
-        # Render cards based on the selected days
-        cols = st.columns(3)  # Create three columns for card display
+            cols = st.columns(3)
 
-        # Render each meal in a card (assuming meals are strings like "Avocado Smoothie", etc.)
-        for idx, meal in enumerate(meals_for_day):
-            if idx < day_count:  # Only show the selected number of days
-                with cols[idx % 3]:  # Distribute the meals across columns
-                    # Card structure: title (meal), hover effect for showing meal details
+            for idx, meal in enumerate(meals_for_day):
+                with cols[idx % 3]:
                     st.markdown(f"""
                     <div class="card" style="cursor: pointer;">
                         <div class="card-content">
@@ -428,6 +421,9 @@ with tab1:
                         }}
                     </style>
                     """, unsafe_allow_html=True)
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+
 
 # -------------------------
 # 6. Adjust Your Meal Plan 
