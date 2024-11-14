@@ -92,7 +92,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/1X0yWSJ/oliver-guhr-Qs3-ALnjkw-F4-unsplash.jpg') 
+    background: url('https://i.ibb.co/1X0yWSJ/oliver-guhr-Qs3-ALnjkw-F4-unsplash.jpg');
     background-size: cover; 
     background-position: top;
 }
@@ -554,10 +554,71 @@ st.markdown("""
 
 with tab2:
     st.markdown("### Your Meal Plan")
-    
-    # Check if recipes_text is available in session_state
-    if 'recipes_text' in st.session_state and st.session_state['recipes_text']:
-        st.write(st.session_state['recipes_text'])  # Display full meal plan text as a large block
+
+# Sample recipes_data for illustration (replace with actual data from session_state)
+# Assuming `recipes_data` contains a list of recipes, each with a "Title" and other details
+recipes_data = [
+    {"Title": "Recipe 1", "Cuisine": "Italian", "Diet": "Vegetarian", "Total Cooking Time": "30 mins", "Servings": 2, "Estimated Price": "$5", "Ingredients": ["Tomato", "Cheese"], "Instructions": ["Mix ingredients", "Cook for 10 mins"]},
+    {"Title": "Recipe 2", "Cuisine": "Mexican", "Diet": "Vegan", "Total Cooking Time": "45 mins", "Servings": 3, "Estimated Price": "$8", "Ingredients": ["Taco Shells", "Avocado"], "Instructions": ["Prepare tacos", "Serve with avocado"]},
+    {"Title": "Recipe 3", "Cuisine": "Chinese", "Diet": "Non-Vegetarian", "Total Cooking Time": "25 mins", "Servings": 2, "Estimated Price": "$7", "Ingredients": ["Rice", "Chicken"], "Instructions": ["Cook rice", "Stir-fry chicken"]},
+]
+
+# Simulate meal_plan from session state (replace with actual session state)
+meal_plan = {
+    "Day 1": [],
+    "Day 2": [],
+    "Day 3": [],
+}
+
+# Number of days to display
+days = 3  # This would come from the user's input or session state
+
+# Display meal plan section
+st.markdown("### Your Meal Plan")
+
+# Create a placeholder for the recipe titles
+recipe_titles = [recipe["Title"] for recipe in recipes_data]
+
+# Render cards based on the slider selection (number of days)
+day_count = min(days, len(meal_plan))  # Limit to the selected number of days
+cols = st.columns(3)  # Create three columns for layout
+
+# Placeholder for displaying selected meal details
+selected_meal = st.empty()
+
+# Render the meal cards for each day
+for idx, (day, meals) in enumerate(meal_plan.items()):
+    if idx < day_count:  # Only show the selected number of days
+        with cols[idx % 3]:  # Distribute the days across columns
+            # Create a card that displays the day and allows hover to see meal titles
+            st.markdown(f"""
+            <div class="card" style="cursor: pointer; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin: 5px; text-align: center;">
+                <div class="card-content" style="position: relative;">
+                    <h3 style="font-size: 15px; color: #335D3B;">{day}</h3>
+                    <p style="font-size: 15px;">Hover to see meals</p>
+                    
+                    <!-- Hover effect for displaying titles -->
+                    <div class="hover-content" style="visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; background-color: rgba(0,0,0,0.6); color: white; padding: 10px; border-radius: 5px;">
+                        <ul style="list-style-type: none; padding: 0;">
+                            {''.join([f"<li>{title}</li>" for title in recipe_titles])}  <!-- Display titles of recipes -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .card:hover .hover-content {{
+                    visibility: visible;  /* Show titles on hover */
+                }}
+            </style>
+            """, unsafe_allow_html=True)
+
+            # Add a selectbox to assign recipe to day (simulate "drag and drop")
+            selected_recipe = st.selectbox(f"Assign a recipe to {day}", options=recipe_titles, key=day)
+            if selected_recipe:
+                # Here you can handle the recipe assignment logic (add it to the day's meal plan)
+                meal_plan[day].append(selected_recipe)
+                st.write(f"Assigned {selected_recipe} to {day}")
+
                 
 # -------------------------
 # 7. Recipes
