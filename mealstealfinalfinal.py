@@ -748,7 +748,7 @@ with tab4:
         # Add annotation for percentage and goal text below the percentage
         fig.add_annotation(
             text=f"{caloric_percentage:.0f}% of total calorie intake for {days} days",
-            x=0.5, y=0.85, showarrow=False,
+            x=0.5, y=0.4, showarrow=False,
             font=dict(size=14, color="grey"),
             align='center'
         )
