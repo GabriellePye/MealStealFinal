@@ -128,9 +128,8 @@ st.markdown("""
 }
 
 /* Tooltip Styling */
-/* Styling for Tooltip */
 .tooltip {
-    position: absolute;
+    position: relative;
     background-color: #335D3B; /* Background color */
     color: #DAD7CD; /* Text color */
     padding: 8px 16px; /* Adjust the padding for a less tall tooltip */
