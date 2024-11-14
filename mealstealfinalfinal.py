@@ -18,6 +18,9 @@ import io
 openai.api_key = st.secrets["openai_key"]
 client = OpenAI(api_key=st.secrets["openai_key"])
 
+from fpdf import FPDF
+import io
+
 # Function to generate PDF of the recipes
 def generate_pdf(recipes_text):
     pdf = FPDF()
@@ -31,11 +34,48 @@ def generate_pdf(recipes_text):
     # Add a line break
     pdf.ln(10)
 
-    # Content of the meal plan (recipes_text)
+    # Set font for content
     pdf.set_font("Arial", size=12)
 
-    # Add the recipes text to the PDF
-    pdf.multi_cell(0, 10, recipes_text)
+    # Loop through each recipe in the recipes_text
+    for recipe in recipes_text:
+        # Recipe Title
+        pdf.set_font("Arial", size=14, style='B')
+        pdf.cell(200, 10, txt=recipe["Title"], ln=True, align="L")
+        pdf.ln(4)
+
+        # Key details (Cuisine, Diet, Cooking Time, Servings, Price)
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt=f"Cuisine: {recipe['Cuisine']}", ln=True)
+        pdf.cell(200, 10, txt=f"Diet: {recipe['Diet']}", ln=True)
+        pdf.cell(200, 10, txt=f"Total Cooking Time: {recipe['Total Cooking Time']}", ln=True)
+        pdf.cell(200, 10, txt=f"Servings: {recipe['Servings']}", ln=True)
+        pdf.cell(200, 10, txt=f"Estimated Price: {recipe['Estimated Price']}", ln=True)
+        pdf.ln(6)
+
+        # Ingredients
+        pdf.set_font("Arial", size=12, style='B')
+        pdf.cell(200, 10, txt="Ingredients:", ln=True)
+        pdf.set_font("Arial", size=12)
+        for ingredient in recipe["Ingredients"]:
+            pdf.cell(200, 10, txt=f"- {ingredient}", ln=True)
+        pdf.ln(6)
+
+        # Instructions
+        pdf.set_font("Arial", size=12, style='B')
+        pdf.cell(200, 10, txt="Instructions:", ln=True)
+        pdf.set_font("Arial", size=12)
+        for i, instruction in enumerate(recipe["Instructions"], 1):
+            pdf.cell(200, 10, txt=f"{i}. {instruction}", ln=True)
+        pdf.ln(6)
+
+        # Nutrition
+        pdf.set_font("Arial", size=12, style='B')
+        pdf.cell(200, 10, txt="Nutrition:", ln=True)
+        pdf.set_font("Arial", size=12)
+        for nutrient, amount in recipe["Nutrition"].items():
+            pdf.cell(200, 10, txt=f"{nutrient}: {amount}", ln=True)
+        pdf.ln(10)  # Add space before next recipe
 
     # Save the PDF to an in-memory file
     pdf_output = io.BytesIO()
@@ -52,7 +92,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/1X0yWSJ/oliver-guhr-Qs3-ALnjkw-F4-unsplash.jpg');
+    background: url('https://i.ibb.co/1X0yWSJ/oliver-guhr-Qs3-ALnjkw-F4-unsplash.jpg') 
     background-size: cover; 
     background-position: top;
 }
@@ -87,7 +127,7 @@ st.markdown("""
     margin-right: 20px; /* Space between logo and subheader */
 }
 
-/* Styling for tooltip */ #-- added tooltip
+/* Styling for tooltip */
 .faq-button {
   width: fit-content;
   border-radius: 50%;
@@ -160,6 +200,17 @@ st.markdown("""
 /* Features Tooltip */
 .features-tooltip::before {
   content: "Key Features!";
+}
+
+.faq-button:hover .tooltip {
+  top: -40px;
+  opacity: 1;
+  transition-duration: 0.3s;
+}
+
+.faq-button .tooltip {
+  transition-duration: 0.3s;
+  opacity: 0;
 }
 
 .faq-button:hover .tooltip {
@@ -453,10 +504,10 @@ if "recipes_text" in st.session_state:
 
 st.markdown('<div class="content-section">', unsafe_allow_html=True)  # Container for the tabs
 
-tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes', 'Nutritional Dashboard'])
+tab1, tab2, tab3, tab4 = st.tabs(['About Meal Steal', 'Your Meal Plan', 'Recipes', 'Nutritional Dashboard'])
 
 # -------------------------
-# 5. Meal Plan Tab & Page
+# 5. About Meal Steal
 # -------------------------
 
 with tab1:
@@ -467,21 +518,27 @@ with tab1:
     st.write("Meal Steal is your personalised meal planner powered by AI. Simply input your preferences, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
 
     # Center the FAQ button with tooltip
-    st.markdown("""
-    <div style="text-align: center;">
+st.markdown("""
+<div style="text-align: center;">
     <!-- Disclaimer Button -->
     <div class="faq-button disclaimer-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/></svg>
-        <span class="tooltip disclaimer-tooltip">Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible for any dietary, health, or financial outcomes arising from the use of the information provided.</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/>
+        </svg>
+        <span class="tooltip disclaimer-tooltip">
+            Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible for any dietary, health, or financial outcomes arising from the use of the information provided.
+        </span>
     </div>
 
     <!-- Features Button -->
     <div class="faq-button features-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/>
+        </svg>
         <span class="tooltip features-tooltip">
             <strong>Key Features:</strong><br>
             <ul>
-                <li><strong>Personalized Recipes</strong>: Submit your preferences, and our AI will craft recipes just for you, ensuring each meal aligns with your nutritional needs.</li>
+                <li><strong>Personalised Recipes</strong>: Submit your preferences, and our AI will craft recipes just for you, ensuring each meal aligns with your nutritional needs.</li>
                 <li><strong>In-Depth Recipe Exploration</strong>: Explore individual recipes in detail through the tabs, where you can adjust portions, view ingredients, and read preparation steps.</li>
                 <li><strong>Nutrition Dashboard</strong>: Visualize your daily and weekly nutrition intake with our interactive dashboard, helping you stay on track with your dietary goals.</li>
                 <li><strong>Downloadable Meal Plans</strong>: Conveniently download your entire meal plan as a PDF for easy reference and use in the kitchen.</li>
@@ -489,33 +546,19 @@ with tab1:
         </span>
     </div>
 </div>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # -------------------------
-# 6. Adjust Your Meal Plan 
+# 6. Your Meal Plan
 # -------------------------
 
 with tab2:
-    st.markdown("### Adjust Your Meal Plan")
+    st.markdown("### Your Meal Plan")
     
-    if 'recipes_text' in locals() and recipes_text:  # Check if recipes_text is available
-        st.write(recipes_text)  # Display full meal plan text as a large block
-
-        # Button to download the PDF
-        if st.button("Download Full Recipes as PDF"):
-            # Generate PDF
-            pdf_output = generate_pdf(recipes_text)
-
-            # Provide the download link
-            st.download_button(
-                label="Download PDF",
-                data=pdf_output,
-                file_name="meal_plan.pdf",
-                mime="application/pdf"
-            )
-    else:
-        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-        
+    # Check if recipes_text is available in session_state
+    if 'recipes_text' in st.session_state and st.session_state['recipes_text']:
+        st.write(st.session_state['recipes_text'])  # Display full meal plan text as a large block
+                
 # -------------------------
 # 7. Recipes
 # -------------------------
@@ -555,6 +598,20 @@ with tab3:
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+
+# Button to download the PDF only when recipe data is available
+if "recipes_text" in st.session_state:
+    if st.button("Download Full Recipes as PDF"):
+        # Generate PDF from the session state data
+        pdf_output = generate_pdf(st.session_state["recipes_text"])
+
+        # Provide the download link for the PDF
+        st.download_button(
+            label="Download Full Recipes as PDF",
+            data=pdf_output,
+            file_name="meal_plan.pdf",
+            mime="application/pdf"
+        )
 
 # -------------------------
 # 8. Nutritional Dashboard
