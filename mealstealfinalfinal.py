@@ -129,10 +129,12 @@ st.markdown("""
 
 /* Tooltip Container */
 .tooltip-container {
-  position: relative;  /* Necessary for absolute positioning of the tooltip */
-  display: inline-block;  /* Keeps the tooltip text inline with the "📜 Disclaimer" */
+  position: relative; /* Necessary for absolute positioning of the tooltip */
   cursor: pointer;
-  margin-bottom: 20px;
+  display: inline-block; /* Keeps the tooltip container inline with text */
+  margin-bottom: 20px;  /* Adds margin at the bottom to create spacing */
+  width: auto;  /* Allow width to auto adjust based on content, or set a specific width */
+  max-width: 500px;  /* Optional: Max width of tooltip container */
 }
 
 /* Tooltip Text (Hidden by default) */
@@ -141,17 +143,18 @@ st.markdown("""
   background-color: #335D3B; /* Background color */
   color: #DAD7CD; /* Text color */
   font-size: 14px;  /* Font size */
-  padding: 10px;
+  padding: 12px 20px;  /* Increase padding for wider tooltip */
   border-radius: 8px;
   position: absolute;
   z-index: 1;
-  bottom: 125%;  /* Position above the text */
+  bottom: 125%;  /* Position it above the text */
   left: 50%;
   transform: translateX(-50%);
-  max-width: 500px; /* Tooltip width */
-  text-align: left; /* Text alignment */
+  max-width: 500px; /* Width of the tooltip itself */
+  text-align: left; /* Left-align text */
   opacity: 0; /* Initially invisible */
   transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+  white-space: normal;  /* Allows wrapping of text inside the tooltip */
 }
 
 /* Tooltip Arrow */
