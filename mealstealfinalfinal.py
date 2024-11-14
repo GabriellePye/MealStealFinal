@@ -712,7 +712,7 @@ with tab4:
                 'y': 0.95,  # Raise the title slightly to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Source Sans Pro'}
+                'font': {'size': 18, 'color': 'grey', 'family': 'Source Sans Pro', 'weight': 'normal'}
             },
             showlegend=False,
             margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
