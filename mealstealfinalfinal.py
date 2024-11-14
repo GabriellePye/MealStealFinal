@@ -737,37 +737,38 @@ with tab4:
         calories_consumed = nutrition_df["Calories"].sum()
         caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
-        # Plotly gauge chart with wider green bar and additional labels
+        # Plotly gauge chart for caloric budget
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=calories_consumed,
             number={
-                'valueformat': ".0f",  # Display the number as an integer
-                'suffix': " kcal",     # Add kcal as a suffix
+                'valueformat': ".0f",
+                'suffix': " kcal",
                 'font': {'size': 36, 'family': 'Roboto'},
             },
             title={
-                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto'}
+                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
+                'font': {'size': 18, 'family': 'Roboto'},
+                'y': 1.2  # Adjusted position to move the title further up
             },
             gauge={
                 'axis': {
-                    'range': [0, total_caloric_needs],  # Set gauge to calorie range
+                    'range': [0, total_caloric_needs],
                     'tickwidth': 1.5,
                     'tickcolor': "grey",
                     'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
                     'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
                     'tickfont': {'family': 'Roboto'}
                 },
-                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
-                'bgcolor': "#DAD7CD",  # Cream background for gauge
+                'bar': {'color': "#335D3B", 'thickness': 1.0},
+                'bgcolor': "#DAD7CD",
                 'steps': [
-                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
+                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}
                 ],
                 'threshold': {
                     'line': {'color': "#335D3B", 'width': 4},
                     'thickness': 1.0,
-                    'value': calories_consumed  # Use calories consumed to show progress on gauge
+                    'value': calories_consumed
                 }
             }
         ))
