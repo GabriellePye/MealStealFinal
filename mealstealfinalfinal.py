@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://wallpaperbat.com/img/24929-mexican-food-wallpaper.jpg');
+    background: url('https://i.pinimg.com/736x/a1/44/85/a14485af812f5efb211158f1908042aa.jpg');
     background-size: cover; 
     background-position: top;
 }
