@@ -727,7 +727,7 @@ with tab4:
         calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
 
         # Gauge chart configuration
-        fig, ax = plt.subplots(figsize=(10, 10))  # Adjust the figure size for better fit
+        fig, ax = plt.subplots(figsize=(8, 4))  # Wider, short figure for better horizontal space
 
         # Set the parameters for the gauge
         current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
@@ -744,9 +744,9 @@ with tab4:
         ax.axis("off")
 
         # Add the text for current and goal calories
-        ax.text(0.5, -0.15, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
+        ax.text(0, -0.2, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
                 ha='center', va='center', fontsize=14, fontweight="bold", color="#335D3B")
-        ax.text(0.5, -0.35, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
+        ax.text(0, -0.5, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12, color="#335D3B")
 
         # Display the gauge chart
         st.pyplot(fig)
