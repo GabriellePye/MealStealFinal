@@ -673,8 +673,8 @@ def calculate_caloric_needs(weight, height, age, gender, activity_level, health_
     return tdee
 
 # Calculate total caloric needs based on duration (days)
-def calculate_total_caloric_needs(weight, height, age, gender, activity_level, days):
-    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level)
+def calculate_total_caloric_needs(weight, height, age, gender, activity_level, health_goal, days):
+    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level, health_goal)
     return daily_caloric_needs * days
 
 # Tab 4: Nutrition Dashboard
