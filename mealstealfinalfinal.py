@@ -129,12 +129,12 @@ st.markdown("""
 
 /* Tooltip Container */
 .tooltip-container {
-  position: relative; /* Necessary for absolute positioning of the tooltip */
+  position: flex; /* Necessary for absolute positioning of the tooltip */
   cursor: pointer;
   display: inline-block; /* Keeps the tooltip container inline with text */
   margin-bottom: 20px;  /* Adds margin at the bottom to create spacing */
   width: auto;  /* Allow width to auto adjust based on content, or set a specific width */
-  max-width: 500px;  /* Optional: Max width of tooltip container */
+  max-width: 700px;  /* Optional: Max width of tooltip container */
 }
 
 /* Tooltip Text (Hidden by default) */
