@@ -694,23 +694,27 @@ with tab4:
 
         # Plotly pie chart for nutrient distribution
         fig = go.Figure(data=[go.Pie(
-            labels=nutrients_for_pie,
+            labels=nutrients_for_pie,  # Labels show nutrient names only
             values=nutrient_totals,
             hole=0.5,  # Creates the donut effect
             marker=dict(colors=color_scheme),
-            textinfo='label+value',  # Show label and value in grams
-            hoverinfo='label+value',  # Hover shows label and value only
+            textinfo='label',  # Show only label (no values) on the chart
+            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
             textposition='outside'  # Position labels outside the donut
         )])
 
-        # Update layout for the title
+        # Update layout for the title and to make the chart smaller
         fig.update_layout(
             title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
             showlegend=True,
-            margin=dict(t=50, b=0, l=0, r=0)  # Adjust margins to fit the text labels nicely
+            margin=dict(t=50, b=0, l=0, r=0),  # Adjust margins
+            height=400,  # Set height to control overall size
+            width=400    # Set width to control overall size
         )
 
+        # Display the chart in Streamlit
         st.plotly_chart(fig)
+
 
 
 
