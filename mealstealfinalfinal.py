@@ -444,6 +444,25 @@ with tab1:
     # Display the content directly in Streamlit using st.write (Markdown supported)
     st.write(features_content)
 
+     # Adding the Disclaimer Button with Tooltip on Hover inside Tab 1
+    disclaimer_html = """
+    <div class="relative group">
+      <p class="text-slate-800 font-mono font-bold cursor-pointer">Hover me for Disclaimer</p>
+
+      <div
+        class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition duration-100 transform group-hover:translate-y-0 translate-y-2"
+      >
+        <div class="bg-slate-800 w-max max-w-xs text-white rounded-lg px-4 py-4">
+          <p class="font-bold text-md mb-1">Disclaimer 📜</p>
+          <p class="text-sm">
+            Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible for any dietary, health, or financial outcomes arising from the use of the information provided.
+          </p>
+        </div>
+      </div>
+    </div>
+    """
+    st.markdown(disclaimer_html, unsafe_allow_html=True)
+
 # -------------------------
 # 6. Your Meal Plan
 # -------------------------
@@ -451,69 +470,69 @@ with tab1:
 with tab2:
     st.markdown("### Your Meal Plan")
 
-# Sample recipes_data for illustration (replace with actual data from session_state)
-# Assuming `recipes_data` contains a list of recipes, each with a "Title" and other details
-recipes_data = [
-    {"Title": "Recipe 1", "Cuisine": "Italian", "Diet": "Vegetarian", "Total Cooking Time": "30 mins", "Servings": 2, "Estimated Price": "$5", "Ingredients": ["Tomato", "Cheese"], "Instructions": ["Mix ingredients", "Cook for 10 mins"]},
-    {"Title": "Recipe 2", "Cuisine": "Mexican", "Diet": "Vegan", "Total Cooking Time": "45 mins", "Servings": 3, "Estimated Price": "$8", "Ingredients": ["Taco Shells", "Avocado"], "Instructions": ["Prepare tacos", "Serve with avocado"]},
-    {"Title": "Recipe 3", "Cuisine": "Chinese", "Diet": "Non-Vegetarian", "Total Cooking Time": "25 mins", "Servings": 2, "Estimated Price": "$7", "Ingredients": ["Rice", "Chicken"], "Instructions": ["Cook rice", "Stir-fry chicken"]},
-]
+        # Sample recipes_data for illustration (replace with actual data from session_state)
+        # Assuming `recipes_data` contains a list of recipes, each with a "Title" and other details
+        recipes_data = [
+            {"Title": "Recipe 1", "Cuisine": "Italian", "Diet": "Vegetarian", "Total Cooking Time": "30 mins", "Servings": 2, "Estimated Price": "$5", "Ingredients": ["Tomato", "Cheese"], "Instructions": ["Mix ingredients", "Cook for 10 mins"]},
+            {"Title": "Recipe 2", "Cuisine": "Mexican", "Diet": "Vegan", "Total Cooking Time": "45 mins", "Servings": 3, "Estimated Price": "$8", "Ingredients": ["Taco Shells", "Avocado"], "Instructions": ["Prepare tacos", "Serve with avocado"]},
+            {"Title": "Recipe 3", "Cuisine": "Chinese", "Diet": "Non-Vegetarian", "Total Cooking Time": "25 mins", "Servings": 2, "Estimated Price": "$7", "Ingredients": ["Rice", "Chicken"], "Instructions": ["Cook rice", "Stir-fry chicken"]},
+        ]
 
-# Simulate meal_plan from session state (replace with actual session state)
-meal_plan = {
-    "Day 1": [],
-    "Day 2": [],
-    "Day 3": [],
-}
+        # Simulate meal_plan from session state (replace with actual session state)
+        meal_plan = {
+            "Day 1": [],
+            "Day 2": [],
+            "Day 3": [],
+        }
 
-# Number of days to display
-days = 3  # This would come from the user's input or session state
+        # Number of days to display
+        days = 3  # This would come from the user's input or session state
 
-# Display meal plan section
-st.markdown("### Your Meal Plan")
+        # Display meal plan section
+        st.markdown("### Your Meal Plan")
 
-# Create a placeholder for the recipe titles
-recipe_titles = [recipe["Title"] for recipe in recipes_data]
+        # Create a placeholder for the recipe titles
+        recipe_titles = [recipe["Title"] for recipe in recipes_data]
 
-# Render cards based on the slider selection (number of days)
-day_count = min(days, len(meal_plan))  # Limit to the selected number of days
-cols = st.columns(3)  # Create three columns for layout
+        # Render cards based on the slider selection (number of days)
+        day_count = min(days, len(meal_plan))  # Limit to the selected number of days
+        cols = st.columns(3)  # Create three columns for layout
 
-# Placeholder for displaying selected meal details
-selected_meal = st.empty()
+        # Placeholder for displaying selected meal details
+        selected_meal = st.empty()
 
-# Render the meal cards for each day
-for idx, (day, meals) in enumerate(meal_plan.items()):
-    if idx < day_count:  # Only show the selected number of days
-        with cols[idx % 3]:  # Distribute the days across columns
-            # Create a card that displays the day and allows hover to see meal titles
-            st.markdown(f"""
-            <div class="card" style="cursor: pointer; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin: 5px; text-align: center;">
-                <div class="card-content" style="position: relative;">
-                    <h3 style="font-size: 15px; color: #335D3B;">{day}</h3>
-                    <p style="font-size: 15px;">Hover to see meals</p>
-                    
-                    <!-- Hover effect for displaying titles -->
-                    <div class="hover-content" style="visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; background-color: rgba(0,0,0,0.6); color: white; padding: 10px; border-radius: 5px;">
-                        <ul style="list-style-type: none; padding: 0;">
-                            {''.join([f"<li>{title}</li>" for title in recipe_titles])}  <!-- Display titles of recipes -->
-                        </ul>
+        # Render the meal cards for each day
+        for idx, (day, meals) in enumerate(meal_plan.items()):
+            if idx < day_count:  # Only show the selected number of days
+                with cols[idx % 3]:  # Distribute the days across columns
+                    # Create a card that displays the day and allows hover to see meal titles
+                    st.markdown(f"""
+                    <div class="card" style="cursor: pointer; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin: 5px; text-align: center;">
+                        <div class="card-content" style="position: relative;">
+                            <h3 style="font-size: 15px; color: #335D3B;">{day}</h3>
+                            <p style="font-size: 15px;">Hover to see meals</p>
+                            
+                            <!-- Hover effect for displaying titles -->
+                            <div class="hover-content" style="visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; background-color: rgba(0,0,0,0.6); color: white; padding: 10px; border-radius: 5px;">
+                                <ul style="list-style-type: none; padding: 0;">
+                                    {''.join([f"<li>{title}</li>" for title in recipe_titles])}  <!-- Display titles of recipes -->
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <style>
-                .card:hover .hover-content {{
-                    visibility: visible;  /* Show titles on hover */
-                }}
-            </style>
-            """, unsafe_allow_html=True)
+                    <style>
+                        .card:hover .hover-content {{
+                            visibility: visible;  /* Show titles on hover */
+                        }}
+                    </style>
+                    """, unsafe_allow_html=True)
 
-            # Add a selectbox to assign recipe to day (simulate "drag and drop")
-            selected_recipe = st.selectbox(f"Assign a recipe to {day}", options=recipe_titles, key=day)
-            if selected_recipe:
-                # Here you can handle the recipe assignment logic (add it to the day's meal plan)
-                meal_plan[day].append(selected_recipe)
-                st.write(f"Assigned {selected_recipe} to {day}")
+                    # Add a selectbox to assign recipe to day (simulate "drag and drop")
+                    selected_recipe = st.selectbox(f"Assign a recipe to {day}", options=recipe_titles, key=day)
+                    if selected_recipe:
+                        # Here you can handle the recipe assignment logic (add it to the day's meal plan)
+                        meal_plan[day].append(selected_recipe)
+                        st.write(f"Assigned {selected_recipe} to {day}")
 
                 
 # -------------------------
@@ -556,19 +575,19 @@ with tab3:
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
-# Button to download the PDF only when recipe data is available
-if "recipes_text" in st.session_state:
-    if st.button("Download Full Recipes as PDF"):
-        # Generate PDF from the session state data
-        pdf_output = generate_pdf(st.session_state["recipes_text"])
+        # Button to download the PDF only when recipe data is available
+        if "recipes_text" in st.session_state:
+            if st.button("Download Full Recipes as PDF"):
+                # Generate PDF from the session state data
+                pdf_output = generate_pdf(st.session_state["recipes_text"])
 
-        # Provide the download link for the PDF
-        st.download_button(
-            label="Download Full Recipes as PDF",
-            data=pdf_output,
-            file_name="meal_plan.pdf",
-            mime="application/pdf"
-        )
+                # Provide the download link for the PDF
+                st.download_button(
+                    label="Download Full Recipes as PDF",
+                    data=pdf_output,
+                    file_name="meal_plan.pdf",
+                    mime="application/pdf"
+                )
 
 # -------------------------
 # 8. Nutritional Dashboard
