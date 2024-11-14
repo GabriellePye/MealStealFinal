@@ -715,27 +715,30 @@ with tab4:
         # Calculate caloric needs
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
         calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
+        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Percentage of total caloric goal
 
-        # Plotly gauge chart for calories
+        # Plotly gauge chart with percentage label
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=calories_consumed,
-            title={'text': "Calories Consumed vs. Goal"},
+            value=caloric_percentage,
+            number={'suffix': "%", 'font': {'size': 36}},  # Display as percentage
+            title={'text': f"{int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 'font': {'size': 20}},
             gauge={
-                'axis': {'range': [0, total_caloric_needs]},
-                'bar': {'color': "#335D3B"},
+                'axis': {'range': [0, 100], 'tickwidth': 1.5, 'tickcolor': "grey"},
+                'bar': {'color': "#335D3B", 'thickness': 0.3},  # Dark green for the fill bar
+                'bgcolor': "#DAD7CD",  # Cream color background for the whole gauge
                 'steps': [
-                    {'range': [0, total_caloric_needs * 0.75], 'color': "#DAD7CD"},  # Light grey for remaining section
-                    {'range': [total_caloric_needs * 0.75, total_caloric_needs], 'color': "#335D3B"}  # Dark green for consumed section
+                    {'range': [0, 100], 'color': "#DAD7CD"}  # Full dome as cream background
                 ],
                 'threshold': {
-                    'line': {'color': "red", 'width': 4},
+                    'line': {'color': "grey", 'width': 3},
                     'thickness': 0.75,
-                    'value': calories_consumed  # Pointer stops at consumed calories
+                    'value': caloric_percentage
                 }
             }
         ))
 
+        # Show the gauge
         st.plotly_chart(fig)
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
