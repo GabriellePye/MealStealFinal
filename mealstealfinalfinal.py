@@ -696,19 +696,22 @@ with tab4:
         fig = go.Figure(data=[go.Pie(
             labels=nutrients_for_pie,
             values=nutrient_totals,
-            hole=0.5,  # Creates the donut effect
+            hole=0.6,  # Creates the donut effect
             marker=dict(colors=color_scheme),
-            textinfo='label+percent',
-            hoverinfo='label+value+percent',
-            insidetextorientation='radial'
+            textinfo='label+value',  # Show label and value in grams
+            hoverinfo='label+value',  # Hover shows label and value only
+            textposition='outside',  # Position labels outside the donut
         )])
 
+        # Update layout for the title and ensure labels are horizontal
+        fig.update_traces(texttemplate='%{label}: %{value}g', textangle=0)  # Keep labels horizontal
         fig.update_layout(
             title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
             showlegend=True
         )
 
         st.plotly_chart(fig)
+
 
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
@@ -759,7 +762,7 @@ with tab4:
 
         # Add annotation for percentage text below the gauge
         fig.add_annotation(
-            text=f"which is {caloric_percentage:.0f}% of total caloric budget for {days} days",
+            text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
             x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
             font=dict(size=16, color="grey"),
             align='center'
