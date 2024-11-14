@@ -127,56 +127,48 @@ st.markdown("""
     margin-right: 20px; /* Space between logo and subheader */
 }
 
-/* Tooltip Styling */
+/* Tooltip Container */
 .tooltip-container {
-  color: #ffffff;
-  --background: #335D3B; /* Set background color */
-  position: relative;
-  background: var(--background);
+  position: relative;  /* Necessary for absolute positioning of the tooltip */
+  display: inline-block;  /* Keeps the tooltip text inline with the "📜 Disclaimer" */
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 17px;
-  padding: 0.7em 1.8em;
-  border-radius: 50px;
 }
 
-/* Tooltip Text */
+/* Tooltip Text (Hidden by default) */
 .tooltip {
-  background-color: #335D3B; /* Set background color */
+  visibility: hidden;  /* Tooltip is hidden by default */
+  background-color: #335D3B; /* Background color */
+  color: #DAD7CD; /* Text color */
+  font-size: 14px;  /* Font size */
+  padding: 10px;
+  border-radius: 8px;
   position: absolute;
-  top: 0;
+  z-index: 1;
+  bottom: 125%;  /* Position above the text */
   left: 50%;
   transform: translateX(-50%);
-  padding: 0.3em 0.6em;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  border-radius: 50px;
-  font-size: 14px; /* Text size */
-  color: #DAD7CD; /* Text color */
-  max-width: 300px; /* Tooltip width */
-  text-align: center;
-  white-space: nowrap;
+  max-width: 350px; /* Tooltip width */
+  text-align: left; /* Text alignment */
+  opacity: 0; /* Initially invisible */
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
 }
 
 /* Tooltip Arrow */
 .tooltip::before {
-  background-color: #335D3B;
-  position: absolute;
   content: "";
-  height: 0.6em;
-  width: 0.6em;
-  bottom: -0.2em;
+  position: absolute;
+  top: 100%;  /* Position the triangle below the tooltip */
   left: 50%;
-  transform: translate(-50%) rotate(45deg);
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #335D3B transparent transparent transparent; /* Arrow color */
 }
 
 /* Show tooltip on hover */
 .tooltip-container:hover .tooltip {
-  top: -100%; /* Position the tooltip above */
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  visibility: visible;  /* Show the tooltip */
+  opacity: 1;  /* Make the tooltip visible */
 }
 
 /* styling for tabs */
@@ -493,12 +485,11 @@ with tab1:
     # Display the content directly in Streamlit using st.write (Markdown supported)
     st.write(features_content)
 
-    # Disclaimer Button with Hover Effect (Inside a Section with Background Styling)
     st.markdown("""
         <div class="section-background">
-            <div class="tooltip">
-                <span>📜 Disclaimer</span>
-                <div class="tooltiptext">
+            <div class="tooltip-container">
+                <span>📜 Disclaimer</span> <!-- The visible disclaimer text -->
+                <div class="tooltip"> <!-- The hidden tooltip content -->
                     <strong>Meal Steal Disclaimer:</strong><br><br>
                     Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. 
                     While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, 
@@ -510,6 +501,7 @@ with tab1:
             </div>
         </div>
     """, unsafe_allow_html=True)
+
 
 # -------------------------
 # 6. Your Meal Plan
