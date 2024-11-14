@@ -682,41 +682,43 @@ with tab4:
         selected_recipe = st.selectbox(
             "Select Recipe to View Nutrient Distribution",
             options=["Total"] + nutrition_df["Recipe"].unique().tolist(),
-            index=0,
-            key="selected_recipe"
+            index=0,  # Default to "Total" for all recipes
+            key="selected_recipe"  # Bind to session state
         )
 
         # Filter data based on selected recipe
         filtered_data = nutrition_df if st.session_state["selected_recipe"] == "Total" else nutrition_df[nutrition_df["Recipe"] == st.session_state["selected_recipe"]]
+
+        # Sum the selected nutrients for the pie chart
         nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
         # Plotly pie chart for nutrient distribution
         fig = go.Figure(data=[go.Pie(
-            labels=nutrients_for_pie,
+            labels=nutrients_for_pie,  # Labels show nutrient names only
             values=nutrient_totals,
-            hole=0.6,
+            hole=0.6,  # Creates the donut effect
             marker=dict(colors=color_scheme),
-            textinfo='label',
-            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',
-            textposition='outside',
-            textfont=dict(size=16, color='grey', family='Roboto')  # Font updated to Roboto
+            textinfo='label',  # Show only label (no values) on the chart
+            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
+            textposition='outside',  # Position labels outside the donut
+            textfont=dict(size=16, color='grey', family='Roboto')  # Set label text size and style
         )])
 
-        # Update layout for the title and make the chart smaller
+        # Update layout for the title and to make the chart smaller
         fig.update_layout(
-            title=dict(
-                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
-                x=0.5,
-                y=0.85,
-                xanchor='center',
-                yanchor='top',
-                font=dict(size=18, color='grey', family='Roboto')
-            ),
+            title={
+                'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                'x': 0.5,  # Center title
+                'y': 0.95,  # Raise the title slightly to prevent overlap
+                'xanchor': 'center',
+                'yanchor': 'top',
+                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto', 'weight': 'normal'}
+            },
             showlegend=False,
-            margin=dict(t=100, b=50, l=50, r=50)
+            margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
         )
 
-        # Update hoverlabel font size and family
+        # Update hoverlabel font size
         fig.update_traces(hoverlabel=dict(font_size=16, font_family='Roboto'))
 
         # Display the chart in Streamlit
@@ -725,39 +727,39 @@ with tab4:
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
         calories_consumed = nutrition_df["Calories"].sum()
-        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)
+        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
-        # Plotly gauge chart for caloric budget
+        # Plotly gauge chart with wider green bar and additional labels
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=calories_consumed,
             number={
-                'valueformat': ".0f",
-                'suffix': " kcal",
+                'valueformat': ".0f",  # Display the number as an integer
+                'suffix': " kcal",     # Add kcal as a suffix
                 'font': {'size': 36, 'family': 'Roboto'},
             },
             title={
-                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
+                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
                 'font': {'size': 18, 'family': 'Roboto'}
             },
             gauge={
                 'axis': {
-                    'range': [0, total_caloric_needs],
+                    'range': [0, total_caloric_needs],  # Set gauge to calorie range
                     'tickwidth': 1.5,
                     'tickcolor': "grey",
                     'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
                     'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
                     'tickfont': {'family': 'Roboto'}
                 },
-                'bar': {'color': "#335D3B", 'thickness': 1.0},
-                'bgcolor': "#DAD7CD",
+                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
+                'bgcolor': "#DAD7CD",  # Cream background for gauge
                 'steps': [
-                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}
+                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
                 ],
                 'threshold': {
                     'line': {'color': "#335D3B", 'width': 4},
                     'thickness': 1.0,
-                    'value': calories_consumed
+                    'value': calories_consumed  # Use calories consumed to show progress on gauge
                 }
             }
         ))
@@ -765,21 +767,17 @@ with tab4:
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal calorie total:",
-            x=0.5, y=0.17, showarrow=False,
+            x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
             font=dict(size=16, color="grey", family='Roboto'),
             align='center'
         )
 
+        # Add annotation for percentage text below the gauge
         fig.add_annotation(
             text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
-            x=0.5, y=-0.1, showarrow=False,
+            x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
             font=dict(size=16, color="grey", family='Roboto'),
             align='center'
-        )
-
-        # Update layout for additional spacing
-        fig.update_layout(
-            margin=dict(t=100, b=100, l=50, r=50)
         )
 
         # Show the gauge in Streamlit
@@ -787,7 +785,7 @@ with tab4:
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-        
+
 # ----
 # 9. Close container
 # ----
