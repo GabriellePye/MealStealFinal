@@ -709,7 +709,7 @@ with tab4:
             title={
                 'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
                 'x': 0.5,  # Center title
-                'y': 1.1,  # Raise the title to prevent overlap
+                'y': 1.1,  # Raise the title slightly to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
                 'font': {'size': 18, 'color': 'grey', 'family': 'Open Sans'}
@@ -790,7 +790,7 @@ with tab4:
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-        
+
 # ----
 # 9. Close container
 # ----
