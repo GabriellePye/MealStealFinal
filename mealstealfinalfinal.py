@@ -701,7 +701,7 @@ with tab4:
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
             textposition='outside',  # Position labels outside the donut
-            textfont=dict(size=16)  # Set label text size
+            textfont=dict(size=16, color='grey', family='Arial')  # Set label text size and style
         )])
 
         # Update layout for the title and to make the chart smaller
@@ -709,13 +709,13 @@ with tab4:
             title={
                 'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
                 'x': 0.5,  # Center title
-                'y': 0.9,
+                'y': 0.95,  # Raise the title slightly to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Arial'}
+                'font': {'size': 18, 'color': 'grey', 'family': 'Arial', 'weight': 'normal'}  # Normal weight for non-bold
             },
             showlegend=False,
-            margin=dict(t=50, b=20, l=20, r=20),  # Adjust margins
+            margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
         )
 
         # Update hoverlabel font size
