@@ -752,7 +752,7 @@ with tab4:
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal Calorie Total",
-            x=0.5, y=0.2, showarrow=False,  # Adjust y value to control vertical position above the number
+            x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
             font=dict(size=16, color="grey"),
             align='center'
         )
