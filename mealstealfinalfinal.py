@@ -9,6 +9,7 @@ import openai
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Wedge
 from openai import OpenAI
 import re
 from fpdf import FPDF
@@ -317,7 +318,7 @@ allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
 
 # Physical Activity and Exercise Details
 st.sidebar.subheader("Physical Activity")
-exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Active', 'Very Active'])
+exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Super Active'])
 activity_type = st.sidebar.multiselect('Types of Physical Activity', ['Cardio', 'Strength Training', 'Yoga/Pilates', 'Sports', 'Other'])
 
 # Meal Plan Customization
@@ -641,6 +642,32 @@ with tab3:
 # 8. Nutritional Dashboard
 # -------------------------
 
+# Import necessary libraries
+
+# Function to calculate daily caloric needs based on user inputs (using Mifflin-St Jeor Equation)
+def calculate_caloric_needs(weight, height, age, gender, activity_level):
+    if gender == 'Male':
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
+    else:
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
+
+    activity_factors = {
+            'Sedentary': 1.2,
+            'Lightly Active': 1.375,
+            'Moderately Active': 1.55,
+            'Very Active': 1.725,
+            'Super Active': 1.9
+        }
+    
+    tdee = bmr * activity_factors[activity_level]
+    return tdee
+
+# Calculate total caloric needs based on duration (days)
+def calculate_total_caloric_needs(weight, height, age, gender, activity_level, days):
+    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level)
+    return daily_caloric_needs * days
+
+# Tab 4: Nutrition Dashboard
 # Tab 4: Nutrition Dashboard
 with tab4:
     if "recipes_text" in st.session_state:
@@ -666,7 +693,10 @@ with tab4:
         # Filter data based on selected recipe
         filtered_data = nutrition_df if st.session_state["selected_recipe"] == "Total" else nutrition_df[nutrition_df["Recipe"] == st.session_state["selected_recipe"]]
 
-        # Sum the selected nutrients
+        # Calculate total calories from the selected recipes
+        meal_plan_calories = filtered_data["Calories"].apply(pd.to_numeric, errors='coerce').sum()
+
+        # Sum the selected nutrients for the pie chart
         nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
         # Ensure there are values to plot
@@ -694,9 +724,42 @@ with tab4:
             st.pyplot(fig)
         else:
             st.write("No nutrient data to display for the selected recipe.")
+        
+        # Calculate total caloric needs for the given duration
+        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
+
+        # Gauge Chart Function
+        def plot_gauge(total_caloric_needs, meal_plan_calories):
+            fig, ax = plt.subplots(figsize=(6, 3), subplot_kw={'aspect': 'equal'})
+
+            # Define the gauge's wedges
+            full_circle = plt.matplotlib.patches.Wedge((0, 0), 1, 0, 180, color="lightgrey")  # background
+            used_circle = plt.matplotlib.patches.Wedge((0, 0), 1, 0, 180 * (meal_plan_calories / total_caloric_needs), color="green")
+
+            # Add wedges to the plot
+            ax.add_patch(full_circle)
+            ax.add_patch(used_circle)
+
+            # Add text labels
+            ax.text(0, -0.1, f'{meal_plan_calories:.0f} / {total_caloric_needs:.0f} cal', ha='center', va='center', fontsize=14)
+            ax.text(0, -0.3, 'Calories Consumed vs. Goal', ha='center', va='center', fontsize=12)
+
+            # Adjust plot limits
+            ax.set_xlim(-1, 1)
+            ax.set_ylim(-1, 0.5)
+
+            # Hide axes
+            ax.axis('off')
+            
+            return fig
+
+        # Display the gauge chart below the pie chart
+        st.markdown("### Caloric Intake vs. Goal")
+        gauge_fig = plot_gauge(total_caloric_needs, meal_plan_calories)
+        st.pyplot(gauge_fig)
+
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
 
 # ----
 # 9. Close container
