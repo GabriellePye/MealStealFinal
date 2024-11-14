@@ -490,22 +490,21 @@ with tab1:
     st.write(features_content)
 
     st.markdown("""
-        <div class="section-background">
-            <div class="tooltip-container">
-                <span>📜 Disclaimer</span> <!-- The visible disclaimer text -->
-                <div class="tooltip"> <!-- The hidden tooltip content -->
-                    <strong>Meal Steal Disclaimer:</strong><br><br>
-                    Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. 
-                    While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, 
-                    completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary 
-                    changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, 
-                    and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible 
-                    for any dietary, health, or financial outcomes arising from the use of the information provided.
-                </div>
+    <div class="section-background" style="display: flex; justify-content: center; align-items: center; text-align: center;">
+        <div class="tooltip-container">
+            <span>📜 Disclaimer</span> <!-- The visible disclaimer text -->
+            <div class="tooltip"> <!-- The hidden tooltip content -->
+                <strong>Meal Steal Disclaimer:</strong><br><br>
+                Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. 
+                While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, 
+                completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary 
+                changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, 
+                and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible 
+                for any dietary, health, or financial outcomes arising from the use of the information provided.
             </div>
         </div>
-    """, unsafe_allow_html=True)
-
+    </div>
+""", unsafe_allow_html=True)
 
 # -------------------------
 # 6. Your Meal Plan
