@@ -534,7 +534,8 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
     # Dropdown to assign recipes to specific days
     day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
 
-    # Multiselect to choose recipes for the selected day, excluding already assigned recipes
+    # Multiselect to choose recipes for the selected day, excluding already assigned recipes for that day
+    # Available recipes are those that are not yet assigned to the current day
     available_recipes = [recipe for recipe in recipe_titles if recipe not in assigned_recipes[day_dropdown]]
 
     selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
@@ -568,14 +569,11 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
             with cols[idx]:  # Distribute the cards across 3 columns
                 recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
 
-                # If there are assigned recipes, mark the card as greyed out
-                gray_style = "background-color: #D3D3D3;" if meals else ""
-
                 st.markdown(f"""
-                <div class="card" style="cursor: pointer; {gray_style}">
+                <div class="card" style="cursor: pointer;">
                     <div class="card-content">
                         <h3 style="font-size: 15px;">{day}</h3>
-                        <p style="font-size: 15px;">Click to see meals</p>
+                        <p style="font-size: 15px;">Hover to see meals</p>
                         <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
                     </div>
                 </div>
