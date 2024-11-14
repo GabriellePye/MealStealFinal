@@ -712,8 +712,6 @@ with tab4:
 
         st.plotly_chart(fig)
 
-        import plotly.graph_objects as go
-
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
         calories_consumed = nutrition_df["Calories"].sum()
@@ -722,11 +720,8 @@ with tab4:
         # Create a Plotly gauge chart
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=calories_consumed,
-            number={
-                'valueformat': ".0f",  # Display the number as an integer
-                'font': {'size': 36},
-            },
+            value=caloric_percentage,  # Display percentage in center
+            number={'suffix': "%", 'font': {'size': 36}},  # Center text as percentage
             title={
                 'text': f"Calories Consumed vs. Goal {int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 
                 'font': {'size': 18}
