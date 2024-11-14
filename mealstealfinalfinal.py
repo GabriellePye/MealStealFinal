@@ -746,7 +746,7 @@ with tab4:
 
 
         # Calculate caloric needs and percentage
-        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
+        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, health_goal, days)
         calories_consumed = nutrition_df["Calories"].sum()
         caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
