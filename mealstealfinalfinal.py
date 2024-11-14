@@ -150,7 +150,7 @@ st.markdown("""
   bottom: 125%;  /* Position it above the text */
   left: 50%;
   transform: translateX(-50%);
-  max-width: 500px; /* Width of the tooltip itself */
+  max-width: 700px; /* Width of the tooltip itself */
   text-align: left; /* Left-align text */
   opacity: 0; /* Initially invisible */
   transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
