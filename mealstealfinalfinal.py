@@ -1,12 +1,17 @@
-# libraries
+#new code as of 9:44 
+
+# -------------------------
+# 0. Libraries & Functions
+# -------------------------
+
 import streamlit as st
 import openai
 import pandas as pd
-import numpy as np #-- added numpy
+import numpy as np
 import matplotlib.pyplot as plt
 from openai import OpenAI
 import re
-from fpdf import FPDF #-- added pdf 
+from fpdf import FPDF
 import io
 
 # Initialize OpenAI client
@@ -47,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/MpbbQDx/meal-steal-bg.gif') 
+    background: url('https://i.ibb.co/Msvqf1f/Meal-Steal-BG.png') 
     background-size: cover; 
     background-position: top;
 }
@@ -80,6 +85,87 @@ st.markdown("""
 .header-container img { 
     width: 100px; /* Adjust width for the logo */
     margin-right: 20px; /* Space between logo and subheader */
+}
+
+/* Styling for tooltip */ #-- added tooltip
+.faq-button {
+  width: fit-content;
+  border-radius: 50%;
+  border: none;
+  background-color: #335D3B;
+  background-image: linear-gradient(147deg, #335D3B 0%, #A3B18A 74%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.151);
+  position: relative;
+}
+
+.faq-button svg {
+  height: 1.5em;
+  fill: #A3B18A;
+}
+
+.faq-button:hover svg {
+  animation: jello-vertical 0.7s both;
+}
+
+@keyframes jello-vertical {
+  0% { transform: scale3d(1, 1, 1); }
+  30% { transform: scale3d(0.75, 1.25, 1); }
+  40% { transform: scale3d(1.25, 0.75, 1); }
+  50% { transform: scale3d(0.85, 1.15, 1); }
+  65% { transform: scale3d(1.05, 0.95, 1); }
+  75% { transform: scale3d(0.95, 1.05, 1); }
+  100% { transform: scale3d(1, 1, 1); }
+}
+
+/* Tooltip styling */
+.tooltip {
+  position: absolute;
+  top: -20px;
+  opacity: 0;
+  background-color: #335D3B;
+  background-image: linear-gradient(147deg, #335D3B 0%, #A3B18A 74%);
+  color: #DAD7CD;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: 0.2s;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.tooltip::before {
+  position: absolute;
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #335D3B;
+  background-size: 1000%;
+  background-position: center;
+  transform: rotate(45deg);
+  bottom: -15%;
+  transition-duration: 0.3s;
+}
+
+/* Disclaimer Tooltip */
+.disclaimer-tooltip::before {
+  content: "Disclaimer!";
+}
+
+/* Features Tooltip */
+.features-tooltip::before {
+  content: "Key Features!";
+}
+
+.faq-button:hover .tooltip {
+  top: -40px;
+  opacity: 1;
+  transition-duration: 0.3s;
 }
 
 /* styling for tabs */
@@ -205,7 +291,7 @@ st.markdown("""
 
 # Sidebar Main Header and Introductory Statement
 st.sidebar.header('User Hub')
-st.sidebar.markdown("Fill out as many or as few details as you’d like. Choices with * are required, the rest are optional.") #-- changed title and desc
+st.sidebar.markdown("Fill out as many details as you would like. Choices with * are required fields.") #-- changed desc
 
 # Basic Demographic Information
 st.sidebar.subheader("Basic Information")
@@ -216,7 +302,7 @@ height = st.sidebar.number_input('Height (cm)', min_value=120, max_value=300)
 
 # Health Goals and Dietary Preferences
 st.sidebar.subheader("Health Goals & Dietary Preferences")
-goal = st.sidebar.selectbox('Health Goal', ['Weight Loss', 'Maintain Weight', 'Muscle Gain', 'Eat Healthier', 'Create Meal Routine'])
+goal = st.sidebar.selectbox('Health Goal *', ['Weight Loss', 'Maintain Weight', 'Muscle Gain', 'Eat Healthier', 'Create Meal Routine'])
 dietary_pref = st.sidebar.multiselect('Dietary Preferences', ['Vegetarian', 'Vegan', 'Halal', 'Gluten-Free', 'Dairy-Free', 'Pescetarian', 'None'])
 allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
 
@@ -227,10 +313,10 @@ activity_type = st.sidebar.multiselect('Types of Physical Activity', ['Cardio', 
 
 # Meal Plan Customization
 st.sidebar.subheader("Meal Plan Customisation")
-meal_frequency = st.sidebar.selectbox('Meals Per Day', ['1 meal', '2 meals', '3 meals', '4 meals']) #-- adjusted meal servings
+meal_frequency = st.sidebar.selectbox('Meals Per Day *', ['1 meal', '2 meals', '3 meals', '4 meals']) 
 meal_prep = st.sidebar.selectbox('Meal Prep Time', ['Minimal (quick recipes)', 'Moderate (30-60 mins)', 'Detailed (complex recipes)'])
-servings = st.sidebar.number_input('Number of Servings per Recipe', min_value=1, max_value=4, value=2) #-- changed 10 max to 4
-days = st.sidebar.slider('Meal Plan Duration (days)', 1, 7, 7)
+servings = st.sidebar.number_input('Number of Servings per Recipe *', min_value=1, max_value=4, value=2) 
+days = st.sidebar.slider('Meal Plan Duration (days) *', 1, 7, 7)
 
 # Function to Generate Recipes with OpenAI
 @st.cache_data
@@ -356,10 +442,11 @@ if st.sidebar.button("Cook Up My Plan!"):
 # Initialize selected_recipe in session state if it does not exist
 if "selected_recipe" not in st.session_state:
     st.session_state["selected_recipe"] = "Total"  # Default to "Total"
-
+    
 # -------------------------
 # 4. Tabs
 # -------------------------
+
 if "recipes_text" in st.session_state:
     recipes_text = st.session_state["recipes_text"]
     nutrition_df = parse_nutrition_info(recipes_text)
@@ -373,7 +460,36 @@ tab1, tab2, tab3, tab4 = st.tabs(['Your Meal Plan', 'Adjust Your Plan', 'Recipes
 # -------------------------
 
 with tab1:
-    st.markdown('<h2 style="text-align: center;">Your Personalised Meal Plan</h2>', unsafe_allow_html=True)
+    # Center the main heading
+    st.markdown('<h2 style="text-align: center;">Welcome to Meal Steal - Your AI Personalised Meal Plan!</h2>', unsafe_allow_html=True)
+
+    # Add app description
+    st.write("Meal Steal is your personalised meal planner powered by AI. Simply input your preferences, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
+
+    # Center the FAQ button with tooltip
+    st.markdown("""
+    <div style="text-align: center;">
+    <!-- Disclaimer Button -->
+    <div class="faq-button disclaimer-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/></svg>
+        <span class="tooltip disclaimer-tooltip">Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible for any dietary, health, or financial outcomes arising from the use of the information provided.</span>
+    </div>
+
+    <!-- Features Button -->
+    <div class="faq-button features-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.5-9v4h1v-4h-1zm0-6v4h1V7h-1z"/></svg>
+        <span class="tooltip features-tooltip">
+            <strong>Key Features:</strong><br>
+            <ul>
+                <li><strong>Personalized Recipes</strong>: Submit your preferences, and our AI will craft recipes just for you, ensuring each meal aligns with your nutritional needs.</li>
+                <li><strong>In-Depth Recipe Exploration</strong>: Explore individual recipes in detail through the tabs, where you can adjust portions, view ingredients, and read preparation steps.</li>
+                <li><strong>Nutrition Dashboard</strong>: Visualize your daily and weekly nutrition intake with our interactive dashboard, helping you stay on track with your dietary goals.</li>
+                <li><strong>Downloadable Meal Plans</strong>: Conveniently download your entire meal plan as a PDF for easy reference and use in the kitchen.</li>
+            </ul>
+        </span>
+    </div>
+</div>
+    """, unsafe_allow_html=True)
 
 # -------------------------
 # 6. Adjust Your Meal Plan 
@@ -499,6 +615,7 @@ with tab4:
             st.write("No nutrient data to display for the selected recipe.")
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+
 
 # ----
 # 9. Close container
