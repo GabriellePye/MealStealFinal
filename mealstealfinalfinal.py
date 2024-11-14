@@ -132,6 +132,7 @@ st.markdown("""
   position: relative;  /* Necessary for absolute positioning of the tooltip */
   display: inline-block;  /* Keeps the tooltip text inline with the "📜 Disclaimer" */
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
 /* Tooltip Text (Hidden by default) */
@@ -147,7 +148,7 @@ st.markdown("""
   bottom: 125%;  /* Position above the text */
   left: 50%;
   transform: translateX(-50%);
-  max-width: 350px; /* Tooltip width */
+  max-width: 500px; /* Tooltip width */
   text-align: left; /* Text alignment */
   opacity: 0; /* Initially invisible */
   transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
