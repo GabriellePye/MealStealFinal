@@ -731,47 +731,50 @@ with tab4:
         # Display the chart in Streamlit
         st.plotly_chart(fig)
 
-
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
         calories_consumed = nutrition_df["Calories"].sum()
         caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
-        # Plotly gauge chart for caloric budget
+        # Plotly gauge chart with wider green bar and additional labels
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=calories_consumed,
             number={
-                'valueformat': ".0f",
-                'suffix': " kcal",
+                'valueformat': ".0f",  # Display the number as an integer
+                'suffix': " kcal",     # Add kcal as a suffix
                 'font': {'size': 36, 'family': 'Roboto'},
-            },
-            title={
-                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto'},
-                'y': 1.2  # Adjusted position to move the title further up
             },
             gauge={
                 'axis': {
-                    'range': [0, total_caloric_needs],
+                    'range': [0, total_caloric_needs],  # Set gauge to calorie range
                     'tickwidth': 1.5,
                     'tickcolor': "grey",
                     'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
                     'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
                     'tickfont': {'family': 'Roboto'}
                 },
-                'bar': {'color': "#335D3B", 'thickness': 1.0},
-                'bgcolor': "#DAD7CD",
+                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
+                'bgcolor': "#DAD7CD",  # Cream background for gauge
                 'steps': [
-                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}
+                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
                 ],
                 'threshold': {
                     'line': {'color': "#335D3B", 'width': 4},
                     'thickness': 1.0,
-                    'value': calories_consumed
+                    'value': calories_consumed  # Use calories consumed to show progress on gauge
                 }
             }
         ))
+
+        # Update layout for the title (separate from the Indicator itself)
+        fig.update_layout(
+            title={
+                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
+                'y': 1.2,  # Position the title higher up
+                'font': {'size': 18, 'family': 'Roboto'}
+            }
+        )
 
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
@@ -791,9 +794,6 @@ with tab4:
 
         # Show the gauge in Streamlit
         st.plotly_chart(fig)
-
-    else:
-        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
