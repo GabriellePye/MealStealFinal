@@ -52,9 +52,9 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/Msvqf1f/Meal-Steal-BG.png') repeat; /* This ensures the background image repeats */
-    background-position: top left; /* Align the image to the top left */
-    background-attachment: fixed; /* Keeps the background fixed while scrolling */
+    background: url('https://images.pexels.com/photos/326281/pexels-photo-326281.jpeg?cs=srgb&dl=pexels-pixabay-326281.jpg&fm=jpg');
+    background-size: cover; 
+    background-position: top;
 }
  
 /* styling for subheader + other text elements */
