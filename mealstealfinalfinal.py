@@ -602,7 +602,6 @@ with tab3:
                 st.write(f"**Cuisine**: {recipe['Cuisine']}")
                 st.write(f"**Diet**: {recipe['Diet']}")
                 st.write(f"**Total Cooking Time**: {recipe['Total Cooking Time']}")
-                st.write(f"**Servings**: {recipe['Servings']}")
                 st.write(f"**Estimated Price**: {recipe['Estimated Price']}")
 
                 # Display ingredients
@@ -641,13 +640,15 @@ with tab3:
 # 8. Nutritional Dashboard
 # -------------------------
 
-# Function to calculate daily caloric needs based on user inputs (using Mifflin-St Jeor Equation)
-def calculate_caloric_needs(weight, height, age, gender, activity_level):
+# Function to calculate daily caloric needs based on user inputs and health goal (using Mifflin-St Jeor Equation)
+def calculate_caloric_needs(weight, height, age, gender, activity_level, health_goal):
+    # Calculate BMR based on gender
     if gender == 'Male':
         bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
     else:
         bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
 
+    # Define activity factors
     activity_factors = {
         'Sedentary': 1.2,
         'Lightly Active': 1.375,
@@ -656,7 +657,19 @@ def calculate_caloric_needs(weight, height, age, gender, activity_level):
         'Super Active': 1.9
     }
     
+    # Calculate TDEE
     tdee = bmr * activity_factors[activity_level]
+
+    # Adjust TDEE based on health goal
+    if health_goal == 'Weight Loss':
+        tdee *= 0.85  # Reduce by 10%
+    elif health_goal == 'Muscle Gain':
+        tdee *= 1.15  # Increase by 10%
+    elif health_goal == 'Maintain Weight':
+        pass  # No adjustment needed
+    elif health_goal in ['Eat Healthier', 'Create Meal Routine']:
+        pass  # No direct impact on caloric needs
+
     return tdee
 
 # Calculate total caloric needs based on duration (days)
