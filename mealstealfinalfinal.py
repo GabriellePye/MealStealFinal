@@ -13,6 +13,7 @@ from openai import OpenAI
 import re
 from fpdf import FPDF
 import io
+import re
 
 # Initialize OpenAI client
 openai.api_key = st.secrets["openai_key"]
@@ -261,8 +262,9 @@ st.markdown("""
     border-radius: 15px; /* Rounded corners on hover */
 }
 
-.card:hover:after {
-    content: "Meal Plan"; /* Show meal plan text on hover */
+/* Hover effects for cards */
+.card:hover::after {
+    content: "{recipe_titles_str}"; /* This will show the recipe titles when hovering */
     color: #DAD7CD; /* Text color for visibility */
 }
 
@@ -510,13 +512,53 @@ with tab1:
 # 6. Your Meal Plan
 # -------------------------
 
-with tab2:
+# Tab 2 (Meal Plan)
+with tab2:  # Assuming tab2 is the section or tab you are using to display the meal plan
     st.markdown("### Your Meal Plan")
+
+    # Sidebar for the user to select the number of days in the meal plan
+    meal_plan_duration = st.sidebar.slider("Select Number of Days for Meal Plan", 1, 7, 2)  # Example: Range from 1 to 7 days, default 2
+
+    # Check if the recipes_text exists in session_state
+    if "recipes_text" in st.session_state:
+        # Parse the recipes from the session_state["recipes_text"]
+        recipes_data = parse_recipe_info(st.session_state["recipes_text"])
+
+        # Extract only the titles from the recipes_data
+        recipe_titles = [recipe["Title"] for recipe in recipes_data]
     
-    # Check if recipes_text is available in session_state
-    if 'recipes_text' in st.session_state and st.session_state['recipes_text']:
-        st.write(st.session_state['recipes_text'])  # Display full meal plan text as a large block
-   
+    # Create columns for each day in the meal plan
+    cols = st.columns(meal_plan_duration)
+
+    # Initialize a dictionary to store recipes assigned to each day
+    assigned_recipes = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
+
+    # Dropdown to assign recipes to specific days
+    day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
+
+    # Multiselect to choose recipes for the selected day
+    selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", recipe_titles)
+
+    # Store the selected recipes for the chosen day
+    for recipe in selected_recipes:
+        assigned_recipes[day_dropdown].append(recipe)
+
+    # Render the meal plan cards with the selected recipes for each day
+    for idx, (day, meals) in enumerate(assigned_recipes.items()):
+        if idx < meal_plan_duration:  # Only show the selected number of days
+            with cols[idx]:  # Distribute the days across columns
+                # Render the card using HTML and show the recipe titles on hover
+                recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
+                st.markdown(f"""
+                <div class="card" style="cursor: pointer;">
+                    <div class="card-content">
+                        <h3 style="font-size: 15px;">{day}</h3>
+                        <p style="font-size: 15px;">Click to see meals</p>
+                        <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
 # -------------------------
 # 7. Recipes
 # -------------------------
