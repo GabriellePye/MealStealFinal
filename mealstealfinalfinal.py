@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.pinimg.com/736x/a1/44/85/a14485af812f5efb211158f1908042aa.jpg');
+    background: url('https://img.freepik.com/premium-photo/wooden-table-with-vegetables-right_960396-638931.jpg?semt=ais_hybrid');
     background-size: cover; 
     background-position: top;
 }
