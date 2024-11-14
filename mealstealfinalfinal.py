@@ -708,8 +708,6 @@ with tab4:
             title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
             showlegend=True,
             margin=dict(t=50, b=0, l=0, r=0),  # Adjust margins
-            height=400,  # Set height to control overall size
-            width=400    # Set width to control overall size
         )
 
         # Display the chart in Streamlit
