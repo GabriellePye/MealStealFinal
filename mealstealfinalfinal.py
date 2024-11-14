@@ -470,10 +470,10 @@ with tab1:
 with tab2:
     st.markdown("### Your Meal Plan")
 
-        # Sample recipes_data for illustration (replace with actual data from session_state)
-        # Assuming `recipes_data` contains a list of recipes, each with a "Title" and other details
-        recipes_data = [
-            {"Title": "Recipe 1", "Cuisine": "Italian", "Diet": "Vegetarian", "Total Cooking Time": "30 mins", "Servings": 2, "Estimated Price": "$5", "Ingredients": ["Tomato", "Cheese"], "Instructions": ["Mix ingredients", "Cook for 10 mins"]},
+    # Sample recipes_data for illustration (replace with actual data from session_state)
+    # Assuming `recipes_data` contains a list of recipes, each with a "Title" and other details
+    recipes_data = [
+                    {"Title": "Recipe 1", "Cuisine": "Italian", "Diet": "Vegetarian", "Total Cooking Time": "30 mins", "Servings": 2, "Estimated Price": "$5", "Ingredients": ["Tomato", "Cheese"], "Instructions": ["Mix ingredients", "Cook for 10 mins"]},
             {"Title": "Recipe 2", "Cuisine": "Mexican", "Diet": "Vegan", "Total Cooking Time": "45 mins", "Servings": 3, "Estimated Price": "$8", "Ingredients": ["Taco Shells", "Avocado"], "Instructions": ["Prepare tacos", "Serve with avocado"]},
             {"Title": "Recipe 3", "Cuisine": "Chinese", "Diet": "Non-Vegetarian", "Total Cooking Time": "25 mins", "Servings": 2, "Estimated Price": "$7", "Ingredients": ["Rice", "Chicken"], "Instructions": ["Cook rice", "Stir-fry chicken"]},
         ]
@@ -534,7 +534,7 @@ with tab2:
                         meal_plan[day].append(selected_recipe)
                         st.write(f"Assigned {selected_recipe} to {day}")
 
-                
+   
 # -------------------------
 # 7. Recipes
 # -------------------------
