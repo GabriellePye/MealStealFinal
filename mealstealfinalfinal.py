@@ -724,34 +724,39 @@ with tab4:
         
         # Calculate caloric needs
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
-        calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
+        calories_consumed = meal_plan_calories  # Total calories from the meal plan
 
         # Gauge chart configuration
-        fig, ax = plt.subplots()  # Wider, short figure for better horizontal space
+        fig, ax = plt.subplots(figsize=(6, 3), subplot_kw={'projection': 'polar'})
 
         # Set the parameters for the gauge
         current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
-        angle_range = np.linspace(-90, 90, 100)  # Adjusted for left-to-right gauge
+        theta = np.linspace(np.pi, 0, 100)  # Angle range for the gauge
 
-        # Plot the gauge background (remaining section)
-        ax.fill_between(angle_range, 0, 1, color="#DAD7CD", alpha=0.5)  # Light grey
+        # Background
+        ax.fill_between(theta, 0, 1, color="#DAD7CD", alpha=0.5)  # Light grey for unachieved part
 
-        # Plot the gauge current value (consumed section)
-        ax.fill_between(angle_range[:int(current_percentage * len(angle_range))], 0, 1, color="#335D3B")  # Dark green
+        # Foreground
+        ax.fill_between(theta[:int(current_percentage * len(theta))], 0, 1, color="#335D3B")  # Dark green for achieved part
 
-        # Format the chart appearance
-        ax.set_aspect('equal')
-        ax.axis("off")
+        # Needle
+        ax.plot([np.pi * (1 - current_percentage), np.pi * (1 - current_percentage)], [0, 1], color="black", linewidth=2)
 
         # Add the text for current and goal calories
         ax.text(0, -0.2, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
                 ha='center', va='center', fontsize=14, fontweight="bold", color="#335D3B")
-        ax.text(0, -0.5, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12, color="#335D3B")
+        ax.text(0, -0.35, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
+
+        # Remove polar grid and labels
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        ax.spines['polar'].set_visible(False)
 
         # Display the gauge chart
         st.pyplot(fig)
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+
 
 # ----
 # 9. Close container
