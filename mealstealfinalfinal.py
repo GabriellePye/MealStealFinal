@@ -127,8 +127,36 @@ st.markdown("""
     margin-right: 20px; /* Space between logo and subheader */
 }
 
-/* Styling for tooltip */
-#-- to fill in later
+/* Tooltip Styling */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 16px;
+    color: #DAD7CD;  /* Tooltip text color */
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #335D3B;
+    color: #555;
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the text */
+    left: 50%;
+    margin-left: -125px; /* Offset the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
 
 /* styling for tabs */
 .stTabs [role='tab'] {
@@ -429,7 +457,7 @@ with tab1:
     st.markdown('<h2 style="text-align: center;">Welcome to Meal Steal - Your AI Personalised Meal Plan!</h2>', unsafe_allow_html=True)
 
     # Add app description
-    st.write("Meal Steal is your personalised meal planner powered by AI. Simply input your preferences, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
+    st.write("Meal Steal is your personalised meal planner powered by AI. Simply input your preferences into our user hub on the left, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
     
     # Key Features content in Markdown format
     features_content = """
@@ -444,24 +472,23 @@ with tab1:
     # Display the content directly in Streamlit using st.write (Markdown supported)
     st.write(features_content)
 
-     # Adding the Disclaimer Button with Tooltip on Hover inside Tab 1
-    disclaimer_html = """
-    <div class="relative group">
-      <p class="text-slate-800 font-mono font-bold cursor-pointer">Hover me for Disclaimer</p>
-
-      <div
-        class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition duration-100 transform group-hover:translate-y-0 translate-y-2"
-      >
-        <div class="bg-slate-800 w-max max-w-xs text-white rounded-lg px-4 py-4">
-          <p class="font-bold text-md mb-1">Disclaimer 📜</p>
-          <p class="text-sm">
-            Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible for any dietary, health, or financial outcomes arising from the use of the information provided.
-          </p>
+    # Disclaimer Button with Hover Effect (Inside a Section with Background Styling)
+    st.markdown("""
+        <div class="section-background">
+            <div class="tooltip">
+                <span>📜 Disclaimer</span>
+                <div class="tooltiptext">
+                    <strong>Meal Steal Disclaimer:</strong><br><br>
+                    Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. 
+                    While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, 
+                    completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary 
+                    changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, 
+                    and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible 
+                    for any dietary, health, or financial outcomes arising from the use of the information provided.
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    """
-    st.markdown(disclaimer_html, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # -------------------------
 # 6. Your Meal Plan
