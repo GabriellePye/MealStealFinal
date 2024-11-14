@@ -712,34 +712,52 @@ with tab4:
 
         st.plotly_chart(fig)
 
-        # Calculate caloric needs
+        # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
-        calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
-        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Percentage of total caloric goal
+        calories_consumed = nutrition_df["Calories"].sum()
+        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
-        # Plotly gauge chart with percentage label
+        # Plotly gauge chart with wider green bar and additional labels
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=caloric_percentage,
             number={'suffix': "%", 'font': {'size': 36}},  # Display as percentage
-            title={'text': f"{int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 'font': {'size': 20}},
+            title={'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 'font': {'size': 18}},
             gauge={
                 'axis': {'range': [0, 100], 'tickwidth': 1.5, 'tickcolor': "grey"},
-                'bar': {'color': "#335D3B", 'thickness': 0.3},  # Dark green for the fill bar
-                'bgcolor': "#DAD7CD",  # Cream color background for the whole gauge
+                'bar': {'color': "#335D3B", 'thickness': 0.5},  # Wider green bar
+                'bgcolor': "#DAD7CD",  # Cream background color for the gauge
                 'steps': [
-                    {'range': [0, 100], 'color': "#DAD7CD"}  # Full dome as cream background
+                    {'range': [0, 100], 'color': "#DAD7CD"}  # Full gauge background in cream
                 ],
                 'threshold': {
-                    'line': {'color': "grey", 'width': 3},
+                    'line': {'color': "grey", 'width': 4},
                     'thickness': 0.75,
                     'value': caloric_percentage
                 }
             }
         ))
 
-        # Show the gauge
+        # Add annotations for clarity
+        fig.add_annotation(
+            text="Percentage of Total Calories Consumed",
+            x=0.5, y=0.7, showarrow=False,
+            font=dict(size=14, color="grey")
+        )
+        fig.add_annotation(
+            text="Caloric Goal",
+            x=0.92, y=0.12, showarrow=False,
+            font=dict(size=12, color="grey")
+        )
+        fig.add_annotation(
+            text="Calories Consumed",
+            x=0.08, y=0.12, showarrow=False,
+            font=dict(size=12, color="grey")
+        )
+
+        # Show the gauge in Streamlit
         st.plotly_chart(fig)
+
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
