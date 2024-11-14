@@ -241,11 +241,11 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
     prompt = (
         f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
         f"Each recipe should be formatted exactly as shown below, with each field clearly labeled and on a new line. "
-        f"The output should be in the following format for consistency:\n\n"
+        f"The output should be in the following format for consistency, and all ingredient amounts should use metric units (grams, milliliters, etc.):\n\n"
         
         "### Recipe X\n"
         "**Title**: [Recipe Title]\n"
-        "**Ingredients**: \n- Ingredient 1 (amount)\n- Ingredient 2 (amount)\n...\n"
+        "**Ingredients**: \n- Ingredient 1 (amount in grams or milliliters)\n- Ingredient 2 (amount in grams or milliliters)\n...\n"
         "**Instructions**: \n1. Step 1\n2. Step 2\n...\n"
         "**Cuisine**: [Cuisine Type]\n"
         "**Diet**: [Diet Type]\n"
@@ -262,7 +262,7 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
         f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}. "
         "All fields are mandatory; if information is unavailable, write 'N/A'. Please follow the format exactly without adding or omitting any fields.\n\n"
     )
-    
+
     completion = client.chat.completions.create(
         model="ft:gpt-4o-mini-2024-07-18:personal::ASMltAf2",  # Replace with your fine-tuned model ID
         messages=[{"role": "user", "content": prompt}]
