@@ -694,39 +694,43 @@ with tab4:
 
         # Plotly pie chart for nutrient distribution
         fig = go.Figure(data=[go.Pie(
-            labels=nutrients_for_pie,  # Labels show nutrient names only
+            labels=nutrients_for_pie,
             values=nutrient_totals,
-            hole=0.6,  # Creates the donut effect
+            hole=0.6,
             marker=dict(colors=color_scheme),
-            textinfo='label',  # Show only label (no values) on the chart
-            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
-            textposition='outside',  # Position labels outside the donut
-            textfont=dict(size=16, color='grey', family='Roboto')  # Set label text size and style
+            textinfo='label',
+            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}<extra></extra>',  # Removes 'trace 0'
+            textposition='outside',
+            textfont=dict(size=16, color='grey', family='Roboto')
         )])
 
-        # Update layout for the title and to make the chart smaller
+        # Update layout for the title and make the chart smaller
         fig.update_layout(
-            title={
-                'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
-                'x': 0.5,  # Center title
-                'y': 0.95,  # Raise the title slightly to prevent overlap
-                'xanchor': 'center',
-                'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto', 'weight': 'normal'}
-            },
+            title=dict(
+                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                x=0.5,
+                y=0.85,
+                xanchor='center',
+                yanchor='top',
+                font=dict(size=18, color='grey', family='Roboto')
+            ),
             showlegend=False,
-            margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
+            margin=dict(t=100, b=50, l=50, r=50)
         )
 
-        # Update hoverlabel font size
+        # Update hoverlabel for improved alignment and appearance
         fig.update_traces(
             hoverlabel=dict(
-                align="left",  # Align text to the left
+                align="left",
+                bgcolor="white",  # Set a solid background color to prevent overflow
+                bordercolor="grey",  # Add a border to make it distinct
                 font=dict(size=16, color="grey", family="Roboto")
             )
         )
+
         # Display the chart in Streamlit
         st.plotly_chart(fig)
+
 
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
