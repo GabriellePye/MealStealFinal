@@ -714,7 +714,7 @@ with tab4:
                 facecolor='white'
             )
 
-            centre_circle = plt.Circle((0, 0), 0.40, fc='white')
+            centre_circle = plt.Circle((0, 0), 0.30, fc='white')
             fig.gca().add_artist(centre_circle)
             ax.set_title(f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}")
 
