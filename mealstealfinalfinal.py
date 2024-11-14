@@ -701,7 +701,7 @@ with tab4:
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
             textposition='outside',  # Position labels outside the donut
-            textfont=dict(size=16, color='grey', family='Arial')  # Set label text size and style
+            textfont=dict(size=16, color='grey', family='Roboto')  # Set label text size and style
         )])
 
         # Update layout for the title and to make the chart smaller
@@ -712,14 +712,14 @@ with tab4:
                 'y': 0.95,  # Raise the title slightly to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Source Sans Pro', 'weight': 'normal'}
+                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto', 'weight': 'normal'}
             },
             showlegend=False,
             margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
         )
 
         # Update hoverlabel font size
-        fig.update_traces(hoverlabel=dict(font_size=16))
+        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Roboto'))
 
         # Display the chart in Streamlit
         st.plotly_chart(fig)
@@ -736,38 +736,39 @@ with tab4:
             number={
                 'valueformat': ".0f",  # Display the number as an integer
                 'suffix': " kcal",     # Add kcal as a suffix
-                'font': {'size': 36},
+                'font': {'size': 36, 'family': 'Roboto'},
             },
             title={
                 'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18}
+                'font': {'size': 18, 'family': 'Roboto'}
             },
-             gauge={
-        'axis': {
-            'range': [0, total_caloric_needs],  # Set gauge to calorie range
-            'tickwidth': 1.5,
-            'tickcolor': "grey",
-            'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
-            'ticktext': [f"{int(i)} cal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]]
-        },
-        'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
-        'bgcolor': "#DAD7CD",  # Cream background for gauge
-        'steps': [
-            {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
-        ],
-        'threshold': {
-            'line': {'color': "#335D3B", 'width': 4},
-            'thickness': 1.0,
-            'value': calories_consumed  # Use calories consumed to show progress on gauge
-        }
-    }
-))
+            gauge={
+                'axis': {
+                    'range': [0, total_caloric_needs],  # Set gauge to calorie range
+                    'tickwidth': 1.5,
+                    'tickcolor': "grey",
+                    'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
+                    'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
+                    'tickfont': {'family': 'Roboto'}
+                },
+                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
+                'bgcolor': "#DAD7CD",  # Cream background for gauge
+                'steps': [
+                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
+                ],
+                'threshold': {
+                    'line': {'color': "#335D3B", 'width': 4},
+                    'thickness': 1.0,
+                    'value': calories_consumed  # Use calories consumed to show progress on gauge
+                }
+            }
+        ))
 
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal calorie total:",
             x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
-            font=dict(size=16, color="grey"),
+            font=dict(size=16, color="grey", family='Roboto'),
             align='center'
         )
 
@@ -775,13 +776,12 @@ with tab4:
         fig.add_annotation(
             text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
             x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
-            font=dict(size=16, color="grey"),
+            font=dict(size=16, color="grey", family='Roboto'),
             align='center'
         )
 
         # Show the gauge in Streamlit
         st.plotly_chart(fig)
-
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
