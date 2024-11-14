@@ -468,8 +468,6 @@ tab1, tab2, tab3, tab4 = st.tabs(['About Meal Steal', 'Your Meal Plan', 'Recipes
 # 5. About Meal Steal
 # -------------------------
 
-import streamlit as st
-
 # Tab 1: Main description and key features
 with tab1:
     # Center the main heading
@@ -516,8 +514,8 @@ with tab1:
 with tab2:  # Assuming tab2 is the section or tab you are using to display the meal plan
     st.markdown("### Your Meal Plan")
 
-    # Sidebar for the user to select the number of days in the meal plan
-    meal_plan_duration = st.sidebar.slider("Select Number of Days for Meal Plan", 1, 7, 2)  # Example: Range from 1 to 7 days, default 2
+     # Use the 'days' value from the existing sidebar for meal plan duration
+    meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days if not set in session state
 
     # Check if the recipes_text exists in session_state
     if "recipes_text" in st.session_state:
@@ -553,7 +551,7 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
                 <div class="card" style="cursor: pointer;">
                     <div class="card-content">
                         <h3 style="font-size: 15px;">{day}</h3>
-                        <p style="font-size: 15px;">Click to see meals</p>
+                        <p style="font-size: 15px;">Hover to see meals!</p>
                         <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
                     </div>
                 </div>
