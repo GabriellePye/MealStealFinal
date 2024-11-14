@@ -239,16 +239,17 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
     dietary_preferences = ', '.join(dietary_pref)
     meal_prep_time = meal_prep.lower()
     prompt = (
-        f"Generate {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should follow the exact format below, using only metric units (grams, milliliters, etc.), with no mention of brand names or specific product recommendations. "
-        f"The recipes should be adjusted to yield {servings} servings. Use concise, cost-effective instructions.\n\n"
+        f"Generate {total_meals} unique, full meal recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
+        f"Each recipe should be a complete meal (no snacks, beverages, or single small dishes), formatted exactly as shown below. "
+        f"Use only metric units (grams, milliliters, etc.) and avoid mentioning any brand names or specific product recommendations. "
+        f"Adjust each recipe to yield {servings} servings. Follow concise, cost-effective instructions.\n\n"
         
         "### Recipe X\n"
         "**Title**: [Recipe Title]\n"
         "**Ingredients**: \n- Ingredient 1 (amount in grams or milliliters)\n- Ingredient 2 (amount in grams or milliliters)\n...\n"
         "**Instructions**: \n1. Step 1\n2. Step 2\n...\n"
-        "**Cuisine**: [Cuisine Type]\n"
-        "**Diet**: [Diet Type]\n"
+        "**Cuisine**: [Cuisine Type or N/A]\n"
+        "**Diet**: [Diet Type or N/A]\n"
         "**Total Cooking Time**: [Time in minutes]\n"
         "**Servings**: [Number of servings]\n"
         "**Estimated Price**: £[Price]\n"
@@ -260,7 +261,7 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
         
         f"Consider the following user details: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
         f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}. "
-        "All fields are mandatory; if information is unavailable, write 'N/A'. Follow the format precisely without any omissions.\n\n"
+        "Ensure that each recipe uses all fields as specified. If information is unavailable, write 'N/A' for that field. Follow the format precisely without any deviations.\n\n"
     )
 
     completion = client.chat.completions.create(
