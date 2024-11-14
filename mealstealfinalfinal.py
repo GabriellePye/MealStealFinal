@@ -746,11 +746,6 @@ with tab4:
                 'suffix': " kcal",     # Add kcal as a suffix
                 'font': {'size': 36, 'family': 'Roboto'},
             },
-            title={
-                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto'},
-                'y': 1.2
-            },
             gauge={
                 'axis': {
                     'range': [0, total_caloric_needs],  # Set gauge to calorie range
@@ -772,6 +767,14 @@ with tab4:
                 }
             }
         ))
+
+        # Use an annotation for the title text above the gauge
+        fig.add_annotation(
+            text="Proportion of Caloric Budget Consumed by Meal Plan",
+            x=0.5, y=1.2, showarrow=False,  # Adjust y value to control position above the gauge
+            font=dict(size=18, color="grey", family='Roboto'),
+            align='center'
+        )
 
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
