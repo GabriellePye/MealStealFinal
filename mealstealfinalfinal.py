@@ -719,8 +719,12 @@ with tab4:
         )
 
         # Update hoverlabel font size
-        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Roboto'))
-
+        fig.update_traces(
+            hoverlabel=dict(
+                align="left",  # Align text to the left
+                font=dict(size=16, color="grey", family="Roboto")
+            )
+        )
         # Display the chart in Streamlit
         st.plotly_chart(fig)
 
