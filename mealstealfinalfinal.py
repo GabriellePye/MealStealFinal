@@ -129,7 +129,7 @@ st.markdown("""
 
 /* Tooltip Container */
 .tooltip-container {
-  position: relative; /* Necessary for absolute positioning of the tooltip */
+  position: flex; /* Necessary for absolute positioning of the tooltip */
   cursor: pointer;
   display: inline-block; /* Keeps the tooltip container inline with text */
   margin-bottom: 20px;  /* Adds margin at the bottom to create spacing */
