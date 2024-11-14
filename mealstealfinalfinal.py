@@ -696,7 +696,7 @@ with tab4:
         fig = go.Figure(data=[go.Pie(
             labels=nutrients_for_pie,  # Labels show nutrient names only
             values=nutrient_totals,
-            hole=0.7,  # Creates the donut effect
+            hole=0.6,  # Creates the donut effect
             marker=dict(colors=color_scheme),
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
@@ -707,7 +707,7 @@ with tab4:
         fig.update_layout(
             title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
             showlegend=True,
-            margin=dict(t=50, b=0, l=0, r=0),  # Adjust margins
+            margin=dict(t=50, b=20, l=20, r=20),  # Adjust margins
         )
 
         # Display the chart in Streamlit
