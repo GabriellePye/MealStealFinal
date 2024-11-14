@@ -8,8 +8,7 @@ import streamlit as st
 import openai
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Wedge
+import plotly.graph_objects as go
 from openai import OpenAI
 import re
 from fpdf import FPDF
@@ -665,6 +664,8 @@ def calculate_total_caloric_needs(weight, height, age, gender, activity_level, d
     daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level)
     return daily_caloric_needs * days
 
+import plotly.graph_objects as go
+
 # Tab 4: Nutrition Dashboard
 with tab4:
     if "recipes_text" in st.session_state:
@@ -690,73 +691,54 @@ with tab4:
         # Filter data based on selected recipe
         filtered_data = nutrition_df if st.session_state["selected_recipe"] == "Total" else nutrition_df[nutrition_df["Recipe"] == st.session_state["selected_recipe"]]
 
-        # Calculate total calories from the selected recipes
-        meal_plan_calories = filtered_data["Calories"].apply(pd.to_numeric, errors='coerce').sum()
-
         # Sum the selected nutrients for the pie chart
         nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
-        # Ensure there are values to plot
-        if nutrient_totals.sum() > 0:
-            fig, ax = plt.subplots()
-            wedges, texts = ax.pie(
-                nutrient_totals,
-                labels=[f"{nutrient} ({value:.1f}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                startangle=90,
-                colors=color_scheme,
-                wedgeprops=dict(width=0.5)
-            )
+        # Plotly pie chart for nutrient distribution
+        fig = go.Figure(data=[go.Pie(
+            labels=nutrients_for_pie,
+            values=nutrient_totals,
+            hole=0.5,  # Creates the donut effect
+            marker=dict(colors=color_scheme),
+            textinfo='label+percent',
+            hoverinfo='label+value+percent',
+            insidetextorientation='radial'
+        )])
 
-            ax.legend(
-                labels=[f"{nutrient}: {value:.1f}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                loc="center left",
-                bbox_to_anchor=(1, 0, 0.5, 1),
-                facecolor='white'
-            )
+        fig.update_layout(
+            title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+            showlegend=True
+        )
 
-            centre_circle = plt.Circle((0, 0), 0.30, fc='white')
-            fig.gca().add_artist(centre_circle)
-            ax.set_title(f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}")
+        st.plotly_chart(fig)
 
-            st.pyplot(fig)
-        else:
-            st.write("No nutrient data to display for the selected recipe.")
-        
         # Calculate caloric needs
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
-        calories_consumed = meal_plan_calories  # Total calories from the meal plan
+        calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
 
-        # Gauge chart configuration
-        fig, ax = plt.subplots(figsize=(6, 3), subplot_kw={'projection': 'polar'})
+        # Plotly gauge chart for calories
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=calories_consumed,
+            title={'text': "Calories Consumed vs. Goal"},
+            gauge={
+                'axis': {'range': [0, total_caloric_needs]},
+                'bar': {'color': "#335D3B"},
+                'steps': [
+                    {'range': [0, total_caloric_needs * 0.75], 'color': "#DAD7CD"},  # Light grey for remaining section
+                    {'range': [total_caloric_needs * 0.75, total_caloric_needs], 'color': "#335D3B"}  # Dark green for consumed section
+                ],
+                'threshold': {
+                    'line': {'color': "red", 'width': 4},
+                    'thickness': 0.75,
+                    'value': calories_consumed  # Pointer stops at consumed calories
+                }
+            }
+        ))
 
-        # Set the parameters for the gauge
-        current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
-        theta = np.linspace(np.pi, 0, 100)  # Angle range for the gauge
-
-        # Background
-        ax.fill_between(theta, 0, 1, color="#DAD7CD", alpha=0.5)  # Light grey for unachieved part
-
-        # Foreground
-        ax.fill_between(theta[:int(current_percentage * len(theta))], 0, 1, color="#335D3B")  # Dark green for achieved part
-
-        # Needle
-        ax.plot([np.pi * (1 - current_percentage), np.pi * (1 - current_percentage)], [0, 1], color="black", linewidth=2)
-
-        # Add the text for current and goal calories
-        ax.text(0, -0.2, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
-                ha='center', va='center', fontsize=14, fontweight="bold", color="#335D3B")
-        ax.text(0, -0.35, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
-
-        # Remove polar grid and labels
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
-        ax.spines['polar'].set_visible(False)
-
-        # Display the gauge chart
-        st.pyplot(fig)
+        st.plotly_chart(fig)
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
 
 # ----
 # 9. Close container
