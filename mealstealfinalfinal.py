@@ -725,7 +725,7 @@ with tab4:
             title={'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 'font': {'size': 18}},
             gauge={
                 'axis': {'range': [0, 100], 'tickwidth': 1.5, 'tickcolor': "grey"},
-                'bar': {'color': "#335D3B", 'thickness': 0.75},  # Wider green bar
+                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar
                 'bgcolor': "#DAD7CD",  # Cream background color for the gauge
                 'steps': [
                     {'range': [0, 100], 'color': "#DAD7CD"}  # Full gauge background in cream
