@@ -641,7 +641,7 @@ with tab3:
 # -------------------------
 
 # Function to calculate daily caloric needs based on user inputs and health goal (using Mifflin-St Jeor Equation)
-def calculate_caloric_needs(weight, height, age, gender, activity_level, health_goal):
+def calculate_caloric_needs(weight, height, age, gender, activity_level, goal):
     # Calculate BMR based on gender
     if gender == 'Male':
         bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
@@ -661,20 +661,20 @@ def calculate_caloric_needs(weight, height, age, gender, activity_level, health_
     tdee = bmr * activity_factors[activity_level]
 
     # Adjust TDEE based on health goal
-    if health_goal == 'Weight Loss':
+    if goal == 'Weight Loss':
         tdee *= 0.85  # Reduce by 10%
-    elif health_goal == 'Muscle Gain':
+    elif goal == 'Muscle Gain':
         tdee *= 1.15  # Increase by 10%
-    elif health_goal == 'Maintain Weight':
+    elif goal == 'Maintain Weight':
         pass  # No adjustment needed
-    elif health_goal in ['Eat Healthier', 'Create Meal Routine']:
+    elif goal in ['Eat Healthier', 'Create Meal Routine']:
         pass  # No direct impact on caloric needs
 
     return tdee
 
 # Calculate total caloric needs based on duration (days)
-def calculate_total_caloric_needs(weight, height, age, gender, activity_level, health_goal, days):
-    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level, health_goal)
+def calculate_total_caloric_needs(weight, height, age, gender, activity_level, goal, days):
+    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level, goal)
     return daily_caloric_needs * days
 
 # Tab 4: Nutrition Dashboard
@@ -746,7 +746,7 @@ with tab4:
 
 
         # Calculate caloric needs and percentage
-        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, health_goal, days)
+        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, goal, days)
         calories_consumed = nutrition_df["Calories"].sum()
         caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
 
