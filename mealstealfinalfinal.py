@@ -700,21 +700,26 @@ with tab4:
             marker=dict(colors=color_scheme),
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
-            textposition='outside'  # Position labels outside the donut
+            textposition='outside',  # Position labels outside the donut
+            textfont=dict(size=16)  # Set label text size
         )])
 
         # Update layout for the title and to make the chart smaller
         fig.update_layout(
-            title_text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
-            showlegend=True,
+            title=dict(
+                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                x=0.5,  # Center align the title
+                font=dict(size=18)  # Set title size to match the gauge
+            ),
+            showlegend=False,  # Remove the legend
             margin=dict(t=50, b=20, l=20, r=20),  # Adjust margins
         )
 
+        # Update hoverlabel font size
+        fig.update_traces(hoverlabel=dict(font_size=16))
+
         # Display the chart in Streamlit
         st.plotly_chart(fig)
-
-
-
 
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
