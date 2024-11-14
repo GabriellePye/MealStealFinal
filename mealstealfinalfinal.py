@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://img.freepik.com/free-photo/top-view-mexican-tortilla-with-copy-space_23-2148614430.jpg?semt=ais_hybrid');
+    background: url('https://wallpaperbat.com/img/24929-mexican-food-wallpaper.jpg');
     background-size: cover; 
     background-position: top;
 }
