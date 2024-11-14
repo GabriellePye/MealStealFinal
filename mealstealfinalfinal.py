@@ -536,7 +536,11 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
 
     # Multiselect to choose recipes for the selected day, excluding already assigned recipes for that day
     # Available recipes are those that are not yet assigned to the current day
-    available_recipes = [recipe for recipe in recipe_titles if recipe not in assigned_recipes[day_dropdown]]
+    # Create a list of recipes that are already assigned to any other day
+    recipes_already_assigned = [recipe for meals in assigned_recipes.values() for recipe in meals]
+
+    # Filter out the recipes that have already been assigned to other days
+    available_recipes = [recipe for recipe in recipe_titles if recipe not in recipes_already_assigned]
 
     selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
 
