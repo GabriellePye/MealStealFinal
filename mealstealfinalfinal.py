@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/Msvqf1f/Meal-Steal-BG.png') 
+    background: url('https://i.ibb.co/Msvqf1f/Meal-Steal-BG.png');
     background-size: cover; 
     background-position: top;
 }
