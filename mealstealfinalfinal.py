@@ -704,7 +704,7 @@ with tab4:
                 labels=[f"{nutrient} ({value:.1f}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 startangle=90,
                 colors=color_scheme,
-                wedgeprops=dict(width=0.2)
+                wedgeprops=dict(width=0.5)
             )
 
             ax.legend(
