@@ -731,8 +731,8 @@ with tab4:
                     {'range': [0, 100], 'color': "#DAD7CD"}  # Full gauge background in cream
                 ],
                 'threshold': {
-                    'line': {'color': "grey", 'width': 4},
-                    'thickness': 0.75,
+                    'line': {'color': "#335D3B", 'width': 4},
+                    'thickness': 1.0,
                     'value': caloric_percentage
                 }
             }
