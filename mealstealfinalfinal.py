@@ -706,12 +706,15 @@ with tab4:
 
         # Update layout for the title and to make the chart smaller
         fig.update_layout(
-            title=dict(
-                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
-                x=0.5,  # Center align the title
-                font=dict(size=18)  # Set title size to match the gauge
-            ),
-            showlegend=False,  # Remove the legend
+            title={
+                'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                'x': 0.5,  # Center title
+                'y': 0.9,
+                'xanchor': 'center',
+                'yanchor': 'top',
+                'font': {'size': 18, 'color': 'grey', 'family': 'Arial'}
+            },
+            showlegend=False,
             margin=dict(t=50, b=20, l=20, r=20),  # Adjust margins
         )
 
@@ -736,7 +739,7 @@ with tab4:
                 'font': {'size': 36},
             },
             title={
-                'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal",
+                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
                 'font': {'size': 18}
             },
              gauge={
