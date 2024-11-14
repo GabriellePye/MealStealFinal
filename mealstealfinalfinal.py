@@ -128,6 +128,7 @@ st.markdown("""
 }
 
 /* Tooltip Styling */
+/* Styling for Tooltip */
 .tooltip {
     position: absolute;
     background-color: #335D3B; /* Background color */
@@ -135,19 +136,25 @@ st.markdown("""
     padding: 8px 16px; /* Adjust the padding for a less tall tooltip */
     border-radius: 8px;
     font-size: 14px;
-    max-width: 250px; /* Adjust width to make the tooltip longer */
+    max-width: 300px; /* Adjust width to make the tooltip longer */
     width: auto; /* Allow the width to expand based on content */
     text-align: center;
     white-space: nowrap;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 9999;
+    visibility: hidden; /* Start as hidden */
+    opacity: 0; /* Start with zero opacity */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth fade-in */
+    z-index: 9999; /* Ensure it's above other elements */
 }
 
+/* When the tooltip is visible */
 .tooltip.visible {
     visibility: visible;
     opacity: 1;
+}
+
+/* Adjusting the position of the tooltip */
+.tooltip-container {
+    position: relative; /* Ensure it's positioned relative to its parent */
 }
 
 /* styling for tabs */
