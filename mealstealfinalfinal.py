@@ -433,7 +433,7 @@ with tab1:
     
     # Key Features content in Markdown format
     features_content = """
-    **Key Features:**
+    **Key Features 🎉:**
 
     - **Personalised Recipes**: Submit your preferences, and our AI will craft recipes just for you, ensuring each meal aligns with your nutritional needs.
     - **In-Depth Recipe Exploration**: Explore individual recipes in detail through the tabs, where you can adjust portions, view ingredients, and read preparation steps.
