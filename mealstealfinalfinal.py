@@ -115,7 +115,7 @@ st.markdown("""
 
 /* Flex container for logo and subheader */
 .header-container {
-    display: flex;
+    display: relative;
     align-items: left; /* Center vertically */
     justify-content: left; /* Center horizontally */
     margin: 20px; /* Add some margin */
