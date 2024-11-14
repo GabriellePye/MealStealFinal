@@ -580,9 +580,10 @@ with tab4:
         recipes_text = st.session_state["recipes_text"]
         nutrition_df = parse_nutrition_info(recipes_text)
 
-        # Display the entire DataFrame
-        st.write("**Nutrition Data for All Recipes**")
+        # Display the DataFrame centered
+        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
         st.dataframe(nutrition_df)
+        st.markdown("</div>", unsafe_allow_html=True)
 
         # Color scheme and nutrients for pie chart
         color_scheme = ["#335D3B", "#67944C", "#A3B18A"]
