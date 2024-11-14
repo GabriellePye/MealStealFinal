@@ -664,8 +664,6 @@ def calculate_total_caloric_needs(weight, height, age, gender, activity_level, d
     daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level)
     return daily_caloric_needs * days
 
-import plotly.graph_objects as go
-
 # Tab 4: Nutrition Dashboard
 with tab4:
     if "recipes_text" in st.session_state:
@@ -720,12 +718,23 @@ with tab4:
         # Plotly gauge chart with wider green bar and additional labels
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
-            value=caloric_percentage,
-            number={'suffix': "%", 'font': {'size': 36}},  # Display as percentage
-            title={'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal", 'font': {'size': 18}},
+            value=calories_consumed,
+            number={
+                'valueformat': ".0f",  # Display the number as an integer
+                'font': {'size': 36},
+            },
+            title={
+                'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal",
+                'font': {'size': 18}
+            },
             gauge={
-                'axis': {'range': [0, 100], 'tickwidth': 1.5, 'tickcolor': "grey", 'tickvals': [0, 20, 40, 60, 80, 100],
-                        'ticktext': [f"{int(i * total_caloric_needs / 100)} cal" for i in [0, 20, 40, 60, 80, 100]]},
+                'axis': {
+                    'range': [0, 100],
+                    'tickwidth': 1.5,
+                    'tickcolor': "grey",
+                    'tickvals': [0, 20, 40, 60, 80, 100],
+                    'ticktext': [f"{int(i * total_caloric_needs / 100)} cal" for i in [0, 20, 40, 60, 80, 100]]
+                },
                 'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar
                 'bgcolor': "#DAD7CD",  # Cream background color for the gauge
                 'steps': [
@@ -739,16 +748,25 @@ with tab4:
             }
         ))
 
+        # Add annotation for "Meal Calorie Total" above the number
+        fig.add_annotation(
+            text="Meal Calorie Total",
+            x=0.5, y=0.3, showarrow=False,  # Adjust y value to control vertical position above the number
+            font=dict(size=16, color="grey"),
+            align='center'
+        )
+
         # Add annotation for percentage text below the gauge
         fig.add_annotation(
             text=f"{caloric_percentage:.0f}% of total calorie intake for {days} days",
-            x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position
+            x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
             font=dict(size=14, color="grey"),
             align='center'
         )
 
         # Show the gauge in Streamlit
         st.plotly_chart(fig)
+
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
