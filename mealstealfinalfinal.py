@@ -727,7 +727,7 @@ with tab4:
         calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
 
         # Gauge chart configuration
-        fig, ax = plt.subplots(figsize=(6, 3))  # Adjust the figure size for better fit
+        fig, ax = plt.subplots(figsize=(10, 10))  # Adjust the figure size for better fit
 
         # Set the parameters for the gauge
         current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
