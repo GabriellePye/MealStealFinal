@@ -733,7 +733,7 @@ with tab4:
             },
             gauge={
                 'axis': {'range': [0, total_caloric_needs], 'tickwidth': 2, 'tickcolor': "grey", 'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs], 'ticktext': [str(int(val)) + " cal" for val in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]]},
-                'bar': {'color': "#335D3B", 'thickness': 0.3},  # Adjusted green bar thickness
+                'bar': {'color': "#335D3B", 'thickness': 1},  # Adjusted green bar thickness
                 'bgcolor': "#DAD7CD",  # Cream background color for the gauge
                 'steps': [
                     {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
@@ -748,7 +748,7 @@ with tab4:
         # Add annotation for percentage and goal text below the percentage
         fig.add_annotation(
             text=f"{caloric_percentage:.0f}% of total calorie intake for {days} days",
-            x=0.5, y=0.3, showarrow=False,
+            x=0.5, y=1.2, showarrow=False,
             font=dict(size=14, color="grey"),
             align='center'
         )
