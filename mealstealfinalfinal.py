@@ -220,7 +220,7 @@ st.markdown("""
     justify-content: center;
     font-size: 15px;  /* Font size of text in the card */
     font-weight: bold;
-    border-radius: 15px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.5s; /* Smooth transitions */
     margin: 5px;  /* Smaller gap between cards */
