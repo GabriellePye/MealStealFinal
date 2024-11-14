@@ -303,6 +303,48 @@ def parse_nutrition_info(recipes_text):
 
     return pd.DataFrame(data)
 
+@st.cache_data
+def parse_recipe_info(recipes_text):
+    recipes_data = []
+
+    # Split the text by recipe sections
+    recipe_sections = re.split(r"### Recipe \d+", recipes_text)[1:]
+
+    for section in recipe_sections:
+        # Parse each part of the recipe using regular expressions
+        title = re.search(r"\*\*Title\*\*:\s*([^\n]+)", section)
+        ingredients = re.findall(r"\- ([^\n]+)", section)
+        instructions = re.findall(r"\d+\.\s([^\n]+)", section)
+        cuisine = re.search(r"\*\*Cuisine\*\*:\s*([^\n]+)", section)
+        diet = re.search(r"\*\*Diet\*\*:\s*([^\n]+)", section)
+        cooking_time = re.search(r"\*\*Total Cooking Time\*\*:\s*([^\n]+)", section)
+        servings = re.search(r"\*\*Servings\*\*:\s*([^\n]+)", section)
+        price = re.search(r"\*\*Estimated Price\*\*:\s*£([^\n]+)", section)
+        calories = re.search(r"Calories:\s*([\d.]+)\s*kcal", section)
+        carbohydrates = re.search(r"Carbohydrates:\s*([\d.]+)\s*g", section)
+        fat = re.search(r"Fat:\s*([\d.]+)\s*g", section)
+        protein = re.search(r"Protein:\s*([\d.]+)\s*g", section)
+
+        # Append the recipe information in a dictionary
+        recipes_data.append({
+            "Title": title.group(1).strip() if title else "Unknown Recipe",
+            "Ingredients": ingredients,
+            "Instructions": instructions,
+            "Cuisine": cuisine.group(1).strip() if cuisine else "N/A",
+            "Diet": diet.group(1).strip() if diet else "N/A",
+            "Total Cooking Time": cooking_time.group(1).strip() if cooking_time else "N/A",
+            "Servings": servings.group(1).strip() if servings else "N/A",
+            "Estimated Price": f"£{price.group(1).strip()}" if price else "N/A",
+            "Nutrition": {
+                "Calories": f"{calories.group(1).strip()} kcal" if calories else "N/A",
+                "Carbohydrates": f"{carbohydrates.group(1).strip()} g" if carbohydrates else "N/A",
+                "Fat": f"{fat.group(1).strip()} g" if fat else "N/A",
+                "Protein": f"{protein.group(1).strip()} g" if protein else "N/A",
+            }
+        })
+
+    return recipes_data
+
 # Trigger recipe generation
 if st.sidebar.button("Cook Up My Plan!"):
     with st.spinner('Creating your personalised plan...'):
@@ -364,6 +406,38 @@ with tab2:
     # Tab 3: Individual Recipes (Collapsible sections)
     with tab3:
         st.markdown("### Recipes")
+
+        if "recipes_text" in st.session_state:
+            # Parse the recipe information
+            recipes_data = parse_recipe_info(st.session_state["recipes_text"])
+
+            # Display each recipe in a collapsible format
+            for recipe in recipes_data:
+                with st.expander(recipe["Title"]):
+                    # Display key details above ingredients and instructions
+                    st.write(f"**Cuisine**: {recipe['Cuisine']}")
+                    st.write(f"**Diet**: {recipe['Diet']}")
+                    st.write(f"**Total Cooking Time**: {recipe['Total Cooking Time']}")
+                    st.write(f"**Servings**: {recipe['Servings']}")
+                    st.write(f"**Estimated Price**: {recipe['Estimated Price']}")
+
+                    # Display ingredients
+                    st.write("**Ingredients:**")
+                    for ingredient in recipe["Ingredients"]:
+                        st.write(f"- {ingredient}")
+
+                    # Display instructions
+                    st.write("**Instructions:**")
+                    for i, instruction in enumerate(recipe["Instructions"], 1):
+                        st.write(f"{i}. {instruction}")
+
+                    # Display nutrition
+                    st.write("**Nutrition:**")
+                    for nutrient, amount in recipe["Nutrition"].items():
+                        st.write(f"{nutrient}: {amount}")
+
+        else:
+            st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # -------------------------
 # 8. Nutritional Dashboard
