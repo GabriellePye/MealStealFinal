@@ -524,22 +524,34 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
 
         # Extract only the titles from the recipes_data
         recipe_titles = [recipe["Title"] for recipe in recipes_data]
-    
-    # Initialize a list to store the meal plan cards
-    meal_plan_cards = []
 
     # Initialize a dictionary to store recipes assigned to each day
-    assigned_recipes = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
+    if 'assigned_recipes' not in st.session_state:
+        st.session_state['assigned_recipes'] = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
+
+    assigned_recipes = st.session_state['assigned_recipes']
 
     # Dropdown to assign recipes to specific days
     day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
 
-    # Multiselect to choose recipes for the selected day
-    selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", recipe_titles)
+    # Multiselect to choose recipes for the selected day, excluding already assigned recipes
+    available_recipes = [recipe for recipe in recipe_titles if recipe not in assigned_recipes[day_dropdown]]
 
-    # Store the selected recipes for the chosen day
-    for recipe in selected_recipes:
-        assigned_recipes[day_dropdown].append(recipe)
+    selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
+
+    # "Assign!" button to save selected recipes for the chosen day
+    if st.button("Assign!"):
+        for recipe in selected_recipes:
+            assigned_recipes[day_dropdown].append(recipe)
+
+        # Save the updated assigned recipes to session state
+        st.session_state['assigned_recipes'] = assigned_recipes
+
+        # Display a success message
+        st.success(f"Recipes assigned to {day_dropdown}!")
+
+    # Initialize a list to store the meal plan cards
+    meal_plan_cards = []
 
     # Collect all meal plan cards (one for each day)
     for idx, (day, meals) in enumerate(assigned_recipes.items()):
@@ -555,8 +567,12 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
         for idx, (day, meals) in enumerate(row):
             with cols[idx]:  # Distribute the cards across 3 columns
                 recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
+
+                # If there are assigned recipes, mark the card as greyed out
+                gray_style = "background-color: #D3D3D3;" if meals else ""
+
                 st.markdown(f"""
-                <div class="card" style="cursor: pointer;">
+                <div class="card" style="cursor: pointer; {gray_style}">
                     <div class="card-content">
                         <h3 style="font-size: 15px;">{day}</h3>
                         <p style="font-size: 15px;">Click to see meals</p>
