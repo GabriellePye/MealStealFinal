@@ -421,8 +421,10 @@ tab1, tab2, tab3, tab4 = st.tabs(['About Meal Steal', 'Your Meal Plan', 'Recipes
 # 5. About Meal Steal
 # -------------------------
 
+import streamlit as st
+
 # Tab 1: Main description and key features
-with st.expander("Welcome to Meal Steal"):
+with tab1:
     # Center the main heading
     st.markdown('<h2 style="text-align: center;">Welcome to Meal Steal - Your AI Personalised Meal Plan!</h2>', unsafe_allow_html=True)
 
@@ -439,7 +441,7 @@ with st.expander("Welcome to Meal Steal"):
     - **Downloadable Meal Plans**: Conveniently download your entire meal plan as a PDF for easy reference and use in the kitchen.
     """
     
-    # Display the content in Streamlit using st.write (Markdown supported)
+    # Display the content directly in Streamlit using st.write (Markdown supported)
     st.write(features_content)
 
 # -------------------------
