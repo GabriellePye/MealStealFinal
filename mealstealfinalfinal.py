@@ -115,7 +115,7 @@ st.markdown("""
 
 /* Flex container for logo and subheader */
 .header-container {
-    display: relative;
+    display: flex;
     align-items: left; /* Center vertically */
     justify-content: left; /* Center horizontally */
     margin: 20px; /* Add some margin */
@@ -129,7 +129,7 @@ st.markdown("""
 
 /* Tooltip Container */
 .tooltip-container {
-  position: flex; /* Necessary for absolute positioning of the tooltip */
+  position: relative; /* Necessary for absolute positioning of the tooltip */
   cursor: pointer;
   display: inline-block; /* Keeps the tooltip container inline with text */
   margin-bottom: 20px;  /* Adds margin at the bottom to create spacing */
