@@ -704,7 +704,7 @@ with tab4:
                 labels=[f"{nutrient} ({value:.1f}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 startangle=90,
                 colors=color_scheme,
-                wedgeprops=dict(width=0.3)
+                wedgeprops=dict(width=0.2)
             )
 
             ax.legend(
@@ -714,7 +714,7 @@ with tab4:
                 facecolor='white'
             )
 
-            centre_circle = plt.Circle((0, 0), 0.30, fc='white')
+            centre_circle = plt.Circle((0, 0), 0.40, fc='white')
             fig.gca().add_artist(centre_circle)
             ax.set_title(f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}")
 
