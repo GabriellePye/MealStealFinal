@@ -696,7 +696,7 @@ with tab4:
         fig = go.Figure(data=[go.Pie(
             labels=nutrients_for_pie,  # Labels show nutrient names only
             values=nutrient_totals,
-            hole=0.5,  # Creates the donut effect
+            hole=0.7,  # Creates the donut effect
             marker=dict(colors=color_scheme),
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
