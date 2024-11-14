@@ -701,7 +701,7 @@ with tab4:
             textinfo='label',  # Show only label (no values) on the chart
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',  # Custom hover text
             textposition='outside',  # Position labels outside the donut
-            textfont=dict(size=16, color='grey', family='Roboto')  # Set label text size and style
+            textfont=dict(size=16, color='grey', family='Open Sans')  # Set label text size and style
         )])
 
         # Update layout for the title and to make the chart smaller
@@ -709,17 +709,17 @@ with tab4:
             title={
                 'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
                 'x': 0.5,  # Center title
-                'y': 0.95,  # Raise the title slightly to prevent overlap
+                'y': 1.1,  # Raise the title to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto'}
+                'font': {'size': 18, 'color': 'grey', 'family': 'Open Sans'}
             },
             showlegend=False,
-            margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
+            margin=dict(t=100, b=50, l=50, r=50)  # Increase margins for space
         )
 
-        # Update hoverlabel font size
-        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Roboto'))
+        # Update hoverlabel font size and family
+        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Open Sans'))
 
         # Display the chart in Streamlit
         st.plotly_chart(fig)
@@ -736,11 +736,11 @@ with tab4:
             number={
                 'valueformat': ".0f",  # Display the number as an integer
                 'suffix': " kcal",     # Add kcal as a suffix
-                'font': {'size': 36, 'family': 'Roboto'},
+                'font': {'size': 36, 'family': 'Open Sans'},
             },
             title={
-                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto'}
+                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
+                'font': {'size': 18, 'family': 'Open Sans'}
             },
             gauge={
                 'axis': {
@@ -749,7 +749,7 @@ with tab4:
                     'tickcolor': "grey",
                     'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
                     'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
-                    'tickfont': {'family': 'Roboto'}
+                    'tickfont': {'family': 'Open Sans'}
                 },
                 'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
                 'bgcolor': "#DAD7CD",  # Cream background for gauge
@@ -768,16 +768,21 @@ with tab4:
         fig.add_annotation(
             text="Meal calorie total:",
             x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
-            font=dict(size=16, color="grey", family='Roboto'),
+            font=dict(size=16, color="grey", family='Open Sans'),
             align='center'
         )
 
         # Add annotation for percentage text below the gauge
         fig.add_annotation(
             text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
-            x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
-            font=dict(size=16, color="grey", family='Roboto'),
+            x=0.5, y=-0.15, showarrow=False,  # Adjust y value to control vertical position below the gauge
+            font=dict(size=16, color="grey", family='Open Sans'),
             align='center'
+        )
+
+        # Update layout to add margins
+        fig.update_layout(
+            margin=dict(t=100, b=100, l=50, r=50)  # Adjust margins for extra space
         )
 
         # Show the gauge in Streamlit
@@ -785,7 +790,7 @@ with tab4:
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
+        
 # ----
 # 9. Close container
 # ----
