@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://t4.ftcdn.net/jpg/02/92/20/37/240_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg');
+    background: url('https://t4.ftcdn.net/jpg/09/12/62/21/360_F_912622132_PazY8SAnNDFDWoy6M6ABjAmnP1TO88jh.jpg');
     background-size: cover; 
     background-position: top;
 }
