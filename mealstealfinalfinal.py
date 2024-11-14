@@ -699,7 +699,7 @@ with tab4:
             textinfo='label',
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',
             textposition='outside',
-            textfont=dict(size=16, color='grey', family='Open Sans')  # Font updated to Open Sans
+            textfont=dict(size=16, color='grey', family='Roboto')  # Font updated to Roboto
         )])
 
         # Update layout for the title and make the chart smaller
@@ -710,14 +710,14 @@ with tab4:
                 y=0.85,
                 xanchor='center',
                 yanchor='top',
-                font=dict(size=18, color='grey', family='Open Sans')
+                font=dict(size=18, color='grey', family='Roboto')
             ),
             showlegend=False,
             margin=dict(t=100, b=50, l=50, r=50)
         )
 
         # Update hoverlabel font size and family
-        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Open Sans'))
+        fig.update_traces(hoverlabel=dict(font_size=16, font_family='Roboto'))
 
         # Display the chart in Streamlit
         st.plotly_chart(fig)
@@ -734,11 +734,11 @@ with tab4:
             number={
                 'valueformat': ".0f",
                 'suffix': " kcal",
-                'font': {'size': 36, 'family': 'Open Sans'},
+                'font': {'size': 36, 'family': 'Roboto'},
             },
             title={
                 'text': "Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Open Sans'}
+                'font': {'size': 18, 'family': 'Roboto'}
             },
             gauge={
                 'axis': {
@@ -747,7 +747,7 @@ with tab4:
                     'tickcolor': "grey",
                     'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
                     'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
-                    'tickfont': {'family': 'Open Sans'}
+                    'tickfont': {'family': 'Roboto'}
                 },
                 'bar': {'color': "#335D3B", 'thickness': 1.0},
                 'bgcolor': "#DAD7CD",
@@ -766,14 +766,14 @@ with tab4:
         fig.add_annotation(
             text="Meal calorie total:",
             x=0.5, y=0.17, showarrow=False,
-            font=dict(size=16, color="grey", family='Open Sans'),
+            font=dict(size=16, color="grey", family='Roboto'),
             align='center'
         )
 
         fig.add_annotation(
             text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
             x=0.5, y=-0.1, showarrow=False,
-            font=dict(size=16, color="grey", family='Open Sans'),
+            font=dict(size=16, color="grey", family='Roboto'),
             align='center'
         )
 
@@ -787,7 +787,7 @@ with tab4:
 
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
+        
 # ----
 # 9. Close container
 # ----
