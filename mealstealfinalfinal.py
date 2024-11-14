@@ -699,7 +699,7 @@ with tab4:
             textinfo='label',
             hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}',
             textposition='outside',
-            textfont=dict(size=16, color='grey', family='Open Sans')
+            textfont=dict(size=16, color='grey', family='Open Sans')  # Font updated to Open Sans
         )])
 
         # Update layout for the title and make the chart smaller
@@ -762,7 +762,7 @@ with tab4:
             }
         ))
 
-        # Add annotations for additional information
+        # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal calorie total:",
             x=0.5, y=0.17, showarrow=False,
