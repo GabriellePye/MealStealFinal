@@ -129,31 +129,23 @@ st.markdown("""
 
 /* Tooltip Styling */
 .tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    font-size: 16px;
-    color: #DAD7CD;  /* Tooltip text color */
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 250px;
-    background-color: #335D3B;
-    color: #555;
-    text-align: center;
-    border-radius: 5px;
-    padding: 10px;
     position: absolute;
-    z-index: 1;
-    bottom: 125%; /* Position above the text */
-    left: 50%;
-    margin-left: -125px; /* Offset the tooltip */
+    background-color: #335D3B; /* Background color */
+    color: #DAD7CD; /* Text color */
+    padding: 8px 16px; /* Adjust the padding for a less tall tooltip */
+    border-radius: 8px;
+    font-size: 14px;
+    max-width: 250px; /* Adjust width to make the tooltip longer */
+    width: auto; /* Allow the width to expand based on content */
+    text-align: center;
+    white-space: nowrap;
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;
 }
 
-.tooltip:hover .tooltiptext {
+.tooltip.visible {
     visibility: visible;
     opacity: 1;
 }
