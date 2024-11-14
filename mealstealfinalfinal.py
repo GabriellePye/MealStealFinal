@@ -712,7 +712,7 @@ with tab4:
                 'y': 0.95,  # Raise the title slightly to prevent overlap
                 'xanchor': 'center',
                 'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto', 'weight': '300'}
+                'font': {'size': 18, 'color': 'grey', 'family': 'Roboto'}
             },
             showlegend=False,
             margin=dict(t=80, b=20, l=20, r=20)  # Increase top margin to reduce overlap
@@ -740,7 +740,7 @@ with tab4:
             },
             title={
                 'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto'}
+                'font': {'size': 18, 'family': 'Roboto', 'weight': 'Bold'}
             },
             gauge={
                 'axis': {
