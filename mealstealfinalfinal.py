@@ -403,41 +403,41 @@ with tab2:
 # 7. Recipes
 # -------------------------
 
-    # Tab 3: Individual Recipes (Collapsible sections)
-    with tab3:
-        st.markdown("### Recipes")
+# Tab 3: Individual Recipes (Collapsible sections)
+with tab3:
+    st.markdown("### Recipes")
 
-        if "recipes_text" in st.session_state:
-            # Parse the recipe information
-            recipes_data = parse_recipe_info(st.session_state["recipes_text"])
+    if "recipes_text" in st.session_state:
+        # Parse the recipe information
+        recipes_data = parse_recipe_info(st.session_state["recipes_text"])
 
-            # Display each recipe in a collapsible format
-            for recipe in recipes_data:
-                with st.expander(recipe["Title"]):
-                    # Display key details above ingredients and instructions
-                    st.write(f"**Cuisine**: {recipe['Cuisine']}")
-                    st.write(f"**Diet**: {recipe['Diet']}")
-                    st.write(f"**Total Cooking Time**: {recipe['Total Cooking Time']}")
-                    st.write(f"**Servings**: {recipe['Servings']}")
-                    st.write(f"**Estimated Price**: {recipe['Estimated Price']}")
+        # Display each recipe in a collapsible format
+        for recipe in recipes_data:
+            with st.expander(recipe["Title"]):
+                # Display key details above ingredients and instructions
+                st.write(f"**Cuisine**: {recipe['Cuisine']}")
+                st.write(f"**Diet**: {recipe['Diet']}")
+                st.write(f"**Total Cooking Time**: {recipe['Total Cooking Time']}")
+                st.write(f"**Servings**: {recipe['Servings']}")
+                st.write(f"**Estimated Price**: {recipe['Estimated Price']}")
 
-                    # Display ingredients
-                    st.write("**Ingredients:**")
-                    for ingredient in recipe["Ingredients"]:
-                        st.write(f"- {ingredient}")
+                # Display ingredients
+                st.write("**Ingredients:**")
+                for ingredient in recipe["Ingredients"]:
+                    st.write(f"- {ingredient}")
 
-                    # Display instructions
-                    st.write("**Instructions:**")
-                    for i, instruction in enumerate(recipe["Instructions"], 1):
-                        st.write(f"{i}. {instruction}")
+                # Display instructions
+                st.write("**Instructions:**")
+                for i, instruction in enumerate(recipe["Instructions"], 1):
+                    st.write(f"{i}. {instruction}")
 
-                    # Display nutrition
-                    st.write("**Nutrition:**")
-                    for nutrient, amount in recipe["Nutrition"].items():
-                        st.write(f"{nutrient}: {amount}")
+                # Display nutrition
+                st.write("**Nutrition:**")
+                for nutrient, amount in recipe["Nutrition"].items():
+                    st.write(f"{nutrient}: {amount}")
 
-        else:
-            st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # -------------------------
 # 8. Nutritional Dashboard
@@ -476,14 +476,14 @@ with tab4:
             fig, ax = plt.subplots()
             wedges, texts = ax.pie(
                 nutrient_totals,
-                labels=[f"{nutrient} ({value}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                labels=[f"{nutrient} ({value:.1f}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 startangle=90,
                 colors=color_scheme,
                 wedgeprops=dict(width=0.3)
             )
 
             ax.legend(
-                labels=[f"{nutrient}: {value}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
+                labels=[f"{nutrient}: {value:.1f}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
                 loc="center left",
                 bbox_to_anchor=(1, 0, 0.5, 1),
                 facecolor='white'
