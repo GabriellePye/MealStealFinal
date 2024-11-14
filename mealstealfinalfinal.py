@@ -642,8 +642,6 @@ with tab3:
 # 8. Nutritional Dashboard
 # -------------------------
 
-# Import necessary libraries
-
 # Function to calculate daily caloric needs based on user inputs (using Mifflin-St Jeor Equation)
 def calculate_caloric_needs(weight, height, age, gender, activity_level):
     if gender == 'Male':
@@ -667,7 +665,6 @@ def calculate_total_caloric_needs(weight, height, age, gender, activity_level, d
     daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level)
     return daily_caloric_needs * days
 
-# Tab 4: Nutrition Dashboard
 # Tab 4: Nutrition Dashboard
 with tab4:
     if "recipes_text" in st.session_state:
@@ -725,41 +722,34 @@ with tab4:
         else:
             st.write("No nutrient data to display for the selected recipe.")
         
-        # Calculate total caloric needs for the given duration
+        # Calculate caloric needs
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
+        calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
 
-        # Gauge Chart Function
-        def plot_gauge(total_caloric_needs, meal_plan_calories):
-            fig, ax = plt.subplots(figsize=(6, 3), subplot_kw={'aspect': 'equal'})
+        # Gauge chart configuration
+        fig, ax = plt.subplots(figsize=(8, 4))
 
-            # Define the gauge's wedges
-            full_circle = plt.matplotlib.patches.Wedge((0, 0), 1, 0, 180, color="lightgrey")  # background
-            used_circle = plt.matplotlib.patches.Wedge((0, 0), 1, 0, 180 * (meal_plan_calories / total_caloric_needs), color="green")
+        # Set the parameters for the gauge
+        current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
+        angle_range = np.linspace(0, 180, 100)
 
-            # Add wedges to the plot
-            ax.add_patch(full_circle)
-            ax.add_patch(used_circle)
+        # Plot the gauge background (remaining section)
+        ax.fill_between(angle_range, 0, 1, color="#DAD7CD", alpha=0.5)  # Light grey
 
-            # Add text labels
-            ax.text(0, -0.1, f'{meal_plan_calories:.0f} / {total_caloric_needs:.0f} cal', ha='center', va='center', fontsize=14)
-            ax.text(0, -0.3, 'Calories Consumed vs. Goal', ha='center', va='center', fontsize=12)
+        # Plot the gauge current value (consumed section)
+        ax.fill_between(angle_range[:int(current_percentage * len(angle_range))], 0, 1, color="#335D3B")  # Dark green
 
-            # Adjust plot limits
-            ax.set_xlim(-1, 1)
-            ax.set_ylim(-1, 0.5)
+        # Format the chart appearance
+        ax.set_aspect('equal')
+        ax.axis("off")
 
-            # Hide axes
-            ax.axis('off')
-            
-            return fig
+        # Add the text for current and goal calories
+        ax.text(0.5, -0.3, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
+                ha='center', va='center', fontsize=16, fontweight="bold", color="#335D3B")
+        ax.text(0.5, -0.6, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
 
-        # Display the gauge chart below the pie chart
-        st.markdown("### Caloric Intake vs. Goal")
-        gauge_fig = plot_gauge(total_caloric_needs, meal_plan_calories)
-        st.pyplot(gauge_fig)
-
-    else:
-        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+        # Display the gauge chart
+        st.pyplot(fig)
 
 # ----
 # 9. Close container
