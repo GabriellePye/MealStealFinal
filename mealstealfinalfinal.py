@@ -751,7 +751,7 @@ with tab4:
 
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
-            text="Meal Calorie Total",
+            text="Meal calorie total:",
             x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
             font=dict(size=16, color="grey"),
             align='center'
@@ -759,9 +759,9 @@ with tab4:
 
         # Add annotation for percentage text below the gauge
         fig.add_annotation(
-            text=f"{caloric_percentage:.0f}% of total calorie intake for {days} days",
+            text=f"which is {caloric_percentage:.0f}% of total caloric budget for {days} days",
             x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
-            font=dict(size=14, color="grey"),
+            font=dict(size=16, color="grey"),
             align='center'
         )
 
