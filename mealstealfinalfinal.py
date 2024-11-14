@@ -128,32 +128,55 @@ st.markdown("""
 }
 
 /* Tooltip Styling */
-.tooltip {
-    position: relative;
-    background-color: #335D3B; /* Background color */
-    color: #DAD7CD; /* Text color */
-    padding: 8px 16px; /* Adjust the padding for a less tall tooltip */
-    border-radius: 8px;
-    font-size: 14px;
-    max-width: 300px; /* Adjust width to make the tooltip longer */
-    width: auto; /* Allow the width to expand based on content */
-    text-align: center;
-    white-space: nowrap;
-    visibility: hidden; /* Start as hidden */
-    opacity: 0; /* Start with zero opacity */
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth fade-in */
-    z-index: 9999; /* Ensure it's above other elements */
-}
-
-/* When the tooltip is visible */
-.tooltip.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Adjusting the position of the tooltip */
 .tooltip-container {
-    position: relative; /* Ensure it's positioned relative to its parent */
+  color: #ffffff;
+  --background: #335D3B; /* Set background color */
+  position: relative;
+  background: var(--background);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 17px;
+  padding: 0.7em 1.8em;
+  border-radius: 50px;
+}
+
+/* Tooltip Text */
+.tooltip {
+  background-color: #335D3B; /* Set background color */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.3em 0.6em;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  border-radius: 50px;
+  font-size: 14px; /* Text size */
+  color: #DAD7CD; /* Text color */
+  max-width: 300px; /* Tooltip width */
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Tooltip Arrow */
+.tooltip::before {
+  background-color: #335D3B;
+  position: absolute;
+  content: "";
+  height: 0.6em;
+  width: 0.6em;
+  bottom: -0.2em;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+}
+
+/* Show tooltip on hover */
+.tooltip-container:hover .tooltip {
+  top: -100%; /* Position the tooltip above */
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* styling for tabs */
