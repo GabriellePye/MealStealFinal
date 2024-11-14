@@ -514,7 +514,7 @@ with tab1:
 with tab2:  # Assuming tab2 is the section or tab you are using to display the meal plan
     st.markdown("### Your Meal Plan")
 
-     # Use the 'days' value from the existing sidebar for meal plan duration
+    # Use the 'days' value from the existing sidebar for meal plan duration
     meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days if not set in session state
 
     # Check if the recipes_text exists in session_state
@@ -525,8 +525,8 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
         # Extract only the titles from the recipes_data
         recipe_titles = [recipe["Title"] for recipe in recipes_data]
     
-    # Create columns for each day in the meal plan
-    cols = st.columns(meal_plan_duration)
+    # Initialize a list to store the meal plan cards
+    meal_plan_cards = []
 
     # Initialize a dictionary to store recipes assigned to each day
     assigned_recipes = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
@@ -541,17 +541,25 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
     for recipe in selected_recipes:
         assigned_recipes[day_dropdown].append(recipe)
 
-    # Render the meal plan cards with the selected recipes for each day
+    # Collect all meal plan cards (one for each day)
     for idx, (day, meals) in enumerate(assigned_recipes.items()):
         if idx < meal_plan_duration:  # Only show the selected number of days
-            with cols[idx]:  # Distribute the days across columns
-                # Render the card using HTML and show the recipe titles on hover
+            meal_plan_cards.append((day, meals))
+
+    # Create rows of 3 cards
+    rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
+
+    # Render the meal plan cards in rows of 3
+    for row in rows_of_cards:
+        cols = st.columns(3)  # Always create 3 columns per row
+        for idx, (day, meals) in enumerate(row):
+            with cols[idx]:  # Distribute the cards across 3 columns
                 recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
                 st.markdown(f"""
                 <div class="card" style="cursor: pointer;">
                     <div class="card-content">
                         <h3 style="font-size: 15px;">{day}</h3>
-                        <p style="font-size: 15px;">Hover to see meals!</p>
+                        <p style="font-size: 15px;">Click to see meals</p>
                         <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
                     </div>
                 </div>
