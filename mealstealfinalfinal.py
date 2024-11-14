@@ -52,7 +52,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/s2tGdYn/assortment-different-vegetables-with-copy-space.jpg');
+    background: url('https://i.ibb.co/4ZFD1kn/ingredients-cooking-pasta-wooden-background.jpg');
     background-size: cover; 
     background-position: top;
 }
