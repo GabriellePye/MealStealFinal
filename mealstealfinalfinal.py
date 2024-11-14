@@ -721,6 +721,7 @@ with tab4:
             value=calories_consumed,
             number={
                 'valueformat': ".0f",  # Display the number as an integer
+                'suffix': " kcal",     # Add kcal as a suffix
                 'font': {'size': 36},
             },
             title={
@@ -751,7 +752,7 @@ with tab4:
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal Calorie Total",
-            x=0.5, y=0.1, showarrow=False,  # Adjust y value to control vertical position above the number
+            x=0.5, y=0.3, showarrow=False,  # Adjust y value to control vertical position above the number
             font=dict(size=16, color="grey"),
             align='center'
         )
