@@ -727,31 +727,31 @@ with tab4:
                 'text': f"Calories Consumed vs. Goal\n{int(calories_consumed)} cal / {int(total_caloric_needs)} cal",
                 'font': {'size': 18}
             },
-            gauge={
-                'axis': {
-                    'range': [0, 100],
-                    'tickwidth': 1.5,
-                    'tickcolor': "grey",
-                    'tickvals': [0, 20, 40, 60, 80, 100],
-                    'ticktext': [f"{int(i * total_caloric_needs / 100)} cal" for i in [0, 20, 40, 60, 80, 100]]
-                },
-                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar
-                'bgcolor': "#DAD7CD",  # Cream background color for the gauge
-                'steps': [
-                    {'range': [0, 100], 'color': "#DAD7CD"}  # Full gauge background in cream
-                ],
-                'threshold': {
-                    'line': {'color': "#335D3B", 'width': 4},
-                    'thickness': 1.0,
-                    'value': caloric_percentage
-                }
-            }
-        ))
+             gauge={
+        'axis': {
+            'range': [0, total_caloric_needs],  # Set gauge to calorie range
+            'tickwidth': 1.5,
+            'tickcolor': "grey",
+            'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
+            'ticktext': [f"{int(i)} cal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]]
+        },
+        'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
+        'bgcolor': "#DAD7CD",  # Cream background for gauge
+        'steps': [
+            {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
+        ],
+        'threshold': {
+            'line': {'color': "#335D3B", 'width': 4},
+            'thickness': 1.0,
+            'value': calories_consumed  # Use calories consumed to show progress on gauge
+        }
+    }
+))
 
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal Calorie Total",
-            x=0.5, y=0.3, showarrow=False,  # Adjust y value to control vertical position above the number
+            x=0.5, y=0.1, showarrow=False,  # Adjust y value to control vertical position above the number
             font=dict(size=16, color="grey"),
             align='center'
         )
