@@ -239,9 +239,9 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
     dietary_preferences = ', '.join(dietary_pref)
     meal_prep_time = meal_prep.lower()
     prompt = (
-        f"Provide {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
-        f"Each recipe should be formatted exactly as shown below, with each field clearly labeled and on a new line. "
-        f"The output should be in the following format for consistency, and all ingredient amounts should use metric units (grams, milliliters, etc.):\n\n"
+        f"Generate {total_meals} recipes that are {meal_prep_time} and suitable for a meal plan with {meals_per_day} per day over {days} days. "
+        f"Each recipe should follow the exact format below, using only metric units (grams, milliliters, etc.), with no mention of brand names or specific product recommendations. "
+        f"The recipes should be adjusted to yield {servings} servings. Use concise, cost-effective instructions.\n\n"
         
         "### Recipe X\n"
         "**Title**: [Recipe Title]\n"
@@ -260,7 +260,7 @@ def generate_recipes(age, gender, weight, height, goal, dietary_pref, allergies,
         
         f"Consider the following user details: Age - {age}, Gender - {gender}, Weight - {weight} kg, Height - {height} cm, Health Goal - {goal}, "
         f"Dietary Preferences - {dietary_preferences}, Allergies - {allergies}, Exercise Level - {exercise_level}. "
-        "All fields are mandatory; if information is unavailable, write 'N/A'. Please follow the format exactly without adding or omitting any fields.\n\n"
+        "All fields are mandatory; if information is unavailable, write 'N/A'. Follow the format precisely without any omissions.\n\n"
     )
 
     completion = client.chat.completions.create(
