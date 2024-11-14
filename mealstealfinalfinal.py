@@ -650,12 +650,12 @@ def calculate_caloric_needs(weight, height, age, gender, activity_level):
         bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
 
     activity_factors = {
-            'Sedentary': 1.2,
-            'Lightly Active': 1.375,
-            'Moderately Active': 1.55,
-            'Very Active': 1.725,
-            'Super Active': 1.9
-        }
+        'Sedentary': 1.2,
+        'Lightly Active': 1.375,
+        'Moderately Active': 1.55,
+        'Very Active': 1.725,
+        'Super Active': 1.9
+    }
     
     tdee = bmr * activity_factors[activity_level]
     return tdee
@@ -727,11 +727,11 @@ with tab4:
         calories_consumed = nutrition_df["Calories"].sum()  # Total calories from the meal plan
 
         # Gauge chart configuration
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots(figsize=(6, 3))  # Adjust the figure size for better fit
 
         # Set the parameters for the gauge
         current_percentage = min(calories_consumed / total_caloric_needs, 1)  # Cap at 100%
-        angle_range = np.linspace(0, 180, 100)
+        angle_range = np.linspace(-90, 90, 100)  # Adjusted for left-to-right gauge
 
         # Plot the gauge background (remaining section)
         ax.fill_between(angle_range, 0, 1, color="#DAD7CD", alpha=0.5)  # Light grey
@@ -744,12 +744,14 @@ with tab4:
         ax.axis("off")
 
         # Add the text for current and goal calories
-        ax.text(0.5, -0.3, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
-                ha='center', va='center', fontsize=16, fontweight="bold", color="#335D3B")
-        ax.text(0.5, -0.6, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
+        ax.text(0.5, -0.15, f"{int(calories_consumed)} / {int(total_caloric_needs)} cal", 
+                ha='center', va='center', fontsize=14, fontweight="bold", color="#335D3B")
+        ax.text(0.5, -0.35, "Calories Consumed vs. Goal", ha='center', va='center', fontsize=12)
 
         # Display the gauge chart
         st.pyplot(fig)
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
