@@ -704,14 +704,14 @@ with tab4:
 
         # Update layout for the title and make the chart smaller
         fig.update_layout(
-            title={
-                'text': f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
-                'x': 0.5,
-                'y': 1.1,
-                'xanchor': 'center',
-                'yanchor': 'top',
-                'font': {'size': 18, 'color': 'grey', 'family': 'Open Sans'}
-            },
+            title=dict(
+                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                x=0.5,
+                y=0.85,
+                xanchor='center',
+                yanchor='top',
+                font=dict(size=18, color='grey', family='Open Sans')
+            ),
             showlegend=False,
             margin=dict(t=100, b=50, l=50, r=50)
         )
