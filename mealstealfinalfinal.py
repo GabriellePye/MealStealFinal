@@ -731,6 +731,7 @@ with tab4:
         # Display the chart in Streamlit
         st.plotly_chart(fig)
 
+
         # Calculate caloric needs and percentage
         total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, days)
         calories_consumed = nutrition_df["Calories"].sum()
@@ -744,6 +745,10 @@ with tab4:
                 'valueformat': ".0f",  # Display the number as an integer
                 'suffix': " kcal",     # Add kcal as a suffix
                 'font': {'size': 36, 'family': 'Roboto'},
+            },
+            title={
+                'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
+                'font': {'size': 18, 'family': 'Roboto'}
             },
             gauge={
                 'axis': {
@@ -767,15 +772,6 @@ with tab4:
             }
         ))
 
-        # Update layout for the title (separate from the Indicator itself)
-        fig.update_layout(
-            title={
-                'text': "Proportion of Caloric Budget Consumed by Meal Plan",
-                'y': 1.2,  # Position the title higher up
-                'font': {'size': 18, 'family': 'Roboto'}
-            }
-        )
-
         # Add annotation for "Meal Calorie Total" above the number
         fig.add_annotation(
             text="Meal calorie total:",
@@ -794,6 +790,9 @@ with tab4:
 
         # Show the gauge in Streamlit
         st.plotly_chart(fig)
+
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
 
 # ----
 # 9. Close container
