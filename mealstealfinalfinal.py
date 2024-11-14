@@ -740,7 +740,7 @@ with tab4:
             },
             title={
                 'text': f"Proportion of Caloric Budget Consumed by Meal Plan",
-                'font': {'size': 18, 'family': 'Roboto', 'weight': 'Bold'}
+                'font': {'size': 18, 'family': 'Roboto Bold'}
             },
             gauge={
                 'axis': {
