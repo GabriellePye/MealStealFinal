@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://www.flowermoundyummythai.com/wp-content/uploads/2021/09/4.png'); /*need to import better gif */
+    background: url('https://images.squarespace-cdn.com/content/v1/56a20ae9c647adb9db99cc6d/1459769006215-ED7BIPGPH7OIVTLAQKJE/IMG_4496+-+Version+2.jpg'); /*need to import better gif */
     background-size: cover;
     background-position: top;
 }
