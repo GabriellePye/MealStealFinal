@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://i.ibb.co/jGtzrs3/lum3n-Ngy0-B2-YWalk-unsplash.jpg'); /*need to import better gif */
+    background: url('https://i.ibb.co/6W4LC3v/clem-onojeghuo-r8l-DTt-SWGUc-unsplash-1.jpg'); /*need to import better gif */
     background-size: cover; 
     background-position: top;
 }
