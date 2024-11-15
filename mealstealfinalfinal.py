@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://giphy.com/gifs/food-tFUzn0xvrFv1CI69mD'); #-- still need to adjust
+    background: url('https://giphy.com/embed/tFUzn0xvrFv1CI69mD'); #-- still need to adjust
     background-size: cover; 
     background-position: top;
 }
