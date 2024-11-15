@@ -111,7 +111,7 @@ st.markdown("""
 }
 
 .subheader-container img { 
-    width: 200px;
+    width: 100px;
 }
 
 /* Flex container for logo and subheader */
