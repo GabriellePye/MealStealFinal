@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://imgur.com/J9NA6wa'); #-- still need to adjust this
+    background: url('https://imgur.com/J9NA6wa'); #-- still need to adjust
     background-size: cover; 
     background-position: top;
 }
@@ -567,92 +567,33 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
         # Display a success message
         st.success(f"Recipes assigned to {day_dropdown}!")
 
+    # Initialize a list to store the meal plan cards
+    meal_plan_cards = []
+
     # Collect all meal plan cards (one for each day)
-meal_plan_cards = []
+    for idx, (day, meals) in enumerate(assigned_recipes.items()):
+        if idx < meal_plan_duration:  # Only show the selected number of days
+            meal_plan_cards.append((day, meals))
 
-for idx, (day, meals) in enumerate(assigned_recipes.items()):
-    if idx < meal_plan_duration:  # Only show the selected number of days
-        meal_plan_cards.append((day, meals))
+    # Create rows of 3 cards
+    rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
 
-# Create rows of 3 cards
-rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
+    # Render the meal plan cards in rows of 3
+    for row in rows_of_cards:
+        cols = st.columns(3)  # Always create 3 columns per row
+        for idx, (day, meals) in enumerate(row):
+            with cols[idx]:  # Distribute the cards across 3 columns
+                recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
 
-# Render the meal plan cards in rows of 3
-for row in rows_of_cards:
-    cols = st.columns(3)  # Always create 3 columns per row
-    for idx, (day, meals) in enumerate(row):
-        with cols[idx]:  # Distribute the cards across 3 columns
-            recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
-
-            # Create the card with hover effect to show recipe titles
-            st.markdown(f"""
-                <style>
-                    .card {{
-                        position: relative;
-                        width: 160px;
-                        height: 220px;
-                        background: #335D3B;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 15px;
-                        font-weight: bold;
-                        border-radius: 15px;
-                        cursor: pointer;
-                        transition: all 0.5s;
-                        margin: 5px;
-                    }}
-                    .card .hover-content {{
-                        visibility: hidden;
-                        opacity: 0;
-                        position: absolute;
-                        bottom: 10px;
-                        left: 10px;
-                        color: #DAD7CD;
-                        font-size: 14px;
-                        transition: all 0.5s;
-                    }}
-                    .card:hover .hover-content {{
-                        visibility: visible;
-                        opacity: 1;
-                    }}
-                    .card::before,
-                    .card::after {{
-                        position: absolute;
-                        content: "";
-                        width: 20%;
-                        height: 20%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: 15px;
-                        font-weight: bold;
-                        background-color: #67944C;
-                        transition: all 0.5s;
-                    }}
-                    .card::before {{
-                        top: 0;
-                        right: 0;
-                        border-radius: 0 15px 0 100%;
-                    }}
-                    .card::after {{
-                        bottom: 0;
-                        left: 0;
-                        border-radius: 0 100% 0 15px;
-                    }}
-                    .card:hover::before,
-                    .card:hover::after {{
-                        width: 100%;
-                        height: 100%;
-                        border-radius: 15px;
-                    }}
-                </style>
-                <div class="card">
-                    <h3 style="font-size: 15px;">{day}</h3>
-                    <p style="font-size: 15px;">Hover to see meals</p>
-                    <div class="hover-content">{recipe_titles_str}</div>
+                st.markdown(f"""
+                <div class="card" style="cursor: pointer;">
+                    <div class="card-content">
+                        <h3 style="font-size: 15px;">{day}</h3>
+                        <p style="font-size: 15px;">Hover to see meals</p>
+                        <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
+                    </div>
                 </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
 # -------------------------
 # 7. Recipes
