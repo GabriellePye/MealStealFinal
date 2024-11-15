@@ -124,7 +124,7 @@ st.markdown("""
 
 /* Styling for the logo */
 .header-container img { 
-    width: 500px; /* Adjust width for the logo */
+    width: 100px; /* Adjust width for the logo */
     margin-right: 20px; /* Space between logo and subheader */
 }
 
