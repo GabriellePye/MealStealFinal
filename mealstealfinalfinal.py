@@ -239,18 +239,30 @@ st.markdown("""
     overflow: hidden;
     text-align: center;
     padding: 10px;
+    box-sizing: border-box;
 }
 
-/* Hidden recipe titles by default */
+/* Card content - flex container to center text */
+.card .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Take full height of card */
+    position: relative; /* Allow absolute positioning of recipe titles */
+}
+
+/* Initially hide recipe titles */
 .recipe-titles {
     opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease; /* Smooth transition for revealing text */
+    position: absolute; /* Positioning it absolutely so it doesn't push other elements */
     color: #DAD7CD;
     font-size: 14px;
     margin-top: 10px;
+    transition: opacity 0.3s ease; /* Smooth transition for revealing text */
 }
 
-/* Hide Day text and Hover text on hover */
+/* Initially visible Day text and Hover text */
 .card .card-content h3, .card .card-content p {
     transition: opacity 0.3s ease;
 }
@@ -260,8 +272,9 @@ st.markdown("""
     opacity: 1; /* Show recipe titles on hover */
 }
 
+/* Hide Day and Hover text on hover */
 .card:hover .card-content h3, .card:hover .card-content p {
-    opacity: 0; /* Hide "Day X" and "Hover to see meals" on hover */
+    opacity: 0; /* Hide Day X and Hover text */
 }
 
 /* Sidebar styling */
