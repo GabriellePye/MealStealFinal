@@ -221,40 +221,38 @@ st.markdown("""
     color: #DAD7CD; /* Light text color */
 }
 
-<style>
-    /* Card styling */
-    .card {
-        position: relative;
-        width: 160px;
-        height: 220px;
-        background: #335D3B;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-        font-weight: bold;
-        border-radius: 15px;
-        cursor: pointer;
-        transition: all 0.5s;
-        margin: 5px;
-        overflow: hidden;
-        text-align: center;
-    }
+ /* Card styling */
+.card {
+    position: relative;
+    width: 160px;
+    height: 220px;
+    background: #335D3B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.5s;
+    margin: 5px;
+    overflow: hidden;
+    text-align: center;
+}
 
-    /* Hidden recipe titles by default */
-    .recipe-titles {
-        opacity: 0; /* Initially hidden */
-        transition: opacity 0.3s ease; /* Smooth transition for revealing text */
-        color: #DAD7CD;
-        font-size: 14px;
-        margin-top: 10px;
-    }
+/* Hidden recipe titles by default */
+.recipe-titles {
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Smooth transition for revealing text */
+    color: #DAD7CD;
+    font-size: 14px;
+    margin-top: 10px;
+}
 
-    /* Hover effect to reveal recipe titles */
-    .card:hover .recipe-titles {
-        opacity: 1; /* Make the recipe titles visible on hover */
-    }
-</style>
+/* Hover effect to reveal recipe titles */
+.card:hover .recipe-titles {
+    opacity: 1; /* Make the recipe titles visible on hover */
+}
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
