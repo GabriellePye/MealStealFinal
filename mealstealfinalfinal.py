@@ -257,7 +257,7 @@ st.markdown("""
     opacity: 0; /* Initially hidden */
     position: absolute; /* Positioning it absolutely so it doesn't push other elements */
     color: #DAD7CD;
-    font-size: 14px;
+    font-size: 15px;
     margin-top: 10px;
     transition: opacity 0.3s ease; /* Smooth transition for revealing text */
 }
@@ -566,8 +566,8 @@ with tab2:
                 st.markdown(f"""
                     <div class="card">
                         <div class="card-content">
-                            <h3>{day}</h3> <!-- This is the Day text -->
-                            <p>Hover to see meals</p> <!-- This is the hover message -->
+                            <h3 style="font-size: 15px;">{day}</h3> <!-- This is the Day text -->
+                            <p style="font-size: 15px;">Hover to see meals</p> <!-- This is the hover message -->
                             <div class="recipe-titles">{recipe_titles_str}</div> <!-- This is the recipe titles on hover -->
                         </div>
                     </div>
