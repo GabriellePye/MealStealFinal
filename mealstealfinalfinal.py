@@ -100,29 +100,32 @@ st.markdown("""
  
 /* styling for subheader + other text elements */
 .subheader-container {
-    display: inline-block;                /* Shrink/expand based on content */
     border: 2px solid white;
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;                   /* Less padding for a tighter look */
+    padding: 20px;
     border-radius: 15px;
     text-align: center;
-    white-space: pre-wrap;                /* Wrap text if it’s long */
-    margin: 0 auto;                       /* Center the box horizontally */
+    max-width: 80%;  /* Adjusted for centering */
+    margin: 0 auto;
+}
+
+.subheader-container img { 
+    width: 300px;
 }
 
 /* Flex container for logo and subheader */
 .header-container {
     display: flex;
-    align-items: center;                  /* Center vertically */
-    justify-content: center;              /* Center horizontally */
-    gap: 10px;                            /* Space between logo and subheader */
-    padding: 10px 0;                      /* Reduce top and bottom padding */
+    align-items: left; /* Center vertically */
+    justify-content: left; /* Center horizontally */
+    margin: 20px; /* Add some margin */
 }
 
 /* Styling for the logo */
 .header-container img { 
-    width: 60px;                          /* Adjust width for the logo */
+    width: 300px; /* Adjust width for the logo */
+    margin-right: 20px; /* Space between logo and subheader */
 }
 
 /* Tooltip Container */
@@ -284,7 +287,7 @@ section[data-testid="stSidebar"] {
 
 st.markdown("""
 <div class='text-container'>
-    <img src="https://i.ibb.co/cN5CvqB/Meal-Steal-Logo-1-removebg-preview.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
+    <img src="https://i.ibb.co/qDcRgtr/Meal-Machine-Logo-removebg-preview.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
     <div class='subheader-container'>
         <h2>Get Fit, Eat Smart</h2>
     </div>
