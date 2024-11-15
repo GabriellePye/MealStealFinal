@@ -208,7 +208,7 @@ st.markdown("""
     background: rgba(255, 255, 255, 0.1);  /* Background with slight opacity */
     padding: 20px;  /* Padding for content */
     border-radius: 10px;  /* Rounded corners */
-    color: #463F3A;  /* Light text color */
+    color: #463F3A;  /* Dark text color */
 }
 
 /* General styles for meal plan section */
@@ -218,7 +218,7 @@ st.markdown("""
     border-radius: 10px; /* Rounded corners */
     backdrop-filter: blur(20px); /* Frosted effect */
     background: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
-    color: #463F3A; /* Light text color */
+    color: #DAD7CD; /* Dark text color */
 }
 
 /* Card styling */
