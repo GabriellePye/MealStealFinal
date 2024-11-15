@@ -14,74 +14,94 @@ import re
 from fpdf import FPDF
 import io
 import re
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 
 # Initialize OpenAI client
 openai.api_key = st.secrets["openai_key"]
 client = OpenAI(api_key=st.secrets["openai_key"])
 
-from fpdf import FPDF
-import io
+# Function to generate PDF of the recipes using ReportLab
+def generate_pdf(recipes_data):
+    # Set up a BytesIO object to store the PDF in memory
+    pdf_output = BytesIO()
+    pdf = canvas.Canvas(pdf_output, pagesize=letter)
+    width, height = letter  # Set PDF dimensions
 
-# Function to generate PDF of the recipes
-def generate_pdf(recipes_text):
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
+    # Title for the PDF
+    pdf.setFont("Helvetica-Bold", 16)
+    pdf.drawString(1 * inch, height - 1 * inch, "Your Meal Plan")
 
-    # Title of the PDF
-    pdf.set_font("Arial", size=16, style='B')
-    pdf.cell(200, 10, txt="Your Meal Plan", ln=True, align="C")
+    # Start the y position for content below the title
+    y_position = height - 1.5 * inch  # Position below the title
 
-    # Add a line break
-    pdf.ln(10)
+    # Loop through each recipe in the recipes_data
+    for recipe in recipes_data:
+        if y_position < 1.5 * inch:  # Check if we need a new page
+            pdf.showPage()  # Add a new page if needed
+            y_position = height - 1 * inch
 
-    # Set font for content
-    pdf.set_font("Arial", size=12)
-
-    # Loop through each recipe in the recipes_text
-    for recipe in recipes_text:
         # Recipe Title
-        pdf.set_font("Arial", size=14, style='B')
-        pdf.cell(200, 10, txt=recipe["Title"], ln=True, align="L")
-        pdf.ln(4)
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.drawString(1 * inch, y_position, recipe["Title"])
+        y_position -= 0.3 * inch
 
-        # Key details (Cuisine, Diet, Cooking Time, Servings, Price)
-        pdf.set_font("Arial", size=12)
-        pdf.cell(200, 10, txt=f"Cuisine: {recipe['Cuisine']}", ln=True)
-        pdf.cell(200, 10, txt=f"Diet: {recipe['Diet']}", ln=True)
-        pdf.cell(200, 10, txt=f"Total Cooking Time: {recipe['Total Cooking Time']}", ln=True)
-        pdf.cell(200, 10, txt=f"Servings: {recipe['Servings']}", ln=True)
-        pdf.cell(200, 10, txt=f"Estimated Price: {recipe['Estimated Price']}", ln=True)
-        pdf.ln(6)
+        # Key details (Cuisine, Diet, Total Cooking Time, Servings, Estimated Price)
+        pdf.setFont("Helvetica", 12)
+        pdf.drawString(1 * inch, y_position, f"Cuisine: {recipe['Cuisine']}")
+        y_position -= 0.2 * inch
+        pdf.drawString(1 * inch, y_position, f"Diet: {recipe['Diet']}")
+        y_position -= 0.2 * inch
+        pdf.drawString(1 * inch, y_position, f"Total Cooking Time: {recipe['Total Cooking Time']}")
+        y_position -= 0.2 * inch
+        pdf.drawString(1 * inch, y_position, f"Estimated Price: {recipe['Estimated Price']}")
+        y_position -= 0.3 * inch
 
         # Ingredients
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(200, 10, txt="Ingredients:", ln=True)
-        pdf.set_font("Arial", size=12)
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(1 * inch, y_position, "Ingredients:")
+        y_position -= 0.2 * inch
+        pdf.setFont("Helvetica", 11)
         for ingredient in recipe["Ingredients"]:
-            pdf.cell(200, 10, txt=f"- {ingredient}", ln=True)
-        pdf.ln(6)
+            pdf.drawString(1.2 * inch, y_position, f"- {ingredient}")
+            y_position -= 0.2 * inch
+            if y_position < 1 * inch:  # Check if we need a new page
+                pdf.showPage()
+                y_position = height - 1 * inch
 
         # Instructions
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(200, 10, txt="Instructions:", ln=True)
-        pdf.set_font("Arial", size=12)
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(1 * inch, y_position, "Instructions:")
+        y_position -= 0.2 * inch
+        pdf.setFont("Helvetica", 11)
         for i, instruction in enumerate(recipe["Instructions"], 1):
-            pdf.cell(200, 10, txt=f"{i}. {instruction}", ln=True)
-        pdf.ln(6)
+            pdf.drawString(1.2 * inch, y_position, f"{i}. {instruction}")
+            y_position -= 0.2 * inch
+            if y_position < 1 * inch:  # Check if we need a new page
+                pdf.showPage()
+                y_position = height - 1 * inch
 
         # Nutrition
-        pdf.set_font("Arial", size=12, style='B')
-        pdf.cell(200, 10, txt="Nutrition:", ln=True)
-        pdf.set_font("Arial", size=12)
+        pdf.setFont("Helvetica-Bold", 12)
+        pdf.drawString(1 * inch, y_position, "Nutrition:")
+        y_position -= 0.2 * inch
+        pdf.setFont("Helvetica", 11)
         for nutrient, amount in recipe["Nutrition"].items():
-            pdf.cell(200, 10, txt=f"{nutrient}: {amount}", ln=True)
-        pdf.ln(10)  # Add space before next recipe
+            pdf.drawString(1.2 * inch, y_position, f"{nutrient}: {amount}")
+            y_position -= 0.2 * inch
+            if y_position < 1 * inch:  # Check if we need a new page
+                pdf.showPage()
+                y_position = height - 1 * inch
 
-    # Save the PDF to an in-memory file
-    pdf_output = io.BytesIO()
-    pdf.output(pdf_output)
-    pdf_output.seek(0)  # Rewind to the beginning of the file
+        # Spacing before the next recipe
+        y_position -= 0.4 * inch
+
+    # Save the PDF and rewind the buffer
+    pdf.save()
+    pdf_output.seek(0)
     return pdf_output
 
 # -------------------------
@@ -665,22 +685,19 @@ with tab3:
                 for nutrient, amount in recipe["Nutrition"].items():
                     st.write(f"{nutrient}: {amount}")
 
+                    # Generate PDF when needed
+        pdf_output = generate_pdf(recipes_data)
+
+        # Download button in Streamlit
+        st.download_button(
+            label="Download Full Recipes as PDF",
+            data=pdf_output,
+            file_name="meal_plan.pdf",
+            mime="application/pdf"
+        )
+
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
-        # Button to download the PDF only when recipe data is available
-        if "recipes_text" in st.session_state:
-            if st.button("Download Full Recipes as PDF"):
-                # Generate PDF from the session state data
-                pdf_output = generate_pdf(st.session_state["recipes_text"])
-
-                # Provide the download link for the PDF
-                st.download_button(
-                    label="Download Full Recipes as PDF",
-                    data=pdf_output,
-                    file_name="meal_plan.pdf",
-                    mime="application/pdf"
-                )
 
 # -------------------------
 # 8. Nutritional Dashboard
