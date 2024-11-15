@@ -287,7 +287,7 @@ section[data-testid="stSidebar"] {
 
 st.markdown("""
 <div class='text-container'>
-    <img src="https://i.ibb.co/tmQpKH2/1-removebg-preview.png" alt="Meal Steal Logo" style="display: block; margin: 0 auto;">
+    <img src="https://i.ibb.co/6FTx68j/Meal-Steal-Logo.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
     <div class='subheader-container'>
         <h2>Get Fit, Eat Smart, Spend Less</h2>
     </div>
