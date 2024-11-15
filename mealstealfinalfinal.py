@@ -221,62 +221,40 @@ st.markdown("""
     color: #DAD7CD; /* Light text color */
 }
 
-/* Cards for meal plan (existing styles removed) */
-.card {
-    position: relative;
-    width: 160px; /* Adjust width as needed */
-    height: 220px; /* Adjust height as needed */
-    background: #335D3B;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;  /* Font size of text in the card */
-    font-weight: bold;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.5s; /* Smooth transitions */
-    margin: 5px;  /* Smaller gap between cards */
-    overflow: hidden; /* Prevents text from spilling outside the card */
-}
+<style>
+    /* Card styling */
+    .card {
+        position: relative;
+        width: 160px;
+        height: 220px;
+        background: #335D3B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: bold;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.5s;
+        margin: 5px;
+        overflow: hidden;
+        text-align: center;
+    }
 
-/* Styling for card hover effects */
-.card::before,
-.card::after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;  /* Font size for hover text */
-    font-weight: bold;
-    background-color: rgba(103, 148, 76, 0.9); /* Slightly transparent green */
-    color: #DAD7CD;  /* Text color for visibility */
-    transition: all 0.5s; /* Smooth transitions */
-    opacity: 0;  /* Initially hidden */
-    visibility: hidden; /* Hide the hover text */
-}
+    /* Hidden recipe titles by default */
+    .recipe-titles {
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease; /* Smooth transition for revealing text */
+        color: #DAD7CD;
+        font-size: 14px;
+        margin-top: 10px;
+    }
 
-/* Remove the content from ::before */
-.card::before {
-    content: none;
-}
-
-/* Show the hover content when the card is hovered */
-.card:hover::after {
-    opacity: 1; /* Reveal text on hover */
-    visibility: visible; /* Make the hover text visible */
-    content: "{recipe_titles_str}";  /* Recipe titles to display on hover */
-    text-align: center; /* Center align the text */
-}
-
-/* Adjustments to make sure the hover content looks nice */
-.card-content {
-    z-index: 1; /* Ensure the card content is above the hover effect */
-    position: relative;
-    text-align: center;
-}
+    /* Hover effect to reveal recipe titles */
+    .card:hover .recipe-titles {
+        opacity: 1; /* Make the recipe titles visible on hover */
+    }
+</style>
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
@@ -520,80 +498,56 @@ with tab1:
 # 6. Your Meal Plan
 # -------------------------
 
-# Tab 2 (Meal Plan)
-with tab2:  # Assuming tab2 is the section or tab you are using to display the meal plan
+# Your meal plan code
+with tab2:
     st.markdown("### Your Meal Plan")
 
-    # Use the 'days' value from the existing sidebar for meal plan duration
-    meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days if not set in session state
+    # Set the meal plan duration
+    meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days
 
-    # Check if the recipes_text exists in session_state
+    # Check if recipes are in session state
     if "recipes_text" in st.session_state:
-        # Parse the recipes from the session_state["recipes_text"]
         recipes_data = parse_recipe_info(st.session_state["recipes_text"])
-
-        # Extract only the titles from the recipes_data
         recipe_titles = [recipe["Title"] for recipe in recipes_data]
 
-    # Initialize a dictionary to store recipes assigned to each day
     if 'assigned_recipes' not in st.session_state:
         st.session_state['assigned_recipes'] = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
 
     assigned_recipes = st.session_state['assigned_recipes']
 
-    # Dropdown to assign recipes to specific days
+    # Dropdown to assign recipes
     day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
 
-    # Multiselect to choose recipes for the selected day, excluding already assigned recipes for that day
-    # Available recipes are those that are not yet assigned to the current day
-    # Create a list of recipes that are already assigned to any other day
+    # Check for assigned recipes
     recipes_already_assigned = [recipe for meals in assigned_recipes.values() for recipe in meals]
-
-    # Filter out the recipes that have already been assigned to other days
     available_recipes = [recipe for recipe in recipe_titles if recipe not in recipes_already_assigned]
-
     selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
 
-    # "Assign!" button to save selected recipes for the chosen day
     if st.button("Assign!"):
         for recipe in selected_recipes:
             assigned_recipes[day_dropdown].append(recipe)
-
-        # Save the updated assigned recipes to session state
         st.session_state['assigned_recipes'] = assigned_recipes
-
-        # Display a success message
         st.success(f"Recipes assigned to {day_dropdown}!")
 
-    # Initialize a list to store the meal plan cards
-    meal_plan_cards = []
+    # Create cards to display
+    meal_plan_cards = [(day, meals) for day, meals in assigned_recipes.items()]
 
-    # Collect all meal plan cards (one for each day)
-    for idx, (day, meals) in enumerate(assigned_recipes.items()):
-        if idx < meal_plan_duration:  # Only show the selected number of days
-            meal_plan_cards.append((day, meals))
-
-    # Create rows of 3 cards
     rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
 
-    # Render the meal plan cards in rows of 3
+    # Render the meal plan cards
     for row in rows_of_cards:
-        cols = st.columns(3)  # Always create 3 columns per row
+        cols = st.columns(3)
         for idx, (day, meals) in enumerate(row):
-            with cols[idx]:  # Distribute the cards across 3 columns
-                # Dynamically join recipe titles for this day
+            with cols[idx]:
                 recipe_titles_str = ", ".join(meals)
 
-                # Insert dynamic recipe titles into the hover content
+                # HTML for card with recipe titles
                 st.markdown(f"""
                     <div class="card">
                         <div class="card-content">
-                            <h3 style="font-size: 15px;">{day}</h3>
-                            <p style="font-size: 15px;">Hover to see meals</p>
-                            <!-- This is the hidden recipe title div -->
-                            <div class="hover-content">
-                                {recipe_titles_str}
-                            </div>
+                            <h3>{day}</h3>
+                            <p>Hover to see meals</p>
+                            <div class="recipe-titles">{recipe_titles_str}</div>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
