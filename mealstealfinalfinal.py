@@ -208,7 +208,7 @@ st.markdown("""
     background: rgba(255, 255, 255, 0.1);  /* Background with slight opacity */
     padding: 20px;  /* Padding for content */
     border-radius: 10px;  /* Rounded corners */
-    color: #DAD7CD;  /* Dark text color */
+    color: #463F3A;  /* Dark text color */
 }
 
 /* General styles for meal plan section */
@@ -218,7 +218,7 @@ st.markdown("""
     border-radius: 10px; /* Rounded corners */
     backdrop-filter: blur(20px); /* Frosted effect */
     background: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
-    color: #DAD7CD; /* Dark text color */
+    color: #463F3A; /* Dark text color */
 }
 
 /* Card styling */
@@ -523,19 +523,19 @@ if "recipes_text" in st.session_state:
 
 st.markdown('<div class="content-section">', unsafe_allow_html=True)  # Container for the tabs
 
-tab1, tab2, tab3, tab4 = st.tabs(['About Meal Steal', 'Your Meal Plan', 'Recipes', 'Nutritional Dashboard'])
+tab1, tab2, tab3, tab4 = st.tabs(['About Meal Machine', 'Your Meal Plan', 'Recipes', 'Nutritional Dashboard'])
 
 # -------------------------
-# 5. About Meal Steal
+# 5. About Meal Machine
 # -------------------------
 
 # Tab 1: Main description and key features
 with tab1:
     # Center the main heading
-    st.markdown('<h2 style="text-align: center;">Welcome to Meal Steal - Your AI Personalised Meal Plan!</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="text-align: center;">Welcome to Meal Machine - Your AI Personalised Meal Plan!</h2>', unsafe_allow_html=True)
 
     # Add app description
-    st.write("Meal Steal is your personalised meal planner powered by AI. Simply input your preferences into our user hub on the left, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
+    st.write("Meal Machine is your personalised meal planner powered by AI. Simply input your preferences into our user hub on the left, and our AI creates custom recipes tailored to your needs. Explore each recipe in detail, track your nutrition intake with our dashboard, and easily download your meal plan as a PDF. Let us help you plan healthier meals with ease!")
     
     # Key Features content in Markdown format
     features_content = """
@@ -555,12 +555,11 @@ with tab1:
         <div class="tooltip-container">
             <span>📜 Disclaimer</span> <!-- The visible disclaimer text -->
             <div class="tooltip"> <!-- The hidden tooltip content -->
-                <strong>Meal Steal Disclaimer:</strong><br><br>
-                Meal Steal provides meal planning and grocery budgeting information for general informational purposes only. 
-                While we strive to provide accurate nutritional data and cost estimates, Meal Steal does not guarantee the accuracy, 
+                <strong>Meal Machine Disclaimer:</strong><br><br>
+                Meal Machine provides meal planning and grocery budgeting information for general informational purposes only. 
+                While we strive to provide accurate nutritional data, Meal Machine does not guarantee the accuracy, 
                 completeness, or reliability of any information provided. Users should consult a healthcare professional before making any dietary 
-                changes based on the recommendations in this app. Grocery prices and product availability may vary by store location and time, 
-                and we cannot guarantee real-time accuracy. By using this app, you acknowledge and accept that Meal Steal is not responsible 
+                changes based on the recommendations in this app. By using this app, you acknowledge and accept that Meal Machine is not responsible 
                 for any dietary, health, or financial outcomes arising from the use of the information provided.
             </div>
         </div>
@@ -870,6 +869,6 @@ st.markdown('</div>', unsafe_allow_html=True)  # Close the frosted container
 
 st.markdown("""
     <footer>
-        <p style="text-align: center; color: #DAD7CD;">© 2024 Meal Steal. All rights reserved.</p>
+        <p style="text-align: center; color: #463F3A;">© 2024 Meal Machine. All rights reserved.</p>
     </footer>
 """, unsafe_allow_html=True)
