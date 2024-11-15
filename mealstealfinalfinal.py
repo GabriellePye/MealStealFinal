@@ -575,14 +575,15 @@ with tab1:
 with tab2:
     st.markdown("### Your Meal Plan")
 
-    # Set the meal plan duration
-    meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days
+    # Use the existing 'days' value, which is the number of days selected by the user
+    meal_plan_duration = days  # This should be the number of days selected by the user in the slider
 
     # Check if recipes are in session state
     if "recipes_text" in st.session_state:
         recipes_data = parse_recipe_info(st.session_state["recipes_text"])
         recipe_titles = [recipe["Title"] for recipe in recipes_data]
 
+    # Ensure that the 'assigned_recipes' dictionary is set up correctly
     if 'assigned_recipes' not in st.session_state:
         st.session_state['assigned_recipes'] = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
 
@@ -591,7 +592,7 @@ with tab2:
     # Dropdown to assign recipes
     day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
 
-    # Check for assigned recipes
+    # Check for already assigned recipes
     recipes_already_assigned = [recipe for meals in assigned_recipes.values() for recipe in meals]
     available_recipes = [recipe for recipe in recipe_titles if recipe not in recipes_already_assigned]
     selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
@@ -602,9 +603,10 @@ with tab2:
         st.session_state['assigned_recipes'] = assigned_recipes
         st.success(f"Recipes assigned to {day_dropdown}!")
 
-    # Create cards to display
-    meal_plan_cards = [(day, meals) for day, meals in assigned_recipes.items()]
+    # Filter meal plan cards based on the number of days selected
+    meal_plan_cards = [(day, meals) for day, meals in assigned_recipes.items() if int(day.split()[1]) <= meal_plan_duration]
 
+    # Create rows of cards (up to 3 cards per row)
     rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
 
     # Render the meal plan cards
@@ -612,7 +614,7 @@ with tab2:
         cols = st.columns(3)
         for idx, (day, meals) in enumerate(row):
             with cols[idx]:
-                recipe_titles_str = ", ".join(meals)  # Join the meals for the current day
+                recipe_titles_str = "\n".join(meals)  # Each recipe on a new line
 
                 # HTML for card with recipe titles
                 st.markdown(f"""
