@@ -522,78 +522,78 @@ with tab1:
 # 6. Your Meal Plan
 # -------------------------
 
-# Assuming tab2 is where you render the meal plan
-st.markdown("### Your Meal Plan")
+# Tab 2 (Meal Plan)
+with tab2:  # Assuming tab2 is the section or tab you are using to display the meal plan
+    st.markdown("### Your Meal Plan")
 
-# Use the 'days' value from the existing sidebar for meal plan duration
-meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days if not set in session state
+    # Use the 'days' value from the existing sidebar for meal plan duration
+    meal_plan_duration = st.session_state.get('days', 7)  # Default to 7 days if not set in session state
 
-# Check if the recipes_text exists in session_state
-if "recipes_text" in st.session_state:
-    # Parse the recipes from the session_state["recipes_text"]
-    recipes_data = parse_recipe_info(st.session_state["recipes_text"])
+    # Check if the recipes_text exists in session_state
+    if "recipes_text" in st.session_state:
+        # Parse the recipes from the session_state["recipes_text"]
+        recipes_data = parse_recipe_info(st.session_state["recipes_text"])
 
-    # Extract only the titles from the recipes_data
-    recipe_titles = [recipe["Title"] for recipe in recipes_data]
+        # Extract only the titles from the recipes_data
+        recipe_titles = [recipe["Title"] for recipe in recipes_data]
 
-# Initialize a dictionary to store recipes assigned to each day
-if 'assigned_recipes' not in st.session_state:
-    st.session_state['assigned_recipes'] = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
+    # Initialize a dictionary to store recipes assigned to each day
+    if 'assigned_recipes' not in st.session_state:
+        st.session_state['assigned_recipes'] = {f"Day {i+1}": [] for i in range(meal_plan_duration)}
 
-assigned_recipes = st.session_state['assigned_recipes']
+    assigned_recipes = st.session_state['assigned_recipes']
 
-# Dropdown to assign recipes to specific days
-day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
+    # Dropdown to assign recipes to specific days
+    day_dropdown = st.selectbox("Select Day to Assign Recipe", options=[f"Day {i+1}" for i in range(meal_plan_duration)])
 
-# Multiselect to choose recipes for the selected day, excluding already assigned recipes for that day
-# Available recipes are those that are not yet assigned to the current day
-# Create a list of recipes that are already assigned to any other day
-recipes_already_assigned = [recipe for meals in assigned_recipes.values() for recipe in meals]
+    # Multiselect to choose recipes for the selected day, excluding already assigned recipes for that day
+    # Available recipes are those that are not yet assigned to the current day
+    # Create a list of recipes that are already assigned to any other day
+    recipes_already_assigned = [recipe for meals in assigned_recipes.values() for recipe in meals]
 
-# Filter out the recipes that have already been assigned to other days
-available_recipes = [recipe for recipe in recipe_titles if recipe not in recipes_already_assigned]
+    # Filter out the recipes that have already been assigned to other days
+    available_recipes = [recipe for recipe in recipe_titles if recipe not in recipes_already_assigned]
 
-selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
+    selected_recipes = st.multiselect(f"Select Recipes for {day_dropdown}", available_recipes)
 
-# "Assign!" button to save selected recipes for the chosen day
-if st.button("Assign!"):
-    for recipe in selected_recipes:
-        assigned_recipes[day_dropdown].append(recipe)
+    # "Assign!" button to save selected recipes for the chosen day
+    if st.button("Assign!"):
+        for recipe in selected_recipes:
+            assigned_recipes[day_dropdown].append(recipe)
 
-    # Save the updated assigned recipes to session state
-    st.session_state['assigned_recipes'] = assigned_recipes
+        # Save the updated assigned recipes to session state
+        st.session_state['assigned_recipes'] = assigned_recipes
 
-    # Display a success message
-    st.success(f"Recipes assigned to {day_dropdown}!")
+        # Display a success message
+        st.success(f"Recipes assigned to {day_dropdown}!")
 
-# Initialize a list to store the meal plan cards
-meal_plan_cards = []
+    # Initialize a list to store the meal plan cards
+    meal_plan_cards = []
 
-# Collect all meal plan cards (one for each day)
-for idx, (day, meals) in enumerate(assigned_recipes.items()):
-    if idx < meal_plan_duration:  # Only show the selected number of days
-        meal_plan_cards.append((day, meals))
+    # Collect all meal plan cards (one for each day)
+    for idx, (day, meals) in enumerate(assigned_recipes.items()):
+        if idx < meal_plan_duration:  # Only show the selected number of days
+            meal_plan_cards.append((day, meals))
 
-# Create rows of 3 cards
-rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
+    # Create rows of 3 cards
+    rows_of_cards = [meal_plan_cards[i:i + 3] for i in range(0, len(meal_plan_cards), 3)]
 
-# Render the meal plan cards in rows of 3
-for row in rows_of_cards:
-    cols = st.columns(3)  # Always create 3 columns per row
-    for idx, (day, meals) in enumerate(row):
-        with cols[idx]:  # Distribute the cards across 3 columns
-            recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
+    # Render the meal plan cards in rows of 3
+    for row in rows_of_cards:
+        cols = st.columns(3)  # Always create 3 columns per row
+        for idx, (day, meals) in enumerate(row):
+            with cols[idx]:  # Distribute the cards across 3 columns
+                recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
 
-            # Render the card with hover effect
-            st.markdown(f"""
-            <div class="card" style="cursor: pointer;">
-                <div class="card-content">
-                    <h3 style="font-size: 15px;">{day}</h3>
-                    <p style="font-size: 15px;">Hover to see meals</p>
-                    <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
+                st.markdown(f"""
+                <div class="card" style="cursor: pointer;">
+                    <div class="card-content">
+                        <h3 style="font-size: 15px;">{day}</h3>
+                        <p style="font-size: 15px;">Hover to see meals</p>
+                        <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
+                    </div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
 # -------------------------
 # 7. Recipes
