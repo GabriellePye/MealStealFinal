@@ -348,6 +348,30 @@ st.markdown("""
         transform: scale3d(1, 1, 1); /* Back to normal */
     }
 }
+            
+/* Simple custom button styling */
+.download_button {
+  font-weight: bold;
+  color: white;
+  background-color: #0c66ed;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.download_button:hover {
+  background-color: #094bb3;
+  transform: scale(1.05);
+}
+
+.download_button:active {
+  background-color: #073a8f;
+  transform: scale(0.98);
+}
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
