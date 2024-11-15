@@ -111,7 +111,7 @@ st.markdown("""
 }
 
 .subheader-container img { 
-    width: 300px;
+    width: 200px;
 }
 
 /* Flex container for logo and subheader */
@@ -124,7 +124,7 @@ st.markdown("""
 
 /* Styling for the logo */
 .header-container img { 
-    width: 300px; /* Adjust width for the logo */
+    width: 500px; /* Adjust width for the logo */
     margin-right: 20px; /* Space between logo and subheader */
 }
 
