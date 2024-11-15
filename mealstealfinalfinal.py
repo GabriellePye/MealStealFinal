@@ -627,6 +627,9 @@ with tab2:
                     </div>
                 """, unsafe_allow_html=True)
 
+    else:
+        st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
+
 # -------------------------
 # 7. Recipes
 # -------------------------
