@@ -100,14 +100,16 @@ st.markdown("""
  
 /* styling for subheader + other text elements */
 .subheader-container {
+    display: inline-block;           /* Make container shrink/expand based on content */
     border: 2px solid white;
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 15px;
     text-align: center;
-    max-width: 80%;  /* Adjusted for centering */
-    margin: 0 auto;
+    margin: 0 auto;                  /* Center the box */
+    max-width: 100%;                 /* Ensure it doesn't overflow */
+    white-space: pre-wrap;           /* Allow text to wrap if it’s long */
 }
 
 .subheader-container img { 
@@ -117,15 +119,15 @@ st.markdown("""
 /* Flex container for logo and subheader */
 .header-container {
     display: flex;
-    align-items: left; /* Center vertically */
-    justify-content: left; /* Center horizontally */
-    margin: 20px; /* Add some margin */
+    align-items: center;            /* Center vertically */
+    justify-content: left;          /* Align items to the left */
+    margin: 20px;                   /* Add some margin */
 }
 
 /* Styling for the logo */
 .header-container img { 
-    width: 100px; /* Adjust width for the logo */
-    margin-right: 20px; /* Space between logo and subheader */
+    width: 100px;                   /* Adjust width for the logo */
+    margin-right: 20px;             /* Space between logo and subheader */
 }
 
 /* Tooltip Container */
