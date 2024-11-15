@@ -106,7 +106,7 @@ st.markdown("""
 
 /* Logo image styling */
 .text-container img {
-    width: 450px;                      /* Adjust the logo width as desired */
+    width: 400px;                      /* Adjust the logo width as desired */
     height: auto;                      /* Maintain aspect ratio */
 }
  
@@ -299,7 +299,7 @@ section[data-testid="stSidebar"] {
 
 st.markdown("""
 <div class='text-container'>
-    <img src="https://i.ibb.co/7r2X261/Meal-Steal-Logo-2-Photoroom.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
+    <img src="https://i.ibb.co/JqwNB5f/Meal-Machine-Logo.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
     <div class='subheader-container'>
         <h2>🥙 Get Fit, Eat Smart 🥗</h2>
     </div>
