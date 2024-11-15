@@ -236,6 +236,7 @@ st.markdown("""
     cursor: pointer;
     transition: all 0.5s; /* Smooth transitions */
     margin: 5px;  /* Smaller gap between cards */
+    overflow: hidden; /* Prevents text from spilling outside the card */
 }
 
 /* Styling for card hover effects */
@@ -243,52 +244,38 @@ st.markdown("""
 .card::after {
     position: absolute;
     content: "";
-    width: 20%;
-    height: 20%;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 15px;  /* Font size for hover text */
     font-weight: bold;
-    background-color: #67944C;
+    background-color: rgba(103, 148, 76, 0.9); /* Slightly transparent green */
+    color: #DAD7CD;  /* Text color for visibility */
     transition: all 0.5s; /* Smooth transitions */
+    opacity: 0;  /* Initially hidden */
+    visibility: hidden; /* Hide the hover text */
 }
 
+/* Remove the content from ::before */
 .card::before {
-    top: 0;
-    right: 0;
-    border-radius: 0 15px 0 100%; /* Top right corner rounded */
-}
-
-.card::after {
-    bottom: 0;
-    left: 0;
-    border-radius: 0 100% 0 15px; /* Bottom left corner rounded */
-}
-
-/* Hover effects for cards */
-.card:hover::before,
-.card:hover::after {
-    width: 100%; /* Expand on hover */
-    height: 100%; /* Expand on hover */
-    border-radius: 15px; /* Rounded corners on hover */
-}
-
-/* The hover content should be hidden by default */
-.hover-content {
-    display: none; /* Initially hidden */
-    font-size: 14px;
-    color: #DAD7CD; /* Text color for visibility */
-    position: absolute;  /* Position the hover content inside the card */
-    bottom: 10px;        /* Adjust as needed */
-    left: 10px;          /* Adjust as needed */
-    right: 10px;
-    text-align: center;
+    content: none;
 }
 
 /* Show the hover content when the card is hovered */
-.card:hover .hover-content {
-    display: block; /* Make it visible on hover */
+.card:hover::after {
+    opacity: 1; /* Reveal text on hover */
+    visibility: visible; /* Make the hover text visible */
+    content: "{recipe_titles_str}";  /* Recipe titles to display on hover */
+    text-align: center; /* Center align the text */
+}
+
+/* Adjustments to make sure the hover content looks nice */
+.card-content {
+    z-index: 1; /* Ensure the card content is above the hover effect */
+    position: relative;
+    text-align: center;
 }
 
 /* Sidebar styling */
