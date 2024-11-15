@@ -208,7 +208,7 @@ st.markdown("""
     background: rgba(255, 255, 255, 0.1);  /* Background with slight opacity */
     padding: 20px;  /* Padding for content */
     border-radius: 10px;  /* Rounded corners */
-    color: #463F3A;  /* Dark text color */
+    color: #DAD7CD;  /* Dark text color */
 }
 
 /* General styles for meal plan section */
