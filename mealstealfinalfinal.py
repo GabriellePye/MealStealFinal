@@ -221,7 +221,7 @@ st.markdown("""
     color: #DAD7CD; /* Light text color */
 }
 
- /* Card styling */
+/* Card styling */
 .card {
     position: relative;
     width: 160px;
@@ -238,6 +238,7 @@ st.markdown("""
     margin: 5px;
     overflow: hidden;
     text-align: center;
+    padding: 10px;
 }
 
 /* Hidden recipe titles by default */
@@ -249,9 +250,18 @@ st.markdown("""
     margin-top: 10px;
 }
 
+/* Hide Day text and Hover text on hover */
+.card .card-content h3, .card .card-content p {
+    transition: opacity 0.3s ease;
+}
+
 /* Hover effect to reveal recipe titles */
 .card:hover .recipe-titles {
-    opacity: 1; /* Make the recipe titles visible on hover */
+    opacity: 1; /* Show recipe titles on hover */
+}
+
+.card:hover .card-content h3, .card:hover .card-content p {
+    opacity: 0; /* Hide "Day X" and "Hover to see meals" on hover */
 }
 
 /* Sidebar styling */
@@ -537,15 +547,15 @@ with tab2:
         cols = st.columns(3)
         for idx, (day, meals) in enumerate(row):
             with cols[idx]:
-                recipe_titles_str = ", ".join(meals)
+                recipe_titles_str = ", ".join(meals)  # Join the meals for the current day
 
                 # HTML for card with recipe titles
                 st.markdown(f"""
                     <div class="card">
                         <div class="card-content">
-                            <h3>{day}</h3>
-                            <p>Hover to see meals</p>
-                            <div class="recipe-titles">{recipe_titles_str}</div>
+                            <h3>{day}</h3> <!-- This is the Day text -->
+                            <p>Hover to see meals</p> <!-- This is the hover message -->
+                            <div class="recipe-titles">{recipe_titles_str}</div> <!-- This is the recipe titles on hover -->
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
