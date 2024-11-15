@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://imgur.com/a/bUfwJbH');
+    background: url('https://imgur.com/J9NA6wa');
     background-size: cover; 
     background-position: top;
 }
