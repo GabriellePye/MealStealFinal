@@ -97,6 +97,18 @@ st.markdown("""
     background-size: cover; 
     background-position: top;
 }
+            
+/* Container to center the image */
+.text-container {
+    text-align: center;                /* Center align the content */
+    margin-bottom: 20px;               /* Add some spacing below the image */
+}
+
+/* Logo image styling */
+.text-container img {
+    width: 150px;                      /* Adjust the logo width as desired */
+    height: auto;                      /* Maintain aspect ratio */
+}
  
 /* styling for subheader + other text elements */
 .subheader-container {
@@ -286,7 +298,7 @@ section[data-testid="stSidebar"] {
 # -------------------------
 
 st.markdown("""
-<div class='header-container'>
+<div class='text-container'>
     <img src="https://i.ibb.co/qDcRgtr/Meal-Machine-Logo-removebg-preview.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
     <div class='subheader-container'>
         <h2>🥙 Get Fit, Eat Smart 🥗</h2>
