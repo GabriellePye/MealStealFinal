@@ -276,6 +276,58 @@ st.markdown("""
 .card:hover .card-content h3, .card:hover .card-content p {
     opacity: 0; /* Hide Day X and Hover text */
 }
+            
+/* Add the bounce effect on hover */
+.card {
+    position: relative;
+    width: 160px;
+    height: 220px;
+    background: #335D3B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.5s;
+    margin: 5px;
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    /* Ensure the card is not initially animated */
+    animation: none;
+}
+
+/* Hover effect to trigger the bounce animation */
+.card:hover {
+    animation: jello-vertical 0.7s both;
+}
+
+/* Define the bounce (jello-vertical) keyframes */
+@keyframes jello-vertical {
+    0% {
+        transform: scale3d(1, 1, 1); /* Normal state */
+    }
+    30% {
+        transform: scale3d(0.75, 1.25, 1); /* Stretch out */
+    }
+    40% {
+        transform: scale3d(1.25, 0.75, 1); /* Squish inward */
+    }
+    50% {
+        transform: scale3d(0.85, 1.15, 1); /* Return to nearly normal */
+    }
+    65% {
+        transform: scale3d(1.05, 0.95, 1); /* Slightly stretch */
+    }
+    75% {
+        transform: scale3d(0.95, 1.05, 1); /* Slightly squish */
+    }
+    100% {
+        transform: scale3d(1, 1, 1); /* Back to normal */
+    }
+}
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
