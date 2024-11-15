@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://www.foodnotify.com/hubfs/Content/Blog/Imported_Blog_Media/pexels-ella-olsson-1640774-scaled-1.jpg'); /*need to import better gif */
+    background: url('https://www.bumblescoop.com/wp-content/uploads/2020/09/Food-Blog-Singapore-scaled.jpg'); /*need to import better gif */
     background-size: cover;
     background-position: top;
 }
