@@ -560,7 +560,8 @@ with tab2:
         cols = st.columns(3)
         for idx, (day, meals) in enumerate(row):
             with cols[idx]:
-                recipe_titles_str = ", ".join(meals)  # Join the meals for the current day
+                # Create a list of recipes as HTML <li> elements
+                recipe_titles_html = "".join([f"<li>{meal}</li>" for meal in meals])  # Create a list for each recipe
 
                 # HTML for card with recipe titles
                 st.markdown(f"""
@@ -568,7 +569,7 @@ with tab2:
                         <div class="card-content">
                             <h3 style="font-size: 15px;">{day}</h3> <!-- This is the Day text -->
                             <p style="font-size: 15px;">Hover to see meals</p> <!-- This is the hover message -->
-                            <div class="recipe-titles">{recipe_titles_str}</div> <!-- This is the recipe titles on hover -->
+                            <ul class="recipe-titles">{recipe_titles_html}</ul> <!-- This is the recipe titles as a list -->
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
