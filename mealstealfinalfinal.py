@@ -100,34 +100,29 @@ st.markdown("""
  
 /* styling for subheader + other text elements */
 .subheader-container {
-    display: inline-block;           /* Make container shrink/expand based on content */
+    display: inline-block;                /* Shrink/expand based on content */
     border: 2px solid white;
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
+    padding: 10px 20px;                   /* Less padding for a tighter look */
     border-radius: 15px;
     text-align: center;
-    margin: 0 auto;                  /* Center the box */
-    max-width: 100%;                 /* Ensure it doesn't overflow */
-    white-space: pre-wrap;           /* Allow text to wrap if it’s long */
-}
-
-.subheader-container img { 
-    width: 100px;
+    white-space: pre-wrap;                /* Wrap text if it’s long */
+    margin: 0 auto;                       /* Center the box horizontally */
 }
 
 /* Flex container for logo and subheader */
 .header-container {
     display: flex;
-    align-items: center;            /* Center vertically */
-    justify-content: left;          /* Align items to the left */
-    margin: 20px;                   /* Add some margin */
+    align-items: center;                  /* Center vertically */
+    justify-content: center;              /* Center horizontally */
+    gap: 10px;                            /* Space between logo and subheader */
+    padding: 10px 0;                      /* Reduce top and bottom padding */
 }
 
 /* Styling for the logo */
 .header-container img { 
-    width: 100px;                   /* Adjust width for the logo */
-    margin-right: 20px;             /* Space between logo and subheader */
+    width: 60px;                          /* Adjust width for the logo */
 }
 
 /* Tooltip Container */
