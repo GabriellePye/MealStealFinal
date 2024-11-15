@@ -93,7 +93,7 @@ st.markdown("""
 <style>
 /* background */
 .stApp {
-    background: url('https://www.bumblescoop.com/wp-content/uploads/2020/09/Food-Blog-Singapore-scaled.jpg'); /*need to import better gif */
+    background: url('https://www.flowermoundyummythai.com/wp-content/uploads/2021/09/4.png'); /*need to import better gif */
     background-size: cover;
     background-position: top;
 }
