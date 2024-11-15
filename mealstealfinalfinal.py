@@ -274,10 +274,21 @@ st.markdown("""
     border-radius: 15px; /* Rounded corners on hover */
 }
 
-/* Hover content appears when the card is hovered */
-.card:hover .hover-content {
-    display: block;
+/* The hover content should be hidden by default */
+.hover-content {
+    display: none; /* Initially hidden */
+    font-size: 14px;
     color: #DAD7CD; /* Text color for visibility */
+    position: absolute;  /* Position the hover content inside the card */
+    bottom: 10px;        /* Adjust as needed */
+    left: 10px;          /* Adjust as needed */
+    right: 10px;
+    text-align: center;
+}
+
+/* Show the hover content when the card is hovered */
+.card:hover .hover-content {
+    display: block; /* Make it visible on hover */
 }
 
 /* Sidebar styling */
@@ -593,7 +604,7 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
                             <h3 style="font-size: 15px;">{day}</h3>
                             <p style="font-size: 15px;">Hover to see meals</p>
                             <!-- This is the hidden recipe title div -->
-                            <div class="hover-content" style="display: none;">
+                            <div class="hover-content">
                                 {recipe_titles_str}
                             </div>
                         </div>
