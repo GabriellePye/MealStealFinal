@@ -595,16 +595,21 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
         cols = st.columns(3)  # Always create 3 columns per row
         for idx, (day, meals) in enumerate(row):
             with cols[idx]:  # Distribute the cards across 3 columns
-                recipe_titles_str = ", ".join(meals)  # Join the selected recipe titles for this day
+                # Dynamically join recipe titles for this day
+                recipe_titles_str = ", ".join(meals)
 
+                # Insert dynamic recipe titles into the hover content
                 st.markdown(f"""
-                <div class="card" style="cursor: pointer;">
-                    <div class="card-content">
-                        <h3 style="font-size: 15px;">{day}</h3>
-                        <p style="font-size: 15px;">Hover to see meals</p>
-                        <div style="font-size: 14px; color: #DAD7CD;">{recipe_titles_str}</div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 style="font-size: 15px;">{day}</h3>
+                            <p style="font-size: 15px;">Hover to see meals</p>
+                            <!-- Dynamic content for recipes -->
+                            <div class="hover-content">
+                                {recipe_titles_str}
+                            </div>
+                        </div>
                     </div>
-                </div>
                 """, unsafe_allow_html=True)
 
 # -------------------------
