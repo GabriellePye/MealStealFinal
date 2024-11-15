@@ -8,7 +8,7 @@ import streamlit as st
 import openai
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from openai import OpenAI
 import re
 from fpdf import FPDF
@@ -317,7 +317,7 @@ allergies = st.sidebar.text_input('Allergies (comma-separated)', '')
 
 # Physical Activity and Exercise Details
 st.sidebar.subheader("Physical Activity")
-exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Active', 'Very Active'])
+exercise_level = st.sidebar.selectbox('Exercise Level', ['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Super Active'])
 activity_type = st.sidebar.multiselect('Types of Physical Activity', ['Cardio', 'Strength Training', 'Yoga/Pilates', 'Sports', 'Other'])
 
 # Meal Plan Customization
@@ -602,7 +602,6 @@ with tab3:
                 st.write(f"**Cuisine**: {recipe['Cuisine']}")
                 st.write(f"**Diet**: {recipe['Diet']}")
                 st.write(f"**Total Cooking Time**: {recipe['Total Cooking Time']}")
-                st.write(f"**Servings**: {recipe['Servings']}")
                 st.write(f"**Estimated Price**: {recipe['Estimated Price']}")
 
                 # Display ingredients
@@ -641,6 +640,43 @@ with tab3:
 # 8. Nutritional Dashboard
 # -------------------------
 
+# Function to calculate daily caloric needs based on user inputs and health goal (using Mifflin-St Jeor Equation)
+def calculate_caloric_needs(weight, height, age, gender, activity_level, goal):
+    # Calculate BMR based on gender
+    if gender == 'Male':
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
+    else:
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
+
+    # Define activity factors
+    activity_factors = {
+        'Sedentary': 1.2,
+        'Lightly Active': 1.375,
+        'Moderately Active': 1.55,
+        'Very Active': 1.725,
+        'Super Active': 1.9
+    }
+    
+    # Calculate TDEE
+    tdee = bmr * activity_factors[activity_level]
+
+    # Adjust TDEE based on health goal
+    if goal == 'Weight Loss':
+        tdee *= 0.85  # Reduce by 10%
+    elif goal == 'Muscle Gain':
+        tdee *= 1.15  # Increase by 10%
+    elif goal == 'Maintain Weight':
+        pass  # No adjustment needed
+    elif goal in ['Eat Healthier', 'Create Meal Routine']:
+        pass  # No direct impact on caloric needs
+
+    return tdee
+
+# Calculate total caloric needs based on duration (days)
+def calculate_total_caloric_needs(weight, height, age, gender, activity_level, goal, days):
+    daily_caloric_needs = calculate_caloric_needs(weight, height, age, gender, activity_level, goal)
+    return daily_caloric_needs * days
+
 # Tab 4: Nutrition Dashboard
 with tab4:
     if "recipes_text" in st.session_state:
@@ -666,37 +702,114 @@ with tab4:
         # Filter data based on selected recipe
         filtered_data = nutrition_df if st.session_state["selected_recipe"] == "Total" else nutrition_df[nutrition_df["Recipe"] == st.session_state["selected_recipe"]]
 
-        # Sum the selected nutrients
+        # Sum the selected nutrients for the pie chart
         nutrient_totals = filtered_data[nutrients_for_pie].apply(pd.to_numeric, errors='coerce').sum()
 
-        # Ensure there are values to plot
-        if nutrient_totals.sum() > 0:
-            fig, ax = plt.subplots()
-            wedges, texts = ax.pie(
-                nutrient_totals,
-                labels=[f"{nutrient} ({value:.1f}g)" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                startangle=90,
-                colors=color_scheme,
-                wedgeprops=dict(width=0.3)
+        # Plotly pie chart for nutrient distribution
+        fig = go.Figure(data=[go.Pie(
+            labels=nutrients_for_pie,
+            values=nutrient_totals,
+            hole=0.6,
+            marker=dict(colors=color_scheme),
+            textinfo='label',
+            hovertemplate='<b>%{label}</b><br>Grams: %{value}g<br>Percentage: %{percent}<extra></extra>',  # Removes 'trace 0'
+            textposition='outside',
+            textfont=dict(size=16, color='grey', family='Roboto')
+        )])
+
+        # Update layout for the title and make the chart smaller
+        fig.update_layout(
+            title=dict(
+                text=f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}",
+                x=0.5,
+                y=0.85,
+                xanchor='center',
+                yanchor='top',
+                font=dict(size=18, color='grey', family='Roboto')
+            ),
+            showlegend=False,
+            margin=dict(t=100, b=50, l=50, r=50)
+        )
+
+        # Update hoverlabel for improved alignment and appearance
+        fig.update_traces(
+            hoverlabel=dict(
+                align="left",
+                bgcolor="white",  # Set a solid background color to prevent overflow
+                bordercolor="grey",  # Add a border to make it distinct
+                font=dict(size=16, color="grey", family="Roboto")
             )
+        )
 
-            ax.legend(
-                labels=[f"{nutrient}: {value:.1f}g" for nutrient, value in zip(nutrients_for_pie, nutrient_totals)],
-                loc="center left",
-                bbox_to_anchor=(1, 0, 0.5, 1),
-                facecolor='white'
-            )
+        # Display the chart in Streamlit
+        st.plotly_chart(fig)
 
-            centre_circle = plt.Circle((0, 0), 0.40, fc='white')
-            fig.gca().add_artist(centre_circle)
-            ax.set_title(f"Nutrient Distribution for {'All Recipes' if st.session_state['selected_recipe'] == 'Total' else st.session_state['selected_recipe']}")
 
-            st.pyplot(fig)
-        else:
-            st.write("No nutrient data to display for the selected recipe.")
+        # Calculate caloric needs and percentage
+        total_caloric_needs = calculate_total_caloric_needs(weight, height, age, gender, exercise_level, goal, days)
+        calories_consumed = nutrition_df["Calories"].sum()
+        caloric_percentage = min((calories_consumed / total_caloric_needs) * 100, 100)  # Cap at 100%
+
+        # Plotly gauge chart with wider green bar and additional labels
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=calories_consumed,
+            number={
+                'valueformat': ".0f",  # Display the number as an integer
+                'suffix': " kcal",     # Add kcal as a suffix
+                'font': {'size': 36, 'family': 'Roboto'},
+            },
+            gauge={
+                'axis': {
+                    'range': [0, total_caloric_needs],  # Set gauge to calorie range
+                    'tickwidth': 1.5,
+                    'tickcolor': "grey",
+                    'tickvals': [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs],
+                    'ticktext': [f"{int(i)} kcal" for i in [0, total_caloric_needs * 0.2, total_caloric_needs * 0.4, total_caloric_needs * 0.6, total_caloric_needs * 0.8, total_caloric_needs]],
+                    'tickfont': {'family': 'Roboto'}
+                },
+                'bar': {'color': "#335D3B", 'thickness': 1.0},  # Wider green bar for filled portion
+                'bgcolor': "#DAD7CD",  # Cream background for gauge
+                'steps': [
+                    {'range': [0, total_caloric_needs], 'color': "#DAD7CD"}  # Full gauge background in cream
+                ],
+                'threshold': {
+                    'line': {'color': "#335D3B", 'width': 4},
+                    'thickness': 1.0,
+                    'value': calories_consumed  # Use calories consumed to show progress on gauge
+                }
+            }
+        ))
+
+        # Use an annotation for the title text above the gauge
+        fig.add_annotation(
+            text="Proportion of Caloric Budget Consumed by Meal Plan",
+            x=0.5, y=1.2, showarrow=False,  # Adjust y value to control position above the gauge
+            font=dict(size=18, color="grey", family='Roboto'),
+            align='center'
+        )
+
+        # Add annotation for "Meal Calorie Total" above the number
+        fig.add_annotation(
+            text="Meal calorie total:",
+            x=0.5, y=0.17, showarrow=False,  # Adjust y value to control vertical position above the number
+            font=dict(size=16, color="grey", family='Roboto'),
+            align='center'
+        )
+
+        # Add annotation for percentage text below the gauge
+        fig.add_annotation(
+            text=f"which is {caloric_percentage:.0f}% of your caloric budget for {days} days",
+            x=0.5, y=-0.1, showarrow=False,  # Adjust y value to control vertical position below the gauge
+            font=dict(size=16, color="grey", family='Roboto'),
+            align='center'
+        )
+
+        # Show the gauge in Streamlit
+        st.plotly_chart(fig)
+
     else:
         st.warning("Your personalised meal plan is not ready yet. Please generate it first.")
-
 
 # ----
 # 9. Close container
