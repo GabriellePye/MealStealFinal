@@ -106,7 +106,7 @@ st.markdown("""
 
 /* Logo image styling */
 .text-container img {
-    width: 150px;                      /* Adjust the logo width as desired */
+    width: 500px;                      /* Adjust the logo width as desired */
     height: auto;                      /* Maintain aspect ratio */
 }
  
