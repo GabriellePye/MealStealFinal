@@ -221,11 +221,11 @@ st.markdown("""
     color: #DAD7CD; /* Light text color */
 }
 
-/* Cards for meal plan */
+/* Cards for meal plan (existing styles removed) */
 .card {
     position: relative;
-    width: 160px;  /* Adjust width as needed */
-    height: 220px;  /* Adjust height as needed */
+    width: 160px; /* Adjust width as needed */
+    height: 220px; /* Adjust height as needed */
     background: #335D3B;
     display: flex;
     align-items: center;
@@ -234,29 +234,11 @@ st.markdown("""
     font-weight: bold;
     border-radius: 15px;
     cursor: pointer;
-    transition: all 0.5s;  /* Smooth transitions */
+    transition: all 0.5s; /* Smooth transitions */
     margin: 5px;  /* Smaller gap between cards */
 }
 
-/* Hover content for recipe titles (hidden by default) */
-.card .hover-content {
-    visibility: hidden;  /* Initially hidden */
-    opacity: 0;  /* Initially invisible */
-    position: absolute;
-    bottom: 10px;  /* Position content inside card */
-    left: 10px;    /* Adjust as needed */
-    transition: all 0.3s ease;  /* Smooth transition */
-    color: #DAD7CD;  /* Text color */
-    font-size: 14px;  /* Font size for recipe titles */
-}
-
-/* Show the hover content on hover */
-.card:hover .hover-content {
-    visibility: visible;  /* Show content on hover */
-    opacity: 1;  /* Make content visible */
-}
-
-/* Styling for card corner effects */
+/* Styling for card hover effects */
 .card::before,
 .card::after {
     position: absolute;
@@ -269,7 +251,7 @@ st.markdown("""
     font-size: 15px;  /* Font size for hover text */
     font-weight: bold;
     background-color: #67944C;
-    transition: all 0.5s;  /* Smooth transitions */
+    transition: all 0.5s; /* Smooth transitions */
 }
 
 .card::before {
@@ -284,12 +266,18 @@ st.markdown("""
     border-radius: 0 100% 0 15px; /* Bottom left corner rounded */
 }
 
-/* Expand the corners on hover */
+/* Hover effects for cards */
 .card:hover::before,
 .card:hover::after {
-    width: 100%;  /* Expand on hover */
-    height: 100%;  /* Expand on hover */
-    border-radius: 15px;  /* Rounded corners on hover */
+    width: 100%; /* Expand on hover */
+    height: 100%; /* Expand on hover */
+    border-radius: 15px; /* Rounded corners on hover */
+}
+
+/* Hover content appears when the card is hovered */
+.card:hover .hover-content {
+    display: block;
+    color: #DAD7CD; /* Text color for visibility */
 }
 
 /* Sidebar styling */
@@ -604,8 +592,8 @@ with tab2:  # Assuming tab2 is the section or tab you are using to display the m
                         <div class="card-content">
                             <h3 style="font-size: 15px;">{day}</h3>
                             <p style="font-size: 15px;">Hover to see meals</p>
-                            <!-- Dynamic content for recipes -->
-                            <div class="hover-content">
+                            <!-- This is the hidden recipe title div -->
+                            <div class="hover-content" style="display: none;">
                                 {recipe_titles_str}
                             </div>
                         </div>
