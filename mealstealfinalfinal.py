@@ -289,7 +289,7 @@ st.markdown("""
 <div class='text-container'>
     <img src="https://i.ibb.co/qDcRgtr/Meal-Machine-Logo-removebg-preview.png" alt="Meal Machine Logo" style="display: block; margin: 0 auto;">
     <div class='subheader-container'>
-        <h2>Get Fit, Eat Smart</h2>
+        <h2>🥙 Get Fit, Eat Smart 🥗</h2>
     </div>
 </div>
 """, unsafe_allow_html=True)
